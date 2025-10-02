@@ -1,0 +1,126 @@
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
+
+// Interfaccia Observer
+interface Observer {
+    void update(Appointment appointment);
+}
+
+// Classe Appointment
+class Appointment {
+    private String description;
+    private LocalDateTime dateTime;
+    private List<Observer> observers = new ArrayList<>();
+
+    public Appointment(String description, LocalDateTime dateTime) {
+        this.description = description;
+        this.dateTime = dateTime;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public LocalDateTime getDateTime() {
+        return dateTime;
+    }
+
+    public void addObserver(Observer observer) {
+        observers.add(observer);
+    }
+
+    public void notifyObservers() {
+        for (Observer observer : observers) {
+            observer.update(this);
+        }
+    }
+}
+
+// Singleton AppointmentManager
+class AppointmentManager {
+    private static AppointmentManager instance;
+    private List<Appointment> appointments = new CopyOnWriteArrayList<>();
+
+    private AppointmentManager() {
+        startNotifierThread();
+    }
+
+    public static synchronized AppointmentManager getInstance() {
+        if (instance == null) {
+            instance = new AppointmentManager();
+        }
+        return instance;
+    }
+
+    public void addAppointment(Appointment appointment) {
+        appointments.add(appointment);
+    }
+
+    public void removeAppointment(Appointment appointment) {
+        appointments.remove(appointment);
+    }
+
+    private void startNotifierThread() {
+        Thread thread = new Thread(() -> {
+            while (true) {
+                try {
+                    Thread.sleep(60000); // Controlla ogni minuto
+                    LocalDateTime now = LocalDateTime.now();
+                    for (Appointment appointment : appointments) {
+                        if (appointment.getDateTime().isAfter(now) &&
+                                appointment.getDateTime().isBefore(now.plusMinutes(10))) {
+                            appointment.notifyObservers();
+                        }
+                    }
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+        thread.setDaemon(true); // Chiude il thread quando l'app si chiude
+        thread.start();
+    }
+}
+
+// Osservatore 1
+class EmailNotifier implements Observer {
+    @Override
+    public void update(Appointment appointment) {
+        System.out.println("Email Notifier: Appointment \"" +
+                appointment.getDescription() + "\" is in less than 10 minutes!");
+    }
+}
+
+// Osservatore 2
+class SMSNotifier implements Observer {
+    @Override
+    public void update(Appointment appointment) {
+        System.out.println("SMS Notifier: Appointment \"" +
+                appointment.getDescription() + "\" is in less than 10 minutes!");
+    }
+}
+
+// Main per test
+public class Main {
+    public static void main(String[] args) {
+        AppointmentManager manager = AppointmentManager.getInstance();
+
+        Appointment appointment1 = new Appointment("Doctor's Visit", LocalDateTime.now().plusMinutes(8));
+        Appointment appointment2 = new Appointment("Team Meeting", LocalDateTime.now().plusMinutes(20));
+
+        Observer emailNotifier = new EmailNotifier();
+        Observer smsNotifier = new SMSNotifier();
+
+        appointment1.addObserver(emailNotifier);
+        appointment1.addObserver(smsNotifier);
+
+        appointment2.addObserver(emailNotifier);
+
+        manager.addAppointment(appointment1);
+        manager.addAppointment(appointment2);
+
+        System.out.println("Appuntamenti registrati. Attendere notifiche...");
+    }
+}

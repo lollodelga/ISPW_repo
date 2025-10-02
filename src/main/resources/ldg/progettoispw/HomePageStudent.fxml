@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.shape.Rectangle?>
+
+<AnchorPane prefHeight="600.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ldg.progettoispw.view.HomeStudentGCon">
+
+   <!-- Immagine di sfondo -->
+   <ImageView fitHeight="600.0" fitWidth="1000.0" pickOnBounds="true" preserveRatio="false">
+      <image>
+         <Image url="@../../images/wallpaper.jpeg" />
+      </image>
+   </ImageView>
+
+   <!-- Barra superiore -->
+   <AnchorPane fx:id="BarraSuperiore" prefHeight="63.0" prefWidth="1000.0" style="-fx-background-color: white;">
+      <children>
+         <!-- Logo -->
+         <ImageView fitHeight="48.0" fitWidth="171.0" layoutX="14.0" layoutY="8.0" pickOnBounds="true" preserveRatio="true">
+            <image>
+               <Image url="@../../images/tutorLOGO.png" />
+            </image>
+         </ImageView>
+      </children>
+   </AnchorPane>
+
+   <!-- Area centrale -->
+   <AnchorPane layoutX="0.0" layoutY="63.0" prefHeight="537.0" prefWidth="1000.0">
+      <children>
+         <!-- Rectangle semitrasparente con sfondo blu -->
+         <Rectangle arcHeight="20.0" arcWidth="20.0" fill="#ADD8E6CC" height="480.0" layoutX="198.0" layoutY="29.0" stroke="TRANSPARENT" strokeWidth="0" width="505.0" />
+
+         <!-- Opzioni centrali -->
+         <VBox alignment="TOP_CENTER" layoutX="100.0" layoutY="50.0" prefWidth="700.0" spacing="20.0">
+            <children>
+               <Label style="-fx-font-size: 25px; -fx-text-fill: black;" text="Scegli cosa fare:" />
+
+               <Button fx:id="btnOpzione1" prefWidth="300.0" style="-fx-font-size: 16px; -fx-background-color: #3498DB; -fx-text-fill: white;" text="📚 Opzione 1" />
+               <Button fx:id="btnOpzione2" prefWidth="300.0" style="-fx-font-size: 16px; -fx-background-color: #3498DB; -fx-text-fill: white;" text="📝 Opzione 2" />
+               <Button fx:id="btnOpzione3" prefWidth="300.0" style="-fx-font-size: 16px; -fx-background-color: #3498DB; -fx-text-fill: white;" text="📊 Opzione 3" />
+               <Button fx:id="btnOpzione4" prefWidth="300.0" style="-fx-font-size: 16px; -fx-background-color: #3498DB; -fx-text-fill: white;" text="⚙️ Opzione 4" />
+            </children>
+         </VBox>
+
+         <!-- Contenitore semitrasparente per dati utente -->
+         <VBox alignment="TOP_CENTER" layoutX="830.0" layoutY="50.0" prefWidth="150.0" spacing="15.0" style="-fx-background-color: #ADD8E6CC; -fx-padding: 10;">
+            <children>
+               <Label fx:id="labelRuolo" style="-fx-font-size: 14px; -fx-font-weight: bold;" text="Ruolo: Studente" />
+               <Label fx:id="labelNome" style="-fx-font-size: 13px;" text="Nome: Mario" />
+               <Label fx:id="labelCognome" style="-fx-font-size: 13px;" text="Cognome: Rossi" />
+               <Label fx:id="labelData" style="-fx-font-size: 13px;" text="Nascita: 2000-01-01" />
+
+               <Button fx:id="btnModificaProfilo" prefWidth="140.0" style="-fx-background-color: #3498DB; -fx-text-fill: white; -fx-font-size: 13px;" text="Modifica profilo" />
+               <Button fx:id="btnLogout" prefWidth="140.0" style="-fx-background-color: #e74c3c; -fx-text-fill: white; -fx-font-size: 13px;" text="Logout" />
+            </children>
+         </VBox>
+      </children>
+   </AnchorPane>
+</AnchorPane>
