@@ -8,17 +8,19 @@ public class UserBean {
     private String email;
     private String password;
     private String subjects;
+    private String role; // 1 = tutor, 2 = studente
 
     public UserBean() {/*costruttore di default*/}
 
-    // Getters e setters
+    // Getter e Setter
     public String getName() { return name; }
+    public void setName(String name) { this.name = name; }
 
     public String getSurname() { return surname; }
+    public void setSurname(String surname) { this.surname = surname; }
 
     public String getBirthDate() { return birthDate; }
-
-    public String getSubjects() { return subjects; }
+    public void setBirthDate(String birthDate) { this.birthDate = birthDate; }
 
     public String getEmail() { return email; }
     public void setEmail(String email) { this.email = email; }
@@ -26,9 +28,14 @@ public class UserBean {
     public String getPassword() { return password; }
     public void setPassword(String password) { this.password = password; }
 
-      // Per salvare su file
+    public String getSubjects() { return subjects; }
+    public void setSubjects(String subjects) { this.subjects = subjects; }
+
+    public String getRole() { return role; }
+    public void setRole(String role) { this.role = role; }
+
     public String[] getArray() {
-        return new String[]{name, surname, birthDate, email, password, subjects};
+        return new String[]{name, surname, birthDate, email, password, subjects, role};
     }
 
     // Per caricare da file

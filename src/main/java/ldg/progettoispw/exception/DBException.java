@@ -4,8 +4,10 @@ import java.io.Serial;
 
 public class DBException extends Exception {
 
-    @Serial
-    private static final long serialVersionUID = 1L;
+    public DBException() {
+        super("Errore di connessione o operazione sul database!");
+    }
+
 
     public DBException (String message)
     {
