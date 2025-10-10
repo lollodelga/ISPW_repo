@@ -10,15 +10,14 @@ import java.util.logging.Logger;
 
 public class ConnectionFactory {
     private static final Logger logger = Logger.getLogger(ConnectionFactory.class.getName());
+
+    private static final String PATH = "src/main/resources/db.properties";
+    private static ConnectionFactory instance = null;
+    private Connection conn = null;
+
     private String jdbc;
     private String user;
     private String password;
-    private static final String PATH = "src/main/resources/db.properties";
-    // Singleton dell'istanza della classe
-    private static ConnectionFactory instance = null;
-
-    // Connessione singola per tutta la durata dell'app (per utente)
-    private Connection conn = null;
 
     private ConnectionFactory() {
         // costruttore privato
@@ -40,22 +39,19 @@ public class ConnectionFactory {
                 if (conn == null || conn.isClosed()) {
                     getInfo();
 
-                    try{
-                        this.conn = DriverManager.getConnection(jdbc, user, password);
-                    } catch (SQLException e){
-                        logger.warning("Errore nella connessione al db: "+ e.getMessage());
-                    }
-
+                    conn = DriverManager.getConnection(jdbc, user, password);
+                    logger.info("Connessione al database stabilita.");
                 }
-                return this.conn;
+
+                return conn;
 
             } catch (SQLException e) {
                 logger.warning("Tentativo " + tentativo + " fallito: " + e.getMessage());
 
                 if (tentativo < MAX_TENTATIVI) {
                     try {
-                        Thread.sleep(ATTESA_MS); // NOSONAR - retry mechanism, non serve wait()
-                    } catch (InterruptedException _) {
+                        Thread.sleep(ATTESA_MS);
+                    } catch (InterruptedException ie) {
                         Thread.currentThread().interrupt();
                         logger.severe("Tentativo interrotto.");
                         break;
@@ -69,23 +65,27 @@ public class ConnectionFactory {
         return null;
     }
 
+    /**
+     * Legge i parametri di connessione dal file db.properties.
+     */
     private void getInfo() {
-        try(FileInputStream fileInputStream = new FileInputStream(PATH)) {
+        try (FileInputStream fis = new FileInputStream(PATH)) {
+            Properties prop = new Properties();
+            prop.load(fis);
 
-            // Load DB Connection info from Properties file
-            Properties prop = new Properties() ;
-            prop.load(fileInputStream);
+            jdbc = prop.getProperty("db.url");
+            user = prop.getProperty("db.user");
+            password = prop.getProperty("db.password");
 
-            jdbc = prop.getProperty("JDBC_URL") ;
-            user = prop.getProperty("USER") ;
-            password = prop.getProperty("PASSWORD") ;
+            if (jdbc == null || user == null || password == null) {
+                logger.warning("Parametri di connessione mancanti nel file db.properties");
+            }
 
-        } catch (IOException e){
-            logger.warning("Errore nell'accedere al db.properties: " + e.getMessage());
+        } catch (IOException e) {
+            logger.warning("Errore nell'accesso al file db.properties: " + e.getMessage());
         }
     }
 
-    // Metodo per chiudere manualmente la connessione, es. alla chiusura dell'app
     public synchronized void closeConnection() {
         try {
             if (conn != null && !conn.isClosed()) {
