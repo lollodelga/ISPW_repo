@@ -1,5 +1,7 @@
 package ldg.progettoispw.model.dao;
 
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -8,7 +10,10 @@ import java.util.logging.Logger;
 
 public class ConnectionFactory {
     private static final Logger logger = Logger.getLogger(ConnectionFactory.class.getName());
-
+    private String jdbc;
+    private String user;
+    private String password;
+    private static final String PATH = "src/main/resources/db.properties";
     // Singleton dell'istanza della classe
     private static ConnectionFactory instance = null;
 
@@ -33,19 +38,16 @@ public class ConnectionFactory {
         for (int tentativo = 1; tentativo <= MAX_TENTATIVI; tentativo++) {
             try {
                 if (conn == null || conn.isClosed()) {
-                    Properties properties = new Properties();
-                    properties.put("user", "root");
-                    properties.put("password", "Forzalazio1900");
+                    getInfo();
 
-                    conn = DriverManager.getConnection(
-                            "jdbc:mysql://localhost:3306/progetto_ispw",
-                            properties
-                    );
+                    try{
+                        this.conn = DriverManager.getConnection(jdbc, user, password);
+                    } catch (SQLException e){
+                        logger.warning("Errore nella connessione al db: "+ e.getMessage());
+                    }
 
-                    logger.info("Connessione al database stabilita.");
                 }
-
-                return conn;
+                return this.conn;
 
             } catch (SQLException e) {
                 logger.warning("Tentativo " + tentativo + " fallito: " + e.getMessage());
@@ -65,6 +67,22 @@ public class ConnectionFactory {
         }
 
         return null;
+    }
+
+    private void getInfo() {
+        try(FileInputStream fileInputStream = new FileInputStream(PATH)) {
+
+            // Load DB Connection info from Properties file
+            Properties prop = new Properties() ;
+            prop.load(fileInputStream);
+
+            jdbc = prop.getProperty("JDBC_URL") ;
+            user = prop.getProperty("USER") ;
+            password = prop.getProperty("PASSWORD") ;
+
+        } catch (IOException e){
+            logger.warning("Errore nell'accedere al db.properties: " + e.getMessage());
+        }
     }
 
     // Metodo per chiudere manualmente la connessione, es. alla chiusura dell'app
