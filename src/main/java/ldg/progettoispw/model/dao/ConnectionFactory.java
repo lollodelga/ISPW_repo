@@ -53,7 +53,7 @@ public class ConnectionFactory {
                 if (tentativo < MAX_TENTATIVI) {
                     try {
                         Thread.sleep(ATTESA_MS); // NOSONAR - retry mechanism, non serve wait()
-                    } catch (InterruptedException ie) {
+                    } catch (InterruptedException _) {
                         Thread.currentThread().interrupt();
                         logger.severe("Tentativo interrotto.");
                         break;

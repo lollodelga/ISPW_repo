@@ -29,13 +29,13 @@ public class LoginCtrlGrafico extends BaseGCon {
 
     @FXML
     void login(ActionEvent event) {
-        String email = this.email.getText().trim();
-        String password = this.password.getText().trim();
+        String userEmail = this.email.getText().trim();
+        String userPassword = this.password.getText().trim();
 
         LoginCtrlApplicativo loginCtrl = new LoginCtrlApplicativo();
 
         try {
-            int role = loginCtrl.verificaCredenziali(email, password);
+            int role = loginCtrl.verificaCredenziali(userEmail, userPassword);
 
             if (role == 1) {
                 switchScene("/ldg/progettoispw/HomePageTutor.fxml", event);
@@ -43,15 +43,13 @@ public class LoginCtrlGrafico extends BaseGCon {
                 switchScene("/ldg/progettoispw/HomePageStudent.fxml", event);
             }
 
-        } catch (InvalidEmailException e) {
-            showWarning("ERRORE: " + e.getMessage());
-        } catch (IncorrectPasswordException e) {
-            showWarning("ERRORE: " + e.getMessage());
-        } catch (UserDoesNotExistException e) {
-            showWarning("ERRORE: " + e.getMessage());
-        } catch (DBException e) {
-            showWarning("ERRORE DI SISTEMA: riprovare più tardi.");
+        } catch (InvalidEmailException | UserDoesNotExistException | IncorrectPasswordException | DBException e) {
+            showError(e.getMessage());
         }
+    }
+
+    private void showError(String message) {
+        showWarning("ERRORE: " + message);
     }
 
     @FXML

@@ -13,6 +13,10 @@ public class LoginSessionManager {
     private static final String SESSION_FILE = "session.csv";
     private static final Logger logger = Logger.getLogger(LoginSessionManager.class.getName());
 
+    private LoginSessionManager() {
+        throw new UnsupportedOperationException("Classe di utilità, non istanziabile.");
+    }
+
     // Salva i dati dell'utente loggato nel file
     public static void saveUserSession(UserBean userBean) {
         try (BufferedWriter writer = Files.newBufferedWriter(Paths.get(SESSION_FILE))) {

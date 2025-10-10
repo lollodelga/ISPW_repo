@@ -7,6 +7,10 @@ import java.util.regex.Pattern;
 
 public class Validator {
 
+    private Validator() {
+        throw new UnsupportedOperationException("Classe di utilità, non istanziabile.");
+    }
+
     public static boolean isValidEmail(String email) {
         String regex = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,7}$";
         return Pattern.matches(regex, email);
@@ -23,7 +27,7 @@ public class Validator {
         try {
             Date date = format.parse(dateStr);
             return !date.after(new Date());
-        } catch (ParseException e) {
+        } catch (ParseException _) {
             return false;
         }
     }
