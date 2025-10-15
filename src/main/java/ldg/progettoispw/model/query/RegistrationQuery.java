@@ -1,6 +1,9 @@
 package ldg.progettoispw.model.query;
 
 public class RegistrationQuery {
+    private RegistrationQuery() {
+        throw new IllegalStateException("Utility class");
+    }
     // Controlla se esiste già un utente con quella email
     public static final String CHECK_EMAIL =
             "SELECT COUNT(*) FROM user WHERE email = ?";
