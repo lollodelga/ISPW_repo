@@ -1,73 +1,95 @@
 package ldg.progettoispw.model.dao;
 
 import ldg.progettoispw.exception.DBException;
+import ldg.progettoispw.model.adapter.DateTarget;
+import ldg.progettoispw.model.adapter.SQLDateAdapter;
+import ldg.progettoispw.model.query.RegistrationQuery;
 
 import java.sql.*;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 
 public class RegistrationDAO {
 
     private final ConnectionFactory connectionFactory = ConnectionFactory.getInstance();
+    // Adapter: converte la data in java.sql.Date
+    private final DateTarget dateAdapter = new SQLDateAdapter();
 
-    // Verifica se l'utente esiste già e, se no, lo inserisce
+    /**
+     * Controlla se l'utente esiste già e, se no, lo inserisce nel DB.
+     * @param values [nome, cognome, data, email, password, ..., ruolo]
+     * @return 1 se l'utente esiste già, 0 se è stato inserito con successo
+     * @throws DBException se avviene un errore SQL o di conversione
+     */
     public int checkInDB(String[] values) throws DBException {
         Connection conn = connectionFactory.getDBConnection();
-        try (
-                CallableStatement cstmt = conn.prepareCall("{call checkEmail(?,?,?,?,?,?,?)}")
-        ) {
-            cstmt.setString(1, values[3]); // email
-            cstmt.setString(2, values[4]); // password
-            cstmt.setString(3, values[0]); // nome
-            cstmt.setString(4, values[1]); // cognome
-            cstmt.setDate(5, convertToSQLDate(values[2])); // data di nascita
-            cstmt.setString(6, values[6]); // ruolo
-            cstmt.registerOutParameter(7, Types.INTEGER);
 
-            cstmt.execute();
-            return cstmt.getInt(7);
+        try {
+            // Controlla se esiste già l'email
+            try (PreparedStatement checkStmt = conn.prepareStatement(RegistrationQuery.CHECK_EMAIL)) {
+                checkStmt.setString(1, values[3]); // email
+                ResultSet rs = checkStmt.executeQuery();
+
+                if (rs.next() && rs.getInt(1) > 0) {
+                    return 1; // esiste già
+                }
+            }
+
+            // Se non esiste, inserisce l'utente
+            try (PreparedStatement insertStmt = conn.prepareStatement(RegistrationQuery.INSERT_USER)) {
+                insertStmt.setString(1, values[3]); // email
+                insertStmt.setString(2, values[4]); // password
+                insertStmt.setString(3, values[0]); // nome
+                insertStmt.setString(4, values[1]); // cognome
+                insertStmt.setDate(5, dateAdapter.convert(values[2])); // compleanno (adapter!)
+                insertStmt.setString(6, values[6]); // ruolo
+                insertStmt.executeUpdate();
+            }
+
+            return 0; // utente inserito correttamente
 
         } catch (SQLException e) {
-            throw new DBException("Errore durante il controllo dell'email nel DB", e);
+            throw new DBException("Errore durante il controllo/inserimento utente nel DB", e);
         }
     }
 
-    // Inserisce una materia (se non già presente)
+    /**
+     * Inserisce una nuova materia se non esiste già.
+     */
     public void insertSubject(String subject) throws DBException {
         Connection conn = connectionFactory.getDBConnection();
-        try (
-                CallableStatement cstmt = conn.prepareCall("{call insertSubject(?)}")
-        ) {
-            cstmt.setString(1, subject);
-            cstmt.execute();
+
+        try {
+            // Controlla se la materia esiste
+            try (PreparedStatement checkStmt = conn.prepareStatement(RegistrationQuery.CHECK_SUBJECT)) {
+                checkStmt.setString(1, subject);
+                ResultSet rs = checkStmt.executeQuery();
+
+                if (rs.next() && rs.getInt(1) == 0) {
+                    // Non esiste → la inserisce
+                    try (PreparedStatement insertStmt = conn.prepareStatement(RegistrationQuery.INSERT_SUBJECT)) {
+                        insertStmt.setString(1, subject);
+                        insertStmt.executeUpdate();
+                    }
+                }
+            }
+
         } catch (SQLException e) {
             throw new DBException("Errore durante l'inserimento della materia nel DB", e);
         }
     }
 
-    // Crea l'associazione user <-> subject
+    /**
+     * Crea l'associazione user <-> subject.
+     */
     public void createAssociation(String email, String subject) throws DBException {
         Connection conn = connectionFactory.getDBConnection();
-        try (
-                CallableStatement cstmt = conn.prepareCall("{call creaAssociazione(?,?)}")
-        ) {
-            cstmt.setString(1, email);
-            cstmt.setString(2, subject);
-            cstmt.execute();
+
+        try (PreparedStatement stmt = conn.prepareStatement(RegistrationQuery.CREATE_ASSOCIATION)) {
+            stmt.setString(1, email);
+            stmt.setString(2, subject);
+            stmt.executeUpdate();
+
         } catch (SQLException e) {
             throw new DBException("Errore durante la creazione dell'associazione tra utente e materia", e);
-        }
-    }
-
-    // Conversione data in formato SQL
-    private Date convertToSQLDate(String dateString) throws DBException {
-        try {
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-            sdf.setLenient(false);
-            java.util.Date parsedDate = sdf.parse(dateString);
-            return new Date(parsedDate.getTime());
-        } catch (ParseException e) {
-            throw new DBException("Formato data invalido. Usa yyyy-MM-dd: " + dateString, e);
         }
     }
 }

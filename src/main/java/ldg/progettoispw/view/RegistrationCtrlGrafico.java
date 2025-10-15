@@ -8,11 +8,11 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
-import ldg.progettoispw.controller.RegistrazioneCtrlApplicativo;
+import ldg.progettoispw.controller.RegistrationCtrlApplicativo;
 import ldg.progettoispw.model.bean.UserBean;
 import ldg.progettoispw.util.GController;
 
-public class RegistrazioneCtrlGrafico extends BaseGCon implements GController {
+public class RegistrationCtrlGrafico extends BaseGCon implements GController {
 
     @FXML private TextField nome;
     @FXML private TextField cognome;
@@ -70,7 +70,7 @@ public class RegistrazioneCtrlGrafico extends BaseGCon implements GController {
         else if (roleGroup.getSelectedToggle() == studenteButton)
             bean.setRole("2");
 
-        RegistrazioneCtrlApplicativo ctrlApp = new RegistrazioneCtrlApplicativo();
+        RegistrationCtrlApplicativo ctrlApp = new RegistrationCtrlApplicativo();
         int result = ctrlApp.registerUser(bean);
 
         changeView(result, event);

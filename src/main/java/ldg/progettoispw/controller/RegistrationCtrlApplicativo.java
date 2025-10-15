@@ -7,9 +7,9 @@ import ldg.progettoispw.model.dao.RegistrationDAO;
 
 import java.util.logging.Logger;
 
-public class RegistrazioneCtrlApplicativo {
+public class RegistrationCtrlApplicativo {
 
-    private static final Logger logger = Logger.getLogger(RegistrazioneCtrlApplicativo.class.getName());
+    private static final Logger logger = Logger.getLogger(RegistrationCtrlApplicativo.class.getName());
 
     private static final int OK = 0;
     private static final int USER_EXISTS = 1;

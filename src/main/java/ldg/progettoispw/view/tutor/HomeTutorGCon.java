@@ -1,9 +1,10 @@
-package ldg.progettoispw.view;
+package ldg.progettoispw.view.tutor;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import ldg.progettoispw.view.HomeGCon;
 
-public class HomeStudentGCon extends HomeGCon {
+public class HomeTutorGCon extends HomeGCon {
 
     @FXML
     private Button btnOpzione1;

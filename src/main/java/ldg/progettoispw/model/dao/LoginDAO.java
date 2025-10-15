@@ -1,16 +1,16 @@
 package ldg.progettoispw.model.dao;
 
 import ldg.progettoispw.exception.DBException;
+import ldg.progettoispw.model.query.LoginQuery;
 
-import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.sql.Types;
+
+import java.sql.*;
 
 public class LoginDAO {
     private final ConnectionFactory connectionFactory = ConnectionFactory.getInstance();
 
-    // Codici di risposta
     public static final int SUCCESS = 0;
     public static final int WRONG_PASSWORD = 1;
     public static final int USER_NOT_FOUND = 2;
@@ -28,14 +28,16 @@ public class LoginDAO {
     }
 
     private boolean userExists(String email) throws DBException {
-        Connection conn = connectionFactory.getDBConnection();
-        try (
-             CallableStatement cs = conn.prepareCall("{call checkExistence(?, ?)}")) {
+        try (Connection conn = connectionFactory.getDBConnection();
+             PreparedStatement ps = conn.prepareStatement(LoginQuery.CHECK_USER_EXISTS)) {
 
-            cs.setString(1, email);
-            cs.registerOutParameter(2, Types.BOOLEAN);
-            cs.execute();
-            return cs.getBoolean(2);
+            ps.setString(1, email);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt(1) > 0;
+                }
+                return false;
+            }
 
         } catch (SQLException e) {
             throw new DBException("Errore durante la verifica dell'esistenza dell'utente", e);
@@ -43,15 +45,17 @@ public class LoginDAO {
     }
 
     private boolean checkPassword(String email, String password) throws DBException {
-        Connection conn = connectionFactory.getDBConnection();
-        try (
-             CallableStatement cs = conn.prepareCall("{call checkPassword(?, ?, ?)}")) {
+        try (Connection conn = connectionFactory.getDBConnection();
+             PreparedStatement ps = conn.prepareStatement(LoginQuery.CHECK_PASSWORD)) {
 
-            cs.setString(1, email);
-            cs.setString(2, password);
-            cs.registerOutParameter(3, Types.BOOLEAN);
-            cs.execute();
-            return cs.getBoolean(3);
+            ps.setString(1, email);
+            ps.setString(2, password);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt(1) > 0;
+                }
+                return false;
+            }
 
         } catch (SQLException e) {
             throw new DBException("Errore durante la verifica della password", e);
@@ -59,17 +63,17 @@ public class LoginDAO {
     }
 
     public int getUserRole(String email, String password) throws DBException {
-        Connection conn = connectionFactory.getDBConnection();
-        try (
-             CallableStatement cs = conn.prepareCall("{call getUserRole(?, ?, ?)}")) {
+        try (Connection conn = connectionFactory.getDBConnection();
+             PreparedStatement ps = conn.prepareStatement(LoginQuery.GET_USER_ROLE)) {
 
-            cs.setString(1, email);
-            cs.setString(2, password);
-            cs.registerOutParameter(3, Types.INTEGER);
-
-            cs.execute();
-
-            return cs.getInt(3);
+            ps.setString(1, email);
+            ps.setString(2, password);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt("ruolo");
+                }
+                return -1; // ruolo non trovato
+            }
 
         } catch (SQLException e) {
             throw new DBException("Errore durante il recupero del ruolo dell'utente", e);
