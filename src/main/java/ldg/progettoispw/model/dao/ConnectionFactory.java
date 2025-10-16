@@ -20,7 +20,7 @@ public class ConnectionFactory {
     private String password;
 
     private final Object lock = new Object();
-    private final int ATTESA_MS = 2000;
+    private static final int attesaMs = 2000;
 
     private ConnectionFactory() {
         // costruttore privato
@@ -38,7 +38,7 @@ public class ConnectionFactory {
 
         for (int tentativo = 1; tentativo <= MAX_TENTATIVI; tentativo++) {
             try {
-                return tryConnect(tentativo);
+                return tryConnect();
             } catch (SQLException e) {
                 handleConnectionFailure(tentativo, MAX_TENTATIVI, e);
             }
@@ -47,7 +47,7 @@ public class ConnectionFactory {
         return null;
     }
 
-    private Connection tryConnect(int tentativo) throws SQLException {
+    private Connection tryConnect() throws SQLException {
         if (conn == null || conn.isClosed()) {
             getInfo(); // carica parametri db
             conn = DriverManager.getConnection(jdbc, user, password);
@@ -61,12 +61,12 @@ public class ConnectionFactory {
     }
 
     private void handleConnectionFailure(int tentativo, int maxTentativi, SQLException e) {
-        logger.warning("Tentativo " + tentativo + " fallito: " + e.getMessage());
+        logger.warning(String.format("Tentativo %d fallito: %s", tentativo, e.getMessage()));
 
         if (tentativo < maxTentativi) {
             waitBeforeRetry();
         } else {
-            logger.severe("Connessione al database fallita dopo " + maxTentativi + " tentativi.");
+            logger.severe(String.format("Connessione al database fallita dopo %d tentativi.", maxTentativi));
         }
     }
 
@@ -74,13 +74,13 @@ public class ConnectionFactory {
         try {
             synchronized (lock) {
                 long start = System.currentTimeMillis();
-                long remaining = ATTESA_MS;
+                long remaining = attesaMs;
                 while (remaining > 0) {
                     lock.wait(remaining);
-                    remaining = ATTESA_MS - (System.currentTimeMillis() - start);
+                    remaining = attesaMs - (System.currentTimeMillis() - start);
                 }
             }
-        } catch (InterruptedException ex) {
+        } catch (InterruptedException _) {
             Thread.currentThread().interrupt();
             logger.severe("Tentativo interrotto.");
         }
