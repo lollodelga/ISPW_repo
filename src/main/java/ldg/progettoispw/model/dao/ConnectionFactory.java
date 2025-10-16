@@ -20,7 +20,7 @@ public class ConnectionFactory {
     private String password;
 
     private final Object lock = new Object();
-    private static final int attesaMs = 2000;
+    private static final int AttesaMs = 2000;
 
     private ConnectionFactory() {
         // costruttore privato
@@ -61,23 +61,28 @@ public class ConnectionFactory {
     }
 
     private void handleConnectionFailure(int tentativo, int maxTentativi, SQLException e) {
-        logger.warning(String.format("Tentativo %d fallito: %s", tentativo, e.getMessage()));
+        if (logger.isLoggable(java.util.logging.Level.WARNING)) {
+            logger.warning(String.format("Tentativo %d fallito: %s", tentativo, e.getMessage()));
+        }
 
         if (tentativo < maxTentativi) {
             waitBeforeRetry();
         } else {
-            logger.severe(String.format("Connessione al database fallita dopo %d tentativi.", maxTentativi));
+            if (logger.isLoggable(java.util.logging.Level.SEVERE)) {
+                logger.severe(String.format("Connessione al database fallita dopo %d tentativi.", maxTentativi));
+            }
         }
     }
+
 
     private void waitBeforeRetry() {
         try {
             synchronized (lock) {
                 long start = System.currentTimeMillis();
-                long remaining = attesaMs;
+                long remaining = AttesaMs;
                 while (remaining > 0) {
                     lock.wait(remaining);
-                    remaining = attesaMs - (System.currentTimeMillis() - start);
+                    remaining = AttesaMs - (System.currentTimeMillis() - start);
                 }
             }
         } catch (InterruptedException _) {
