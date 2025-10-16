@@ -20,7 +20,7 @@ public class ConnectionFactory {
     private String password;
 
     private final Object lock = new Object();
-    private static final int AttesaMs = 2000;
+    private static final int ATTESA_MS = 2000;
 
     private ConnectionFactory() {
         // costruttore privato
@@ -79,10 +79,10 @@ public class ConnectionFactory {
         try {
             synchronized (lock) {
                 long start = System.currentTimeMillis();
-                long remaining = AttesaMs;
+                long remaining = ATTESA_MS;
                 while (remaining > 0) {
                     lock.wait(remaining);
-                    remaining = AttesaMs - (System.currentTimeMillis() - start);
+                    remaining = ATTESA_MS - (System.currentTimeMillis() - start);
                 }
             }
         } catch (InterruptedException _) {
