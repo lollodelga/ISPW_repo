@@ -10,7 +10,7 @@ import java.util.logging.Logger;
 
 public class ConnectionFactory {
     private static final Logger logger = Logger.getLogger(ConnectionFactory.class.getName());
-
+    private boolean connectedOnce = false;
     private static final String PATH = "src/main/resources/db.properties";
     private static ConnectionFactory instance = null;
     private Connection conn = null;
@@ -37,20 +37,24 @@ public class ConnectionFactory {
         for (int tentativo = 1; tentativo <= MAX_TENTATIVI; tentativo++) {
             try {
                 if (conn == null || conn.isClosed()) {
-                    getInfo();
+                    getInfo(); // carica parametri db
 
                     conn = DriverManager.getConnection(jdbc, user, password);
-                    logger.info("Connessione al database stabilita.");
+
+                    if (!connectedOnce) {
+                        logger.info("Connessione al database stabilita.");
+                        connectedOnce = true;
+                    }
                 }
 
-                return conn;
+                return conn; // torna sempre la stessa connessione
 
             } catch (SQLException e) {
                 logger.warning("Tentativo " + tentativo + " fallito: " + e.getMessage());
 
                 if (tentativo < MAX_TENTATIVI) {
                     try {
-                        Thread.sleep(ATTESA_MS); // NOSONAR - necessario per retry, wait() non appropriato qui
+                        Thread.sleep(ATTESA_MS);
                     } catch (InterruptedException _) {
                         Thread.currentThread().interrupt();
                         logger.severe("Tentativo interrotto.");
@@ -64,6 +68,7 @@ public class ConnectionFactory {
 
         return null;
     }
+
 
     /**
      * Legge i parametri di connessione dal file db.properties.

@@ -27,4 +27,10 @@ public class HomePageController {
             logger.severe("Errore durante il caricamento dei dati utente: " + e.getMessage());
         }
     }
+
+    // Logica di logout (disaccoppiata dal controller grafico)
+    public void logout() {
+        LoginSessionManager.clearSession();
+        // Qui puoi aggiungere altre operazioni di business se necessario
+    }
 }

@@ -2,11 +2,14 @@ package ldg.progettoispw.view;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.control.Label;
+import javafx.stage.Stage;
 import ldg.progettoispw.controller.HomePageController;
 import ldg.progettoispw.util.GControllerHome;
 
-public abstract class HomeGCon implements GControllerHome {
+public abstract class HomeGCon extends BaseGCon implements GControllerHome {
     @FXML
     protected Label labelRuolo;
     @FXML
@@ -32,7 +35,10 @@ public abstract class HomeGCon implements GControllerHome {
 
 
     @FXML
-    void logOut(ActionEvent event) {
-        //modifca
+    void logout(ActionEvent event) {
+        // Delego la logica applicativa al controller
+        controller.logout();
+
+        switchScene("/ldg/progettoispw/FirstPage.fxml", event);
     }
 }

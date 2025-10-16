@@ -54,6 +54,6 @@ public class LoginCtrlGrafico extends BaseGCon {
 
     @FXML
     void backaction(ActionEvent event) {
-        switchScene("/ldg/progettoispw/view/FirstPage.fxml", event);
+        switchScene("/ldg/progettoispw/FirstPage.fxml", event);
     }
 }

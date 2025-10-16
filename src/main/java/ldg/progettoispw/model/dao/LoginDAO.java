@@ -1,12 +1,14 @@
 package ldg.progettoispw.model.dao;
 
 import ldg.progettoispw.exception.DBException;
-import ldg.progettoispw.model.query.LoginQuery;
 
 import java.sql.Connection;
 import java.sql.SQLException;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
+
 
 public class LoginDAO {
     private final ConnectionFactory connectionFactory = ConnectionFactory.getInstance();
@@ -16,67 +18,54 @@ public class LoginDAO {
     public static final int USER_NOT_FOUND = 2;
 
     public int start(String email, String password) throws DBException {
-        if (!userExists(email)) {
-            return USER_NOT_FOUND;
+        List<UserRecord> users = getAllUsersForLogin();
+        for (UserRecord user : users) {
+            if (user.email.equals(email)) {
+                return user.password.equals(password) ? SUCCESS : WRONG_PASSWORD;
+            }
         }
-
-        if (!checkPassword(email, password)) {
-            return WRONG_PASSWORD;
-        }
-
-        return SUCCESS;
+        return USER_NOT_FOUND;
     }
 
-    private boolean userExists(String email) throws DBException {
+    private List<UserRecord> getAllUsersForLogin() throws DBException {
+        List<UserRecord> users = new ArrayList<>();
         try (Connection conn = connectionFactory.getDBConnection();
-             PreparedStatement ps = conn.prepareStatement(LoginQuery.CHECK_USER_EXISTS)) {
+             CallableStatement cs = conn.prepareCall("{call getAllUsersForLogin()}");
+             ResultSet rs = cs.executeQuery()) {
 
-            ps.setString(1, email);
-            try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) {
-                    return rs.getInt(1) > 0;
-                }
-                return false;
+            while (rs.next()) {
+                users.add(new UserRecord(
+                        rs.getString("email"),
+                        rs.getString("password"),
+                        rs.getInt("ruolo")
+                ));
             }
-
         } catch (SQLException e) {
-            throw new DBException("Errore durante la verifica dell'esistenza dell'utente", e);
+            throw new DBException("Errore durante il recupero utenti dal DB", e);
         }
-    }
-
-    private boolean checkPassword(String email, String password) throws DBException {
-        try (Connection conn = connectionFactory.getDBConnection();
-             PreparedStatement ps = conn.prepareStatement(LoginQuery.CHECK_PASSWORD)) {
-
-            ps.setString(1, email);
-            ps.setString(2, password);
-            try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) {
-                    return rs.getInt(1) > 0;
-                }
-                return false;
-            }
-
-        } catch (SQLException e) {
-            throw new DBException("Errore durante la verifica della password", e);
-        }
+        return users;
     }
 
     public int getUserRole(String email, String password) throws DBException {
-        try (Connection conn = connectionFactory.getDBConnection();
-             PreparedStatement ps = conn.prepareStatement(LoginQuery.GET_USER_ROLE)) {
-
-            ps.setString(1, email);
-            ps.setString(2, password);
-            try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) {
-                    return rs.getInt("ruolo");
-                }
-                return -1; // ruolo non trovato
+        List<UserRecord> users = getAllUsersForLogin();
+        for (UserRecord user : users) {
+            if (user.email.equals(email) && user.password.equals(password)) {
+                return user.ruolo;
             }
+        }
+        return -1;
+    }
 
-        } catch (SQLException e) {
-            throw new DBException("Errore durante il recupero del ruolo dell'utente", e);
+    private static class UserRecord {
+        String email;
+        String password;
+        int ruolo;
+
+        UserRecord(String email, String password, int ruolo) {
+            this.email = email;
+            this.password = password;
+            this.ruolo = ruolo;
         }
     }
 }
+
