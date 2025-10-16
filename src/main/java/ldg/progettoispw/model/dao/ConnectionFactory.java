@@ -54,8 +54,11 @@ public class ConnectionFactory {
 
                 if (tentativo < MAX_TENTATIVI) {
                     try {
-                        Thread.sleep(ATTESA_MS);
-                    } catch (InterruptedException _) {
+                        // Uso di wait al posto di Thread.sleep
+                        synchronized (this) {
+                            this.wait(ATTESA_MS);
+                        }
+                    } catch (InterruptedException ex) {
                         Thread.currentThread().interrupt();
                         logger.severe("Tentativo interrotto.");
                         break;
