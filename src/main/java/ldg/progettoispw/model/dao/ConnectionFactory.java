@@ -19,6 +19,9 @@ public class ConnectionFactory {
     private String user;
     private String password;
 
+    private final Object lock = new Object();
+    private final int ATTESA_MS = 2000;
+
     private ConnectionFactory() {
         // costruttore privato
     }
@@ -32,46 +35,56 @@ public class ConnectionFactory {
 
     public synchronized Connection getDBConnection() {
         final int MAX_TENTATIVI = 3;
-        final int ATTESA_MS = 2000;
 
         for (int tentativo = 1; tentativo <= MAX_TENTATIVI; tentativo++) {
             try {
-                if (conn == null || conn.isClosed()) {
-                    getInfo(); // carica parametri db
-
-                    conn = DriverManager.getConnection(jdbc, user, password);
-
-                    if (!connectedOnce) {
-                        logger.info("Connessione al database stabilita.");
-                        connectedOnce = true;
-                    }
-                }
-
-                return conn; // torna sempre la stessa connessione
-
+                return tryConnect(tentativo);
             } catch (SQLException e) {
-                logger.warning("Tentativo " + tentativo + " fallito: " + e.getMessage());
-
-                if (tentativo < MAX_TENTATIVI) {
-                    try {
-                        // Uso di wait al posto di Thread.sleep
-                        synchronized (this) {
-                            this.wait(ATTESA_MS);
-                        }
-                    } catch (InterruptedException ex) {
-                        Thread.currentThread().interrupt();
-                        logger.severe("Tentativo interrotto.");
-                        break;
-                    }
-                } else {
-                    logger.severe("Connessione al database fallita dopo " + MAX_TENTATIVI + " tentativi.");
-                }
+                handleConnectionFailure(tentativo, MAX_TENTATIVI, e);
             }
         }
 
         return null;
     }
 
+    private Connection tryConnect(int tentativo) throws SQLException {
+        if (conn == null || conn.isClosed()) {
+            getInfo(); // carica parametri db
+            conn = DriverManager.getConnection(jdbc, user, password);
+
+            if (!connectedOnce) {
+                logger.info("Connessione al database stabilita.");
+                connectedOnce = true;
+            }
+        }
+        return conn;
+    }
+
+    private void handleConnectionFailure(int tentativo, int maxTentativi, SQLException e) {
+        logger.warning("Tentativo " + tentativo + " fallito: " + e.getMessage());
+
+        if (tentativo < maxTentativi) {
+            waitBeforeRetry();
+        } else {
+            logger.severe("Connessione al database fallita dopo " + maxTentativi + " tentativi.");
+        }
+    }
+
+    private void waitBeforeRetry() {
+        try {
+            synchronized (lock) {
+                long start = System.currentTimeMillis();
+                long remaining = ATTESA_MS;
+                while (remaining > 0) {
+                    lock.wait(remaining);
+                    remaining = ATTESA_MS - (System.currentTimeMillis() - start);
+                }
+            }
+        } catch (InterruptedException ex) {
+            Thread.currentThread().interrupt();
+            logger.severe("Tentativo interrotto.");
+        }
+    }
 
     /**
      * Legge i parametri di connessione dal file db.properties.
