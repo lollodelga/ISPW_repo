@@ -1,4 +1,4 @@
-package ldg.progettoispw.model.applicativo;
+package ldg.progettoispw.engineering.applicativo;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;

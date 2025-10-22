@@ -1,6 +1,6 @@
-package ldg.progettoispw.model.adapter;
+package ldg.progettoispw.engineering.adapter;
 
-import ldg.progettoispw.exception.DBException;
+import ldg.progettoispw.engineering.exception.DBException;
 import java.sql.Date;
 import java.text.ParseException;
 

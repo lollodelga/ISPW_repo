@@ -1,4 +1,4 @@
-package ldg.progettoispw.exception;
+package ldg.progettoispw.engineering.exception;
 
 public class DBException extends Exception {
 

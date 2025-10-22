@@ -7,7 +7,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
-import ldg.progettoispw.exception.ViewException;
+import ldg.progettoispw.engineering.exception.ViewException;
 
 import java.io.IOException;
 

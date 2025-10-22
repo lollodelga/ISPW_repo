@@ -9,7 +9,7 @@ import javafx.scene.control.ToggleGroup;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import ldg.progettoispw.controller.RegistrationCtrlApplicativo;
-import ldg.progettoispw.model.bean.UserBean;
+import ldg.progettoispw.engineering.bean.UserBean;
 import ldg.progettoispw.util.GController;
 
 public class RegistrationCtrlGrafico extends BaseGCon implements GController {

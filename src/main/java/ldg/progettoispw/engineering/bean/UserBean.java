@@ -1,4 +1,4 @@
-package ldg.progettoispw.model.bean;
+package ldg.progettoispw.engineering.bean;
 
 
 public class UserBean {

@@ -5,8 +5,8 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
-import ldg.progettoispw.model.applicativo.LoginSessionManager;
-import ldg.progettoispw.model.dao.ConnectionFactory;
+import ldg.progettoispw.engineering.applicativo.LoginSessionManager;
+import ldg.progettoispw.engineering.dao.ConnectionFactory;
 
 public class MainProgetto extends Application {
     @Override

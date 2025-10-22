@@ -1,15 +1,14 @@
 package ldg.progettoispw.controller;
 
-import ldg.progettoispw.exception.*;
-import ldg.progettoispw.model.applicativo.LoginSessionManager;
-import ldg.progettoispw.model.bean.UserBean;
-import ldg.progettoispw.model.dao.LoginDAO;
-import ldg.progettoispw.model.dao.UserDAO;
+import ldg.progettoispw.engineering.exception.*;
+import ldg.progettoispw.engineering.applicativo.LoginSessionManager;
+import ldg.progettoispw.engineering.bean.UserBean;
+import ldg.progettoispw.engineering.dao.LoginDAO;
+import ldg.progettoispw.engineering.dao.UserDAO;
 
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 
 public class LoginCtrlApplicativo {
 

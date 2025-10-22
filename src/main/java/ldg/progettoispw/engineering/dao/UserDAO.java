@@ -1,6 +1,6 @@
-package ldg.progettoispw.model.dao;
+package ldg.progettoispw.engineering.dao;
 
-import ldg.progettoispw.exception.DBException;
+import ldg.progettoispw.engineering.exception.DBException;
 
 import java.sql.*;
 import java.text.SimpleDateFormat;

@@ -8,7 +8,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
-import ldg.progettoispw.exception.ViewException;
+import ldg.progettoispw.engineering.exception.ViewException;
 
 import java.io.IOException;
 

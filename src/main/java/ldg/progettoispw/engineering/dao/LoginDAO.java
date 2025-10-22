@@ -1,6 +1,6 @@
-package ldg.progettoispw.model.dao;
+package ldg.progettoispw.engineering.dao;
 
-import ldg.progettoispw.exception.DBException;
+import ldg.progettoispw.engineering.exception.DBException;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -8,7 +8,6 @@ import java.sql.SQLException;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
-
 
 public class LoginDAO {
     private final ConnectionFactory connectionFactory = ConnectionFactory.getInstance();
@@ -68,4 +67,3 @@ public class LoginDAO {
         }
     }
 }
-

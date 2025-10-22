@@ -7,7 +7,7 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.shape.Rectangle;
 import ldg.progettoispw.controller.LoginCtrlApplicativo;
-import ldg.progettoispw.exception.*;
+import ldg.progettoispw.engineering.exception.*;
 
 public class LoginCtrlGrafico extends BaseGCon {
 

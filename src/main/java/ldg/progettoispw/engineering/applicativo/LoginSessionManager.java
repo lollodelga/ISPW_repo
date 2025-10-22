@@ -1,6 +1,6 @@
-package ldg.progettoispw.model.applicativo;
+package ldg.progettoispw.engineering.applicativo;
 
-import ldg.progettoispw.model.bean.UserBean;
+import ldg.progettoispw.engineering.bean.UserBean;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;

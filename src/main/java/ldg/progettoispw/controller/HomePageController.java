@@ -1,7 +1,7 @@
 package ldg.progettoispw.controller;
 
-import ldg.progettoispw.model.applicativo.LoginSessionManager;
-import ldg.progettoispw.model.bean.UserBean;
+import ldg.progettoispw.engineering.applicativo.LoginSessionManager;
+import ldg.progettoispw.engineering.bean.UserBean;
 import ldg.progettoispw.util.GControllerHome;
 
 import java.util.logging.Logger;

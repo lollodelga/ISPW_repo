@@ -1,10 +1,14 @@
 package ldg.progettoispw.controller;
 
-import ldg.progettoispw.exception.DBException;
-import ldg.progettoispw.model.applicativo.Validator;
-import ldg.progettoispw.model.bean.UserBean;
-import ldg.progettoispw.model.dao.RegistrationDAO;
+import ldg.progettoispw.engineering.adapter.DateTarget;
+import ldg.progettoispw.engineering.adapter.SQLDateAdapter;
+import ldg.progettoispw.engineering.exception.DBException;
+import ldg.progettoispw.engineering.applicativo.Validator;
+import ldg.progettoispw.engineering.bean.UserBean;
+import ldg.progettoispw.engineering.dao.RegistrationDAO;
+import ldg.progettoispw.model.User;
 
+import java.sql.Date;
 import java.util.logging.Logger;
 
 public class RegistrationCtrlApplicativo {
@@ -19,15 +23,26 @@ public class RegistrationCtrlApplicativo {
     private static final int INVALID_DATE = 5;
     private static final int DB_ERROR = 6;
 
+    private final DateTarget dateAdapter = new SQLDateAdapter();
+
     public int registerUser(UserBean bean) {
         int result = validateInput(bean);
         if (result != OK) return result;
 
         try {
-            RegistrationDAO dao = new RegistrationDAO();
-            String[] values = bean.getArray();
+            // ✅ Conversione Bean → Model (usando l’Adapter)
+            Date sqlDate = dateAdapter.convert(bean.getBirthDate());
+            User user = new User(
+                    bean.getName(),
+                    bean.getSurname(),
+                    sqlDate,
+                    bean.getEmail(),
+                    bean.getPassword(),
+                    bean.getRole()
+            );
 
-            int exists = dao.checkInDB(values);
+            RegistrationDAO dao = new RegistrationDAO();
+            int exists = dao.checkInDB(user);
             if (exists == 1) return USER_EXISTS;
 
             // Inserimento materie
@@ -35,7 +50,7 @@ public class RegistrationCtrlApplicativo {
             for (String subject : subjects) {
                 String trimmed = subject.trim();
                 dao.insertSubject(trimmed);
-                dao.createAssociation(bean.getEmail(), trimmed);
+                dao.createAssociation(user.getEmail(), trimmed);
             }
 
         } catch (DBException e) {
