@@ -26,6 +26,7 @@ public class BookAppointmentCtrlGrafico extends HomeGCon {
     @FXML private Label statusLabel;
     @FXML private AnchorPane appointmentPane;
 
+    @Override
     @FXML
     public void initialize() {
         for (int h = 8; h <= 18; h++) { // es. 8:00–18:00
@@ -81,7 +82,7 @@ public class BookAppointmentCtrlGrafico extends HomeGCon {
             // ✅ Rende visibile la scrollPane solo dopo la ricerca
             scrollResults.setVisible(true);
 
-        } catch (DBException e) {
+        } catch (DBException _) {
             errorLabel.setText("Errore durante la ricerca nel database.");
             errorLabel.setVisible(true);
         }
@@ -147,7 +148,7 @@ public class BookAppointmentCtrlGrafico extends HomeGCon {
         int hour;
         try {
             hour = Integer.parseInt(hourText.split(":")[0]);
-        } catch (NumberFormatException ex) {
+        } catch (NumberFormatException _) {
             statusLabel.setText("Formato ora non valido. Usa HH:00 (es. 09:00).");
             statusLabel.setTextFill(Color.RED);
             statusLabel.setVisible(true);

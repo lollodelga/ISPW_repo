@@ -1,26 +1,8 @@
 package ldg.progettoispw.engineering.gof.state;
 
-import ldg.progettoispw.engineering.exception.DBException;
-
-public class AnnullatoState implements AppointmentState {
-
-    @Override
-    public void confirm(AppointmentContext context) throws DBException {
-        throw new DBException("Impossibile confermare: appuntamento annullato.");
-    }
-
-    @Override
-    public void cancel(AppointmentContext context) throws DBException {
-        throw new DBException("Appuntamento già annullato.");
-    }
-
-    @Override
-    public void complete(AppointmentContext context) throws DBException {
-        throw new DBException("Impossibile completare un appuntamento annullato.");
-    }
-
-    @Override
-    public String getName() {
-        return "annullato";
-    }
+public class AnnullatoState extends BaseState {
+    @Override protected String getStateName() { return "annullato"; }
+    @Override protected String getConfirmMessage() { return "Impossibile confermare: appuntamento annullato."; }
+    @Override protected String getCancelMessage() { return "Appuntamento già annullato."; }
+    @Override protected String getCompleteMessage() { return "Impossibile completare un appuntamento annullato."; }
 }

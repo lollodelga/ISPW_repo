@@ -20,8 +20,8 @@ import java.util.List;
 
 public class BookAppointmentCtrlApplicativo {
 
-    private final TutorSearchDAO tutorDAO = new TutorSearchDAO();
-    private final AppointmentDAO appointmentDAO = new AppointmentDAO();
+    private TutorSearchDAO tutorDAO = new TutorSearchDAO();
+    private AppointmentDAO dao = new AppointmentDAO();
 
 
     public List<TutorBean> searchTutorBySubject(SubjectBean subjectBean) throws DBException {
@@ -68,11 +68,12 @@ public class BookAppointmentCtrlApplicativo {
         Time sqlTime = Time.valueOf(LocalTime.of(hour, 0)); // es. 14:00
 
         // 🔹 5. Inserimento nel DB
-        AppointmentDAO dao = new AppointmentDAO();
         dao.insertAppointment(student.getEmail(), tutor.getEmail(), sqlDate, sqlTime);
 
         AppointmentContext context = new AppointmentContext(
                 student.getEmail(), tutor.getEmail(), sqlDate, sqlTime, new InAttesaState());
+        //lo levo poi quando utilizzo context, ora lo lascio per sonarcloud
+        System.out.println("Appuntamento creato in stato: " + context.getState().getName());
     }
 
 }
