@@ -7,8 +7,6 @@ import ldg.progettoispw.engineering.dao.AppointmentDAO;
 import ldg.progettoispw.engineering.dao.TutorSearchDAO;
 import ldg.progettoispw.engineering.exception.DBException;
 import ldg.progettoispw.engineering.applicativo.LoginSessionManager;
-import ldg.progettoispw.engineering.gof.state.AppointmentContext;
-import ldg.progettoispw.engineering.gof.state.InAttesaState;
 import ldg.progettoispw.model.Tutor;
 
 import java.sql.Date;
@@ -69,11 +67,6 @@ public class BookAppointmentCtrlApplicativo {
 
         // 🔹 5. Inserimento nel DB
         dao.insertAppointment(student.getEmail(), tutor.getEmail(), sqlDate, sqlTime);
-
-        AppointmentContext context = new AppointmentContext(
-                student.getEmail(), tutor.getEmail(), sqlDate, sqlTime, new InAttesaState());
-        //lo levo poi quando utilizzo context, ora lo lascio per sonarcloud
-        System.out.println("Appuntamento creato in stato: " + context.getState().getName());
     }
 
 }

@@ -1,8 +1,10 @@
 package ldg.progettoispw.engineering.gof.state;
 
 public class CompletatoState extends BaseState {
-    @Override protected String getStateName() { return "completato"; }
-    @Override protected String getConfirmMessage() { return "Impossibile confermare: appuntamento già completato."; }
-    @Override protected String getCancelMessage() { return "Impossibile annullare: appuntamento già completato."; }
-    @Override protected String getCompleteMessage() { return "Appuntamento già completato."; }
+    public CompletatoState() {
+        super("completato",
+                "Impossibile confermare: appuntamento già completato.",
+                "Impossibile annullare: appuntamento già completato.",
+                "Appuntamento già completato.");
+    }
 }
