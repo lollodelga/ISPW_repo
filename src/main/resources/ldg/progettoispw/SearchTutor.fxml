@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.shape.Rectangle?>
+
+<AnchorPane prefHeight="600.0" prefWidth="1000.0"
+            xmlns="http://javafx.com/javafx/21"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="ldg.progettoispw.view.studente.BookAppointmentCtrlGrafico">
+
+    <!-- Sfondo -->
+    <ImageView fitHeight="600.0" fitWidth="1000.0" preserveRatio="false">
+        <image>
+            <Image url="@../../images/wallpaper.jpeg" />
+        </image>
+    </ImageView>
+
+    <!-- Barra superiore -->
+    <AnchorPane prefHeight="63.0" prefWidth="1000.0" style="-fx-background-color: white;">
+        <children>
+            <ImageView fitHeight="48.0" fitWidth="171.0" layoutX="14.0" layoutY="8.0" preserveRatio="true">
+                <image>
+                    <Image url="@../../images/tutorLOGO.png" />
+                </image>
+            </ImageView>
+
+            <Label layoutX="876.0" layoutY="18.0"
+                   style="-fx-font-size: 25px; -fx-text-fill: black;"
+                   text="INDIETRO" underline="true" />
+            <Button layoutX="870.0" layoutY="10.0"
+                    onAction="#backAction"
+                    prefHeight="40.0" prefWidth="120.0"
+                    style="-fx-background-color: transparent; -fx-border-color: transparent;" />
+        </children>
+    </AnchorPane>
+
+    <!-- Contenuto principale -->
+    <AnchorPane layoutY="63.0" prefWidth="1000.0">
+        <children>
+
+            <!-- Rettangolo sfondo traslucido -->
+            <Rectangle arcHeight="20.0" arcWidth="20.0" fill="#ADD8E6CC"
+                       height="480.0" layoutX="198.0" layoutY="29.0"
+                       stroke="TRANSPARENT" width="605.0" />
+
+            <!-- Contenitore principale -->
+            <VBox alignment="TOP_CENTER" layoutX="250.0" layoutY="70.0"
+                  prefWidth="500.0" spacing="20.0">
+
+                <!-- Titolo -->
+                <Label style="-fx-font-size: 28px; -fx-font-weight: bold; -fx-text-fill: black;"
+                       text="Cerca un Tutor" />
+
+                <!-- Ricerca tutor -->
+                <HBox alignment="CENTER" spacing="10.0">
+                    <TextField fx:id="subjectField" prefWidth="300.0"
+                               promptText="Inserisci materia..."
+                               style="-fx-font-size: 16px;" />
+                    <Button fx:id="btnSearch" onAction="#searchTutor"
+                            text="Cerca Tutor"
+                            style="-fx-background-color: #3498DB; -fx-text-fill: white; -fx-font-size: 16px; -fx-background-radius: 10;" />
+                </HBox>
+
+                <!-- Errore ricerca -->
+                <Label fx:id="errorLabel" style="-fx-font-size: 16px;" textFill="RED" visible="false" />
+
+                <!-- Risultati -->
+                <ScrollPane fx:id="scrollResults" prefHeight="272.0" prefWidth="500.0"
+                            visible="false"
+                            style="-fx-background-color: transparent; -fx-background: transparent;">
+
+                <content>
+                        <VBox fx:id="resultsContainer" alignment="TOP_CENTER" spacing="10.0" style="-fx-padding: 10;" />
+                    </content>
+                </ScrollPane>
+            </VBox>
+
+            <!-- 🔹 Pannello prenotazione compatto (inizialmente invisibile) -->
+            <AnchorPane fx:id="appointmentPane"
+                        visible="false"
+                        layoutX="350.0" layoutY="200.0"
+                        prefWidth="300.0" prefHeight="180.0"
+                        style="-fx-background-color: #ffffffee; -fx-border-radius: 10; -fx-background-radius: 10; -fx-border-color: #3498DB; -fx-border-width: 2; -fx-effect: dropshadow(gaussian, gray, 10, 0, 0, 3);">
+                <children>
+                    <VBox alignment="CENTER" spacing="10.0" layoutX="25.0" layoutY="25.0">
+                        <Label text="Prenota Appuntamento"
+                               style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #3498DB;" />
+                        <DatePicker fx:id="datePicker" prefWidth="200.0" />
+                        <ComboBox fx:id="hourCombo" prefWidth="200.0" promptText="Seleziona ora" />
+                        <HBox alignment="CENTER" spacing="10.0">
+                            <Button fx:id="btnBook" text="Conferma"
+                                    onAction="#bookAppointment"
+                                    style="-fx-background-color: #2ecc71; -fx-text-fill: white; -fx-font-size: 14px; -fx-background-radius: 10;" />
+                            <Button fx:id="btnCancel" text="Annulla"
+                                    onAction="#cancelSelection"
+                                    style="-fx-background-color: #e74c3c; -fx-text-fill: white; -fx-font-size: 14px; -fx-background-radius: 10;" />
+                        </HBox>
+
+                        <Label fx:id="statusLabel" textFill="RED" visible="false" style="-fx-font-size: 14px;" />
+                    </VBox>
+                </children>
+            </AnchorPane>
+
+        </children>
+    </AnchorPane>
+</AnchorPane>

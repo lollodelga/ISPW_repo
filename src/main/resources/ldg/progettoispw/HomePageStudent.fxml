@@ -8,7 +8,10 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.shape.Rectangle?>
 
-<AnchorPane prefHeight="600.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ldg.progettoispw.view.studente.HomeStudentGCon">
+<AnchorPane prefHeight="600.0" prefWidth="1000.0"
+            xmlns="http://javafx.com/javafx/21"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="ldg.progettoispw.view.studente.HomeStudentGCon">
 
     <!-- Immagine di sfondo -->
     <ImageView fitHeight="600.0" fitWidth="1000.0" pickOnBounds="true" preserveRatio="false">
@@ -40,7 +43,7 @@
                 <children>
                     <Label style="-fx-font-size: 25px; -fx-text-fill: black;" text="Scegli cosa fare:" />
 
-                    <Button fx:id="btnRicercaTutor" prefWidth="300.0" style="-fx-font-size: 16px; -fx-background-color: #3498DB; -fx-text-fill: white;" text="Cerca tutor" />
+                    <Button fx:id="btnRicercaTutor" onAction="#cercaTutor" prefWidth="300.0" style="-fx-font-size: 16px; -fx-background-color: #3498DB; -fx-text-fill: white;" text="Cerca tutor" />
                     <Button fx:id="btnRichiesteSospese" prefWidth="300.0" style="-fx-font-size: 16px; -fx-background-color: #3498DB; -fx-text-fill: white;" text="Richieste in sospeso" />
                     <Button fx:id="btnRichiesteRisposte" prefWidth="300.0" style="-fx-font-size: 16px; -fx-background-color: #3498DB; -fx-text-fill: white;" text="Richieste completate" />
                 </children>

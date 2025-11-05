@@ -1,7 +1,6 @@
 package ldg.progettoispw.controller;
 
-import ldg.progettoispw.engineering.adapter.DateTarget;
-import ldg.progettoispw.engineering.adapter.SQLDateAdapter;
+import ldg.progettoispw.engineering.applicativo.DateUtils;
 import ldg.progettoispw.engineering.exception.DBException;
 import ldg.progettoispw.engineering.applicativo.Validator;
 import ldg.progettoispw.engineering.bean.UserBean;
@@ -23,15 +22,14 @@ public class RegistrationCtrlApplicativo {
     private static final int INVALID_DATE = 5;
     private static final int DB_ERROR = 6;
 
-    private final DateTarget dateAdapter = new SQLDateAdapter();
-
     public int registerUser(UserBean bean) {
         int result = validateInput(bean);
         if (result != OK) return result;
 
         try {
-            // ✅ Conversione Bean → Model (usando l’Adapter)
-            Date sqlDate = dateAdapter.convert(bean.getBirthDate());
+            // Conversione Bean → Model (usando la classe di utilità)
+            Date sqlDate = DateUtils.toSqlDate(bean.getBirthDate());
+
             User user = new User(
                     bean.getName(),
                     bean.getSurname(),
@@ -60,6 +58,7 @@ public class RegistrationCtrlApplicativo {
 
         return OK;
     }
+
 
     private int validateInput(UserBean bean) {
         if (bean.getName().isEmpty() || bean.getSurname().isEmpty() ||
