@@ -1,18 +1,23 @@
 package ldg.progettoispw.view.tutor;
 
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import ldg.progettoispw.view.HomeGCon;
+import ldg.progettoispw.view.HomeCtrlGrafico;
 
-public class HomeTutorGCon extends HomeGCon {
+public class HomeTutorGCon extends HomeCtrlGrafico {
 
     @FXML
-    private Button btnOpzione1;
-    @FXML
-    private Button btnOpzione2;
-    @FXML
-    private Button btnOpzione3;
-    @FXML
-    private Button btnOpzione4;
+    private void openPendingRequests(ActionEvent event) {
+        switchScene("/ldg/progettoispw/AppPendTutor.fxml", event);
+    }
 
+    @FXML
+    private void openReviews(ActionEvent event) {
+        switchScene("/ldg/progettoispw/ManageReview.fxml", event);
+    }
+
+    @FXML
+    private void openCompletedRequests(ActionEvent event) {
+        switchScene("/ldg/progettoispw/AppRispostiTutor.fxml", event);
+    }
 }

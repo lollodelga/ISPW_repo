@@ -1,17 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.*?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
-<?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.*?>
 <?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Font?>
-<?import javafx.scene.text.Text?>
 
-<?import javafx.scene.control.PasswordField?>
 <AnchorPane xmlns="http://javafx.com/javafx/21"
             xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="ldg.progettoispw.view.LoginCtrlGrafico"
@@ -19,7 +14,14 @@
 
    <children>
 
-      <!-- Top bar -->
+      <!-- 🔹 SFONDO -->
+      <ImageView fitHeight="600.0" fitWidth="1000.0" preserveRatio="false">
+         <image>
+            <Image url="@../../images/wallpaper.jpeg" />
+         </image>
+      </ImageView>
+
+      <!-- 🔹 BARRA SUPERIORE -->
       <AnchorPane fx:id="BarraSuperiore" prefHeight="63.0" prefWidth="1000.0"
                   style="-fx-background-color: white;">
          <children>
@@ -29,58 +31,69 @@
                   <Image url="@../../images/tutorLOGO.png" />
                </image>
             </ImageView>
-            <Text layoutX="876.0" layoutY="42.0" strokeType="OUTSIDE" strokeWidth="0.0"
-                  text="INDIETRO" underline="true">
-               <font>
-                  <Font size="25.0" />
-               </font>
-            </Text>
-            <Button layoutX="876.0" layoutY="15.0" mnemonicParsing="false" onAction="#backaction"
-                    prefHeight="34.0" prefWidth="109.0"
-                    style="-fx-background-color: transparent; -fx-border-color: transparent; -fx-text-fill: transparent;" />
+
+            <Button fx:id="btnBack" layoutX="820.0" layoutY="12.0"
+                    onAction="#backaction"
+                    text="⟵ Indietro"
+                    style="-fx-background-color: transparent;
+                           -fx-text-fill: #3498db;
+                           -fx-font-size: 20px;
+                           -fx-font-weight: bold;
+                           -fx-cursor: hand;
+                           -fx-border-color: transparent;">
+               <tooltip>
+                  <Tooltip text="Torna alla schermata precedente" />
+               </tooltip>
+            </Button>
          </children>
       </AnchorPane>
 
-      <!-- Background image FULL -->
-      <ImageView fitHeight="537.0" fitWidth="1000.0" layoutY="63.0"
-                 pickOnBounds="true" preserveRatio="false">
-         <image>
-            <Image url="@../../images/wallpaper.jpeg" />
-         </image>
-      </ImageView>
+      <!-- 🔹 CARD CENTRALE (coerente con FirstPage e Registration) -->
+      <AnchorPane layoutX="217.0" layoutY="120.0" prefWidth="567.0" prefHeight="420.0"
+                  style="-fx-background-color: white;
+                         -fx-background-radius: 20;
+                         -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.25), 15, 0.2, 0, 2);">
 
-      <!-- Pannello sfocato -->
-      <Pane layoutX="217.0" layoutY="113.0" prefWidth="567.0" prefHeight="438.0"
-            style="-fx-background-color: #3498DB; -fx-opacity: 0.6; -fx-background-radius: 20;" />
-
-      <!-- Form -->
-      <AnchorPane layoutX="223.0" layoutY="119.0" prefHeight="425.0" prefWidth="555.0">
          <children>
-            <Label layoutX="14.0" layoutY="14.0" text="EFFETTUA L'ACCESSO:">
-               <font><Font size="25.0" /></font>
+            <Label layoutX="30.0" layoutY="25.0" text="EFFETTUA L'ACCESSO:"
+                   textFill="#3498db">
+               <font><Font size="28.0" /></font>
             </Label>
-            <Label layoutX="14.0" layoutY="72.0" text="Email:">
+
+            <Label layoutX="30.0" layoutY="95.0" text="Email:">
                <font><Font size="20.0" /></font>
             </Label>
-            <TextField fx:id="email" layoutX="14.0" layoutY="104.0" prefHeight="48.0" prefWidth="526.0">
-               <font><Font size="18.0" /></font>
-            </TextField>
-            <Label layoutX="14.0" layoutY="170.0" text="Password:">
+            <TextField fx:id="email" layoutX="30.0" layoutY="125.0"
+                       prefHeight="45.0" prefWidth="505.0"
+                       promptText="Inserisci la tua email"
+                       style="-fx-font-size: 18px; -fx-background-radius: 10;" />
+
+            <Label layoutX="30.0" layoutY="190.0" text="Password:">
                <font><Font size="20.0" /></font>
             </Label>
-            <PasswordField fx:id="password" layoutX="14.0" layoutY="202.0" prefHeight="48.0" prefWidth="526.0">
-               <font><Font size="18.0" /></font>
-            </PasswordField>
-            <Button defaultButton="true" layoutX="175.0" layoutY="280.0" mnemonicParsing="false"
-                    onAction="#login" prefHeight="60.0" prefWidth="204.0" text="ACCEDI"
-                    style="-fx-background-color: #3498DB; -fx-text-fill: white; -fx-font-size: 18px; -fx-background-radius: 15;" />
+            <PasswordField fx:id="password" layoutX="30.0" layoutY="220.0"
+                           prefHeight="45.0" prefWidth="505.0"
+                           promptText="Inserisci la tua password"
+                           style="-fx-font-size: 18px; -fx-background-radius: 10;" />
+
+            <Button defaultButton="true"
+                    layoutX="180.0" layoutY="300.0"
+                    prefHeight="60.0" prefWidth="200.0"
+                    onAction="#login"
+                    text="ACCEDI"
+                    style="-fx-background-color: #3498DB;
+                           -fx-text-fill: white;
+                           -fx-font-size: 20px;
+                           -fx-font-weight: bold;
+                           -fx-background-radius: 15;
+                           -fx-cursor: hand;" />
          </children>
       </AnchorPane>
 
-      <!-- Warning -->
+      <!-- 🔹 WARNING -->
       <Rectangle fx:id="warningRectangle" arcHeight="5.0" arcWidth="5.0"
                  fill="WHITE" height="33.0" layoutX="216.0" layoutY="73.0"
-                 stroke="TRANSPARENT" strokeWidth="0.0" width="568.0" />
+                 stroke="TRANSPARENT" strokeWidth="0.0" width="568.0" visible="false" />
       <Label fx:id="warningLabel" layoutX="220.0" layoutY="72.0"
              text="ERRORE" textFill="RED" visible="false">
          <font><Font size="20.0" /></font>

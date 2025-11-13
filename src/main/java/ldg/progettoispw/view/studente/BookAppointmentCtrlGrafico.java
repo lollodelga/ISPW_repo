@@ -10,12 +10,12 @@ import ldg.progettoispw.controller.BookAppointmentCtrlApplicativo;
 import ldg.progettoispw.engineering.bean.SubjectBean;
 import ldg.progettoispw.engineering.bean.TutorBean;
 import ldg.progettoispw.engineering.exception.DBException;
-import ldg.progettoispw.view.HomeGCon;
+import ldg.progettoispw.view.HomeCtrlGrafico;
 
 import java.time.LocalDate;
 import java.util.List;
 
-public class BookAppointmentCtrlGrafico extends HomeGCon {
+public class BookAppointmentCtrlGrafico extends HomeCtrlGrafico {
 
     @FXML private TextField subjectField;
     @FXML private ScrollPane scrollResults;

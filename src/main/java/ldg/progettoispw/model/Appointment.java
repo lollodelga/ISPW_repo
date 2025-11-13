@@ -38,6 +38,6 @@ public class Appointment {
     public Time getTime() { return time; }
     public void setTime(Time time) { this.time = time; }
 
-    public String getStatus() { return status; }
+    public String getState() { return status; }
     public void setStatus(String status) { this.status = status; }
 }

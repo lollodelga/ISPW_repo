@@ -8,19 +8,21 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.shape.Rectangle?>
 
-<AnchorPane prefHeight="600.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ldg.progettoispw.view.tutor.HomeTutorGCon">
+<AnchorPane prefHeight="600.0" prefWidth="1000.0"
+            xmlns="http://javafx.com/javafx/21"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="ldg.progettoispw.view.tutor.HomeTutorGCon">
 
-   <!-- Immagine di sfondo -->
-   <ImageView fitHeight="600.0" fitWidth="1000.0" pickOnBounds="true" preserveRatio="false">
+   <!-- 🔹 SFONDO -->
+   <ImageView fitHeight="600.0" fitWidth="1000.0" preserveRatio="false">
       <image>
          <Image url="@../../images/wallpaper.jpeg" />
       </image>
    </ImageView>
 
-   <!-- Barra superiore -->
-   <AnchorPane fx:id="BarraSuperiore" prefHeight="63.0" prefWidth="1000.0" style="-fx-background-color: white;">
+   <!-- 🔹 BARRA SUPERIORE -->
+   <AnchorPane prefHeight="63.0" prefWidth="1000.0" style="-fx-background-color: white;">
       <children>
-         <!-- Logo -->
          <ImageView fitHeight="48.0" fitWidth="171.0" layoutX="14.0" layoutY="8.0" pickOnBounds="true" preserveRatio="true">
             <image>
                <Image url="@../../images/tutorLOGO.png" />
@@ -29,34 +31,49 @@
       </children>
    </AnchorPane>
 
-   <!-- Area centrale -->
-   <AnchorPane layoutX="0.0" layoutY="63.0" prefHeight="537.0" prefWidth="1000.0">
+   <!-- 🔹 CONTENUTO PRINCIPALE -->
+   <AnchorPane layoutY="63.0" prefHeight="530.0" prefWidth="1000.0">
       <children>
-         <!-- Rectangle semitrasparente con sfondo blu -->
-         <Rectangle arcHeight="20.0" arcWidth="20.0" fill="#ADD8E6CC" height="480.0" layoutX="198.0" layoutY="29.0" stroke="TRANSPARENT" strokeWidth="0" width="505.0" />
 
-         <!-- Opzioni centrali -->
-         <VBox alignment="TOP_CENTER" layoutX="100.0" layoutY="100.0" prefWidth="700.0" spacing="25.0">
+         <!-- Rettangolo traslucido principale -->
+         <Rectangle arcHeight="20.0" arcWidth="20.0" fill="#3498DBAA"
+                    height="480.0" layoutX="198.0" layoutY="29.0" stroke="TRANSPARENT" width="505.0" />
+
+         <!-- VBOX OPZIONI PRINCIPALI -->
+         <VBox alignment="CENTER" layoutX="198.0" layoutY="50.0" prefWidth="505.0" spacing="25.0">
             <children>
-               <Label style="-fx-font-size: 25px; -fx-text-fill: black;" text="Scegli cosa fare:" />
+               <Label style="-fx-font-size: 26px; -fx-text-fill: white; -fx-font-weight: bold;" text="Benvenuto Tutor." />
+               <Label style="-fx-font-size: 20px; -fx-text-fill: white;" text="Scegli cosa fare:" />
 
-               <Button fx:id="btnModificaMaterie" prefWidth="300.0" style="-fx-font-size: 16px; -fx-background-color: #3498DB; -fx-text-fill: white;" text="Gestisci materie" />
-               <Button fx:id="btnRichiesteDaRispondere" prefWidth="300.0" style="-fx-font-size: 16px; -fx-background-color: #3498DB; -fx-text-fill: white;" text="Richieste in attesa" />
-               <Button fx:id="btnRichiesteRisposte" prefWidth="300.0" style="-fx-font-size: 16px; -fx-background-color: #3498DB; -fx-text-fill: white;" text="Richieste completate" />
+               <Button fx:id="btnRecensioni" onAction="#openReviews" prefHeight="55.0" prefWidth="300.0"
+                       style="-fx-background-color: #3498DB; -fx-text-fill: white; -fx-font-size: 18px; -fx-background-radius: 15;"
+                       text="Recensioni ricevute" />
+
+               <Button fx:id="btnRichiesteDaRispondere" onAction="#openPendingRequests" prefHeight="55.0" prefWidth="300.0"
+                       style="-fx-background-color: #3498DB; -fx-text-fill: white; -fx-font-size: 18px; -fx-background-radius: 15;"
+                       text="Richieste in attesa" />
+
+               <Button fx:id="btnRichiesteRisposte" onAction="#openCompletedRequests" prefHeight="55.0" prefWidth="300.0"
+                       style="-fx-background-color: #3498DB; -fx-text-fill: white; -fx-font-size: 18px; -fx-background-radius: 15;"
+                       text="Richieste completate" />
             </children>
          </VBox>
 
-         <!-- Contenitore semitrasparente per dati utente -->
-         <VBox alignment="TOP_CENTER" layoutX="830.0" layoutY="50.0" prefWidth="150.0" spacing="12.0" style="-fx-background-color: #ADD8E6CC; -fx-padding: 10;">
+         <!-- PANNELLO LATERALE DATI UTENTE -->
+         <VBox alignment="TOP_CENTER" layoutX="820.0" layoutY="50.0" prefWidth="160.0" spacing="12.0"
+               style="-fx-background-color: #3498DBAA; -fx-padding: 10; -fx-background-radius: 10;">
             <children>
-               <Label fx:id="labelRuolo" style="-fx-font-size: 14px; -fx-font-weight: bold;" text="Ruolo: Tutor" />
-               <Label fx:id="labelNome" style="-fx-font-size: 13px;" text="Nome: Mario" />
-               <Label fx:id="labelCognome" style="-fx-font-size: 13px;" text="Cognome: Rossi" />
-               <Label fx:id="labelData" style="-fx-font-size: 13px;" text="Nascita: 2000-01-01" />
+               <Label fx:id="labelRuolo" style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: white;" text="Ruolo: Tutor" />
+               <Label fx:id="labelNome" style="-fx-font-size: 13px; -fx-text-fill: white;" text="Nome: Mario" />
+               <Label fx:id="labelCognome" style="-fx-font-size: 13px; -fx-text-fill: white;" text="Cognome: Rossi" />
+               <Label fx:id="labelData" style="-fx-font-size: 13px; -fx-text-fill: white;" text="Nascita: 2000-01-01" />
 
-               <Button fx:id="btnLogout" onAction="#logout" prefWidth="140.0" style="-fx-background-color: #e74c3c; -fx-text-fill: white; -fx-font-size: 13px;" text="Logout" />
+               <Button fx:id="btnLogout" onAction="#logout" prefWidth="120.0"
+                       style="-fx-background-color: #e74c3c; -fx-text-fill: white; -fx-font-size: 13px; -fx-background-radius: 10;"
+                       text="Logout" />
             </children>
          </VBox>
+
       </children>
    </AnchorPane>
 </AnchorPane>

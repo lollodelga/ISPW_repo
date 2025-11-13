@@ -2,6 +2,7 @@ package ldg.progettoispw.engineering.gof.state;
 
 import ldg.progettoispw.engineering.dao.AppointmentDAO;
 import ldg.progettoispw.engineering.exception.DBException;
+import ldg.progettoispw.model.Appointment;
 
 import java.sql.Date;
 import java.sql.Time;
@@ -52,13 +53,27 @@ public class AppointmentContext {
      */
 
 
-    public AppointmentContext(String studentEmail, String tutorEmail, Date date, Time time, AppointmentState state) {
-        this.studentEmail = studentEmail;
-        this.tutorEmail = tutorEmail;
-        this.date = date;
-        this.time = time;
-        this.state = state;
+    public AppointmentContext(Appointment appointment) {
+        this.studentEmail = appointment.getStudentEmail();
+        this.tutorEmail = appointment.getTutorEmail();
+        this.date = appointment.getDate();
+        this.time = appointment.getTime();
+
+        // Mappa lo stato testuale in un oggetto AppointmentState
+        String status = appointment.getState();
+        if (status == null) {
+            this.state = new InAttesaState();
+        } else {
+            switch (status.toLowerCase()) {
+                case "confermato" -> this.state = new ConfermatoState();
+                case "completato" -> this.state = new CompletatoState();
+                case "annullato" -> this.state = new AnnullatoState();
+                default -> this.state = new InAttesaState();
+            }
+        }
     }
+
+
 
     public void setState(AppointmentState state) {
         this.state = state;

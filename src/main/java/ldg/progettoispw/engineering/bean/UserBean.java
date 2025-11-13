@@ -1,6 +1,5 @@
 package ldg.progettoispw.engineering.bean;
 
-
 public class UserBean {
     private String name;
     private String surname;

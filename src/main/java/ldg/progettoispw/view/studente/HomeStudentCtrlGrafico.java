@@ -3,9 +3,9 @@ package ldg.progettoispw.view.studente;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
-import ldg.progettoispw.view.HomeGCon;
+import ldg.progettoispw.view.HomeCtrlGrafico;
 
-public class HomeStudentGCon extends HomeGCon {
+public class HomeStudentCtrlGrafico extends HomeCtrlGrafico {
 
     @FXML
     private Button btnOpzione1;
@@ -19,5 +19,15 @@ public class HomeStudentGCon extends HomeGCon {
     @FXML
     public void cercaTutor(ActionEvent event) {
         switchScene("/ldg/progettoispw/SearchTutor.fxml", event);
+    }
+
+    @FXML
+    public void apriRichiesteSospese(ActionEvent event) {
+        switchScene("/ldg/progettoispw/AppInAttesaStudente.fxml", event);
+    }
+
+    @FXML
+    public void apriRichiesteRisposte(ActionEvent event) {
+        switchScene("/ldg/progettoispw/AppRispostiStudente.fxml", event);
     }
 }
