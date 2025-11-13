@@ -11,8 +11,11 @@ import ldg.progettoispw.model.Appointment;
 import java.sql.Date;
 import java.sql.Time;
 import java.util.List;
+import java.util.logging.Logger;
+import java.util.logging.Level;
 
 public class AppRispostiTutorCtrlApplicativo {
+    private static final Logger LOGGER = Logger.getLogger(AppRispostiTutorCtrlApplicativo.class.getName());
     private final AppointmentDAO dao = new AppointmentDAO();
     /**
      * Restituisce la lista degli appuntamenti del tutor loggato, esclusi quelli in attesa.
@@ -30,31 +33,28 @@ public class AppRispostiTutorCtrlApplicativo {
 
     public void updateAppointmentStatus(String studentEmail, Date date, Time time, String stato, String action) {
         try {
-            // 🔹 Recupera la tutor email dalla sessione attiva
             String tutorEmail = LoginSessionManager.loadUserSession().getEmail();
 
-            // 🔹 Crea e popola l’oggetto Appointment
             Appointment appointment = new Appointment();
             appointment.setStudentEmail(studentEmail);
             appointment.setTutorEmail(tutorEmail);
             appointment.setDate(date);
             appointment.setTime(time);
             appointment.setStatus(stato);
-            // 🔹 Crea il contesto per il pattern State
+
             AppointmentContext context = new AppointmentContext(appointment);
 
-            // 🔹 Applica l’azione scelta
             if ("complete".equalsIgnoreCase(action)) {
                 context.complete();
             } else if ("cancel".equalsIgnoreCase(action)) {
                 context.cancel();
             } else {
-                System.err.println("Azione non riconosciuta: " + action);
+                LOGGER.log(Level.WARNING, "Azione non riconosciuta: {0}", action);
             }
 
         } catch (DBException e) {
-            System.err.println("Errore nel cambiare stato all'appuntamento: " + e.getMessage());
-            e.printStackTrace(); // utile per debugging
+            LOGGER.log(Level.SEVERE, "Errore nel cambiare stato all'appuntamento: " + e.getMessage(), e);
+
         }
     }
 }

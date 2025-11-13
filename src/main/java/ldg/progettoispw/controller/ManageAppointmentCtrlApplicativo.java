@@ -9,6 +9,8 @@ import ldg.progettoispw.engineering.gof.state.AppointmentContext;
 import ldg.progettoispw.model.Appointment;
 
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Controller applicativo per la gestione degli appuntamenti dei tutor.
@@ -24,8 +26,10 @@ import java.util.List;
 public class ManageAppointmentCtrlApplicativo {
 
     public ManageAppointmentCtrlApplicativo() {
+        //lo tengo vuoto, perché voglio sia istanziato senza fare nulla
     }
 
+    private static final Logger LOGGER = Logger.getLogger(ManageAppointmentCtrlApplicativo.class.getName());
     /**
      * Recupera tutti gli appuntamenti con stato "in_attesa" per il tutor attualmente loggato.
      *
@@ -80,8 +84,7 @@ public class ManageAppointmentCtrlApplicativo {
                 default -> throw new IllegalArgumentException("Azione non valida: " + action);
             }
         }catch (DBException e){
-                System.err.println("Errore DB: " + e.getMessage());
-                e.printStackTrace();
+            LOGGER.log(Level.SEVERE, "Errore nel database: " + e.getMessage(), e);
         }
     }
 

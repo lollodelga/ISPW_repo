@@ -17,6 +17,8 @@ import ldg.progettoispw.view.HomeCtrlGrafico;
 import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class AppRispostiStudenteCtrlGrafico extends HomeCtrlGrafico implements Initializable {
 
@@ -32,6 +34,9 @@ public class AppRispostiStudenteCtrlGrafico extends HomeCtrlGrafico implements I
 
     private AppRispostiStudenteCtrlApplicativo ctrlApp;
     private AppointmentBean selectedAppointment;
+    private static final Logger LOGGER = Logger.getLogger(AppRispostiStudenteCtrlGrafico.class.getName());
+    private static final String WHITE_TEXT_STYLE = "-fx-text-fill: white;";
+
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -56,7 +61,7 @@ public class AppRispostiStudenteCtrlGrafico extends HomeCtrlGrafico implements I
             });
 
         } catch (DBException e) {
-            e.printStackTrace();
+            LOGGER.log(Level.SEVERE, "Errore nel database: " + e.getMessage(), e);
         }
     }
 
@@ -71,10 +76,10 @@ public class AppRispostiStudenteCtrlGrafico extends HomeCtrlGrafico implements I
         Label lblOr = new Label("Ora: " + bean.getOra());
         Label lblStat = new Label("Stato: " + bean.getStato());
 
-        lblTut.setStyle("-fx-text-fill: white;");
-        lblDat.setStyle("-fx-text-fill: white;");
-        lblOr.setStyle("-fx-text-fill: white;");
-        lblStat.setStyle("-fx-text-fill: white;");
+        lblTut.setStyle(WHITE_TEXT_STYLE);
+        lblDat.setStyle(WHITE_TEXT_STYLE);
+        lblOr.setStyle(WHITE_TEXT_STYLE);
+        lblStat.setStyle(WHITE_TEXT_STYLE);
 
         box.getChildren().addAll(lblTut, lblDat, lblOr, lblStat);
         return box;

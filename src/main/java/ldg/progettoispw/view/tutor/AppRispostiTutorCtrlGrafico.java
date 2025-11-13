@@ -8,6 +8,7 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import ldg.progettoispw.controller.AppRispostiTutorCtrlApplicativo;
+import ldg.progettoispw.controller.ManageAppointmentCtrlApplicativo;
 import ldg.progettoispw.engineering.bean.AppointmentBean;
 import ldg.progettoispw.engineering.exception.DBException;
 import ldg.progettoispw.view.HomeCtrlGrafico;
@@ -16,6 +17,8 @@ import ldg.progettoispw.view.HomeCtrlGrafico;
 import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class AppRispostiTutorCtrlGrafico extends HomeCtrlGrafico implements Initializable {
 
@@ -33,6 +36,9 @@ public class AppRispostiTutorCtrlGrafico extends HomeCtrlGrafico implements Init
 
     private AppRispostiTutorCtrlApplicativo ctrlApp;
     private AppointmentBean selectedAppointment;
+    private static final Logger LOGGER = Logger.getLogger(AppRispostiTutorCtrlGrafico.class.getName());
+    private static final String WHITE_TEXT_STYLE = "-fx-text-fill: white;";
+
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -50,8 +56,7 @@ public class AppRispostiTutorCtrlGrafico extends HomeCtrlGrafico implements Init
             }
 
         } catch (DBException e) {
-            e.printStackTrace();
-            // puoi aggiungere alert se vuoi
+            LOGGER.log(Level.SEVERE, "Errore nel database: " + e.getMessage(), e);
         }
     }
 
@@ -62,14 +67,14 @@ public class AppRispostiTutorCtrlGrafico extends HomeCtrlGrafico implements Init
         box.setOnMouseClicked(event -> showAppointmentDetails(bean));
 
         Label lblStud = new Label("Studente: " + bean.getStudenteEmail());
-        Label lblData = new Label("Data: " + bean.getData());
-        Label lblOra = new Label("Ora: " + bean.getOra());
-        Label lblStato = new Label("Stato: " + bean.getStato());
+        Label lblDat = new Label("Data: " + bean.getData());
+        Label lblOr = new Label("Ora: " + bean.getOra());
+        Label lblStat = new Label("Stato: " + bean.getStato());
 
-        lblStud.setStyle("-fx-text-fill: white;");
-        lblData.setStyle("-fx-text-fill: white;");
-        lblOra.setStyle("-fx-text-fill: white;");
-        lblStato.setStyle("-fx-text-fill: white;");
+        lblStud.setStyle(WHITE_TEXT_STYLE);
+        lblDat.setStyle(WHITE_TEXT_STYLE);
+        lblOr.setStyle(WHITE_TEXT_STYLE);
+        lblStat.setStyle(WHITE_TEXT_STYLE);
 
         box.getChildren().addAll(lblStud, lblData, lblOra, lblStato);
         return box;

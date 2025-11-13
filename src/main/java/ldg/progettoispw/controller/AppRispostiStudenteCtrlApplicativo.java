@@ -9,7 +9,9 @@ import ldg.progettoispw.engineering.exception.DBException;
 import java.util.List;
 
 public class AppRispostiStudenteCtrlApplicativo {
-    private final AppointmentDAO dao = new AppointmentDAO();
+    private final AppointmentDAO dao = new AppointmentDAO(
+            //lo tengo vuoto, perché voglio sia istanziato senza fare nulla
+    );
     /**
      * Restituisce la lista degli appuntamenti confermati/completati/annullati dello studente loggato.
      */

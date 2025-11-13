@@ -21,6 +21,7 @@ public class ManageReviewsCtrlGrafico extends HomeCtrlGrafico {
 
     private ManageReviewCtrlApplicativo controllerApplicativo;
 
+    @Override
     @FXML
     public void initialize() {
         // Inizializza controller applicativo (DAO + SentimentAnalyzer)

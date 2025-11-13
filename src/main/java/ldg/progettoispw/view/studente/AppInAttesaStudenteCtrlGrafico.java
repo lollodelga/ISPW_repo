@@ -8,11 +8,12 @@ import javafx.scene.input.MouseEvent;
 import javafx.event.ActionEvent;
 import ldg.progettoispw.controller.AppInAttesaStudenteCtrlApplicativo;
 import ldg.progettoispw.engineering.bean.AppointmentBean;
-import ldg.progettoispw.engineering.dao.AppointmentDAO;
 import ldg.progettoispw.engineering.exception.DBException;
 import ldg.progettoispw.view.HomeCtrlGrafico;
 
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class AppInAttesaStudenteCtrlGrafico extends HomeCtrlGrafico {
 
@@ -30,12 +31,16 @@ public class AppInAttesaStudenteCtrlGrafico extends HomeCtrlGrafico {
     // PULSANTI
     @FXML private Button btnChiudi;
 
+    private static final Logger LOGGER = Logger.getLogger(AppInAttesaStudenteCtrlGrafico.class.getName());
+
+
     // CONTROLLER LOGICO
-    private AppInAttesaStudenteCtrlApplicativo controller = new AppInAttesaStudenteCtrlApplicativo();
+    private AppInAttesaStudenteCtrlApplicativo ctrlApplicativo = new AppInAttesaStudenteCtrlApplicativo();
 
     // VARIABILE DI SUPPORTO PER IL POPUP
     private AppointmentBean selectedAppointment;
 
+    @Override
     @FXML
     public void initialize() {
         loadPendingRequests();
@@ -47,9 +52,10 @@ public class AppInAttesaStudenteCtrlGrafico extends HomeCtrlGrafico {
     private void loadPendingRequests() {
         List<AppointmentBean> pendingAppointments = null;
         try {
-            pendingAppointments = controller.getAppuntamentiInAttesa();
+            pendingAppointments = ctrlApplicativo.getAppuntamentiInAttesa();
         } catch (DBException e) {
-            throw new RuntimeException(e);
+            LOGGER.log(Level.SEVERE, "Errore durante il recupero degli appuntamenti in attesa per l'utente. ", e);
+
         }
 
         requestsContainer.getChildren().clear();

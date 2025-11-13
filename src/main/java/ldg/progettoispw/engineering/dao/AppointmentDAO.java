@@ -10,9 +10,10 @@ import java.util.List;
 public class AppointmentDAO {
     private final ConnectionFactory connectionFactory = ConnectionFactory.getInstance();
 
-    private static final String SEARCH_APP_BY_EMAIL =
-            "SELECT * FROM appuntamento WHERE %s = ? AND stato IN ('confermato', 'completato', 'annullato')";
+    private static final String FIELD_STUDENTE_EMAIL = "studente_email";
+    private static final String FIELD_TUTOR_EMAIL = "tutor_email";
 
+    //query utilizzate nei metodi
     private static final String CHECK_AVAIL =
             """
             SELECT COUNT(*) 
@@ -26,9 +27,15 @@ public class AppointmentDAO {
             "INSERT INTO appuntamento (studente_email, tutor_email, data, ora, stato) VALUES (?, ?, ?, ?, 'in_attesa')";
     private static final String UPDATE_STATUS =
             "UPDATE appuntamento SET stato = ? WHERE studente_email = ? AND tutor_email = ? AND data = ? AND ora = ?";
-    // Query generica che filtra per tutor o studente a seconda del contesto
-    private static final String SEARCH_APP_IN_ATTESA =
-            "SELECT * FROM appuntamento WHERE %s = ? AND stato = 'in_attesa'";
+    private static final String SEARCH_APP_IN_ATTESA_TUTOR =
+            "SELECT * FROM appuntamento WHERE tutor_email = ? AND stato = 'in_attesa'";
+    private static final String SEARCH_APP_IN_ATTESA_STUDENTE =
+            "SELECT * FROM appuntamento WHERE studente_email = ? AND stato = 'in_attesa'";
+    private static final String SEARCH_APP_BY_STUDENT =
+            "SELECT * FROM appuntamento WHERE studente_email = ? AND stato IN ('confermato', 'completato', 'annullato')";
+    private static final String SEARCH_APP_BY_TUTOR =
+            "SELECT * FROM appuntamento WHERE tutor_email = ? AND stato IN ('confermato', 'completato', 'annullato')";
+
 
     public void insertAppointment(String studentEmail, String tutorEmail, Date date, Time time) throws DBException {
         // controlla disponibilità e FK/ruolo dovrebbero essere verificate in applicativo prima
@@ -97,9 +104,7 @@ public class AppointmentDAO {
     public List<AppointmentBean> getAppuntamentiInAttesa(String email, boolean isTutor) throws DBException {
         List<AppointmentBean> appuntamenti = new ArrayList<>();
 
-        // Scegliamo la colonna in base al tipo di utente
-        String column = isTutor ? "tutor_email" : "studente_email";
-        String query = String.format(SEARCH_APP_IN_ATTESA, column);
+        String query = isTutor ? SEARCH_APP_IN_ATTESA_TUTOR : SEARCH_APP_IN_ATTESA_STUDENTE;
 
         try (Connection conn = connectionFactory.getDBConnection();
              PreparedStatement stmt = conn.prepareStatement(query)) {
@@ -110,8 +115,8 @@ public class AppointmentDAO {
                 while (rs.next()) {
                     AppointmentBean bean = new AppointmentBean();
                     bean.setId(rs.getInt("id"));
-                    bean.setStudenteEmail(rs.getString("studente_email"));
-                    bean.setTutorEmail(rs.getString("tutor_email"));
+                    bean.setStudenteEmail(rs.getString(FIELD_STUDENTE_EMAIL));
+                    bean.setTutorEmail(rs.getString(FIELD_TUTOR_EMAIL));
                     bean.setData(rs.getDate("data"));
                     bean.setOra(rs.getTime("ora"));
                     bean.setStato(rs.getString("stato"));
@@ -126,20 +131,16 @@ public class AppointmentDAO {
         return appuntamenti;
     }
 
-
     public List<AppointmentBean> getAppuntamentiByEmail(String email, int tipo) throws DBException {
         List<AppointmentBean> appuntamenti = new ArrayList<>();
 
-        String campoEmail;
-        if (tipo == 0) {
-            campoEmail = "studente_email";
-        } else if (tipo == 1) {
-            campoEmail = "tutor_email";
-        } else {
-            throw new DBException("Tipo email non valido. 0 = studente, 1 = tutor");
+        // Seleziona query in base al tipo
+        String query;
+        switch (tipo) {
+            case 0 -> query = SEARCH_APP_BY_STUDENT;
+            case 1 -> query = SEARCH_APP_BY_TUTOR;
+            default -> throw new DBException("Tipo email non valido. 0 = studente, 1 = tutor");
         }
-
-        String query = String.format(SEARCH_APP_BY_EMAIL, campoEmail);
 
         try (Connection conn = connectionFactory.getDBConnection();
              PreparedStatement stmt = conn.prepareStatement(query)) {
@@ -150,8 +151,8 @@ public class AppointmentDAO {
                 while (rs.next()) {
                     AppointmentBean bean = new AppointmentBean();
                     bean.setId(rs.getInt("id"));
-                    bean.setStudenteEmail(rs.getString("studente_email"));
-                    bean.setTutorEmail(rs.getString("tutor_email"));
+                    bean.setStudenteEmail(rs.getString(FIELD_STUDENTE_EMAIL));
+                    bean.setTutorEmail(rs.getString(FIELD_TUTOR_EMAIL));
                     bean.setData(rs.getDate("data"));
                     bean.setOra(rs.getTime("ora"));
                     bean.setStato(rs.getString("stato"));
@@ -175,6 +176,5 @@ public class AppointmentDAO {
 
         return appuntamenti;
     }
-
 
 }
