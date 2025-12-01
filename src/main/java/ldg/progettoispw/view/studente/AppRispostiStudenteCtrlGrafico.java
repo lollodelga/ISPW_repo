@@ -11,6 +11,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.input.MouseEvent;
 import ldg.progettoispw.controller.AppRispostiStudenteCtrlApplicativo;
 import ldg.progettoispw.engineering.bean.AppointmentBean;
+import ldg.progettoispw.engineering.bean.RecensioneBean;
 import ldg.progettoispw.engineering.exception.DBException;
 import ldg.progettoispw.view.HomeCtrlGrafico;
 
@@ -30,7 +31,8 @@ public class AppRispostiStudenteCtrlGrafico extends HomeCtrlGrafico implements I
     @FXML private Label lblStato;
     @FXML private TextArea txtRecensione;
     @FXML private Button btnInviaRecensione;
-    @FXML private Button btnChiudi;
+    @FXML private Label lblErroreRecensione;
+
 
     private AppRispostiStudenteCtrlApplicativo ctrlApp;
     private AppointmentBean selectedAppointment;
@@ -114,7 +116,38 @@ public class AppRispostiStudenteCtrlGrafico extends HomeCtrlGrafico implements I
 
     @FXML
     private void onInviaRecensioneClick() {
-        // qui implementerai l'invio della recensione
+        String testo = txtRecensione.getText().trim();
+
+        // 1. Controllo se la recensione è vuota
+        if (testo.isEmpty()) {
+            lblErroreRecensione.setText("La recensione non può essere vuota.");
+            lblErroreRecensione.setVisible(true);
+            return;
+        }
+
+        try {
+            RecensioneBean recensioneBean = new RecensioneBean();
+            recensioneBean.setTutorEmail(selectedAppointment.getTutorEmail());
+            recensioneBean.setStudentEmail(selectedAppointment.getStudenteEmail());
+            recensioneBean.setRecensione(testo);
+
+            // 2. Invio al controller applicativo
+            String risultato = ctrlApp.inviaRecensione(recensioneBean);
+
+            if (risultato.startsWith("Errore")) {
+                lblErroreRecensione.setText(risultato);
+                lblErroreRecensione.setVisible(true);
+            } else {
+                lblErroreRecensione.setVisible(false);
+                appointmentPane.setVisible(false);
+                LOGGER.info(risultato);
+            }
+
+        } catch (Exception e) {
+            lblErroreRecensione.setText("Errore nell'invio della recensione.");
+            lblErroreRecensione.setVisible(true);
+            LOGGER.log(Level.SEVERE, "Errore nell'invio della recensione: " + e.getMessage(), e);
+        }
     }
 
     @FXML

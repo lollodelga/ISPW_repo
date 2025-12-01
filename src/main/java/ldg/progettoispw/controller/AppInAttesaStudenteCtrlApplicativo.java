@@ -9,7 +9,10 @@ import ldg.progettoispw.engineering.exception.DBException;
 import java.util.List;
 
 public class AppInAttesaStudenteCtrlApplicativo {
-    public AppInAttesaStudenteCtrlApplicativo(){}
+
+    public AppInAttesaStudenteCtrlApplicativo(){
+        //voglio esplicitarlo per avitare che sia inizializzato diversamente
+    }
 
     public List<AppointmentBean> getAppuntamentiInAttesa() throws DBException {
         // 1️⃣ Recupera la sessione utente

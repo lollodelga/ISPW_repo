@@ -3,6 +3,7 @@ module ldg.progettoispw {
     requires javafx.fxml;
     requires java.sql;
     requires java.management;
+    requires com.fasterxml.jackson.databind;
 
     opens ldg.progettoispw to javafx.fxml;
     exports ldg.progettoispw;

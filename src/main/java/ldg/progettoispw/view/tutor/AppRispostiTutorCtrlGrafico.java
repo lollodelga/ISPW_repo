@@ -8,11 +8,9 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import ldg.progettoispw.controller.AppRispostiTutorCtrlApplicativo;
-import ldg.progettoispw.controller.ManageAppointmentCtrlApplicativo;
 import ldg.progettoispw.engineering.bean.AppointmentBean;
 import ldg.progettoispw.engineering.exception.DBException;
 import ldg.progettoispw.view.HomeCtrlGrafico;
-
 
 import java.net.URL;
 import java.util.List;
@@ -39,22 +37,17 @@ public class AppRispostiTutorCtrlGrafico extends HomeCtrlGrafico implements Init
     private static final Logger LOGGER = Logger.getLogger(AppRispostiTutorCtrlGrafico.class.getName());
     private static final String WHITE_TEXT_STYLE = "-fx-text-fill: white;";
 
-
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         ctrlApp = new AppRispostiTutorCtrlApplicativo();
-
-        appointmentPane.setVisible(false); // inizialmente nascosto
+        appointmentPane.setVisible(false); // popup inizialmente nascosto
 
         try {
-            // Recupera tutti gli appuntamenti confermati o completati per il tutor loggato
-            List<AppointmentBean> appuntamenti = ctrlApp.getAppuntamentiTutor();
-
-            for (AppointmentBean bean : appuntamenti) {
+            List<AppointmentBean> appointments = ctrlApp.getAppuntamentiTutor();
+            for (AppointmentBean bean : appointments) {
                 VBox box = createAppointmentBox(bean);
                 resultsContainer.getChildren().add(box);
             }
-
         } catch (DBException e) {
             LOGGER.log(Level.SEVERE, "Errore nel database: " + e.getMessage(), e);
         }
@@ -66,29 +59,31 @@ public class AppRispostiTutorCtrlGrafico extends HomeCtrlGrafico implements Init
         box.setStyle("-fx-background-color: #3498DB55; -fx-padding: 10; -fx-background-radius: 10; -fx-border-radius: 10; -fx-border-color: #ffffffAA;");
         box.setOnMouseClicked(event -> showAppointmentDetails(bean));
 
-        Label lblStud = new Label("Studente: " + bean.getStudenteEmail());
-        Label lblDat = new Label("Data: " + bean.getData());
-        Label lblOr = new Label("Ora: " + bean.getOra());
-        Label lblStat = new Label("Stato: " + bean.getStato());
+        // Label specifiche per il box della lista
+        Label lblStudenteBox = new Label("Studente: " + bean.getStudenteEmail());
+        Label lblDataBox = new Label("Data: " + bean.getData());
+        Label lblOraBox = new Label("Ora: " + bean.getOra());
+        Label lblStatoBox = new Label("Stato: " + bean.getStato());
 
-        lblStud.setStyle(WHITE_TEXT_STYLE);
-        lblDat.setStyle(WHITE_TEXT_STYLE);
-        lblOr.setStyle(WHITE_TEXT_STYLE);
-        lblStat.setStyle(WHITE_TEXT_STYLE);
+        lblStudenteBox.setStyle(WHITE_TEXT_STYLE);
+        lblDataBox.setStyle(WHITE_TEXT_STYLE);
+        lblOraBox.setStyle(WHITE_TEXT_STYLE);
+        lblStatoBox.setStyle(WHITE_TEXT_STYLE);
 
-        box.getChildren().addAll(lblStud, lblData, lblOra, lblStato);
+        box.getChildren().addAll(lblStudenteBox, lblDataBox, lblOraBox, lblStatoBox);
         return box;
     }
-
 
     private void showAppointmentDetails(AppointmentBean bean) {
         selectedAppointment = bean;
 
+        // Popola il popup con i dettagli
         lblStudente.setText("Studente: " + bean.getStudenteEmail());
         lblData.setText("Data: " + bean.getData());
         lblOra.setText("Ora: " + bean.getOra());
         lblStato.setText("Stato: " + bean.getStato());
 
+        // Mostra i pulsanti solo se l'appuntamento è confermato
         boolean showActions = "confermato".equalsIgnoreCase(bean.getStato());
         btnAnnulla.setVisible(showActions);
         btnCompletato.setVisible(showActions);
@@ -107,7 +102,7 @@ public class AppRispostiTutorCtrlGrafico extends HomeCtrlGrafico implements Init
                     "cancel");
 
             lblStato.setText("Stato: annullato");
-            appointmentPane.setVisible(false); // chiudi il pannello dopo l’azione
+            appointmentPane.setVisible(false);
         }
         switchScene("/ldg/progettoispw/AppRispostiTutor.fxml", event);
     }
@@ -121,18 +116,20 @@ public class AppRispostiTutorCtrlGrafico extends HomeCtrlGrafico implements Init
                     selectedAppointment.getOra(),
                     selectedAppointment.getStato(),
                     "complete");
+
             lblStato.setText("Stato: completato");
             appointmentPane.setVisible(false);
         }
         switchScene("/ldg/progettoispw/AppRispostiTutor.fxml", event);
     }
 
-        @FXML
+    @FXML
     private void onChiudiClick() {
         appointmentPane.setVisible(false);
     }
 
     @FXML
-    private void backAction(ActionEvent event) { switchScene("/ldg/progettoispw/HomePageTutor.fxml", event);
+    private void backAction(ActionEvent event) {
+        switchScene("/ldg/progettoispw/HomePageTutor.fxml", event);
     }
 }

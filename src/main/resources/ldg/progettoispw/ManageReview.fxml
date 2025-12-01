@@ -85,9 +85,7 @@
                         <VBox fx:id="reviewsContainer" alignment="TOP_CENTER" spacing="10.0" style="-fx-padding: 10;" />
                     </content>
                 </ScrollPane>
-
             </VBox>
-
         </children>
     </AnchorPane>
 </AnchorPane>

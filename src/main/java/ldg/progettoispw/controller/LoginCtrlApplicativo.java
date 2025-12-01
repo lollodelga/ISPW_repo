@@ -1,5 +1,6 @@
 package ldg.progettoispw.controller;
 
+import ldg.progettoispw.engineering.api.PythonServerLauncher;
 import ldg.progettoispw.engineering.exception.*;
 import ldg.progettoispw.engineering.applicativo.LoginSessionManager;
 import ldg.progettoispw.engineering.bean.UserBean;
@@ -46,6 +47,8 @@ public class LoginCtrlApplicativo {
                 UserBean userBean = new UserBean();
                 userBean.setOfAll(data);
                 LoginSessionManager.saveUserSession(userBean);
+
+                PythonServerLauncher.launch();
 
                 return loginDAO.getUserRole(email, password); // 1 = Tutor, 2 = Studente
             }
