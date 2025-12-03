@@ -63,7 +63,7 @@ public class PythonServerLauncher {
         );
 
         // 👉 Path assoluto della directory dove c'è sentiment.py
-        pb.directory(new File("C:\\Users\\lollo\\Desktop\\Università\\Triennale\\ISPW\\progettoISPW\\src\\main"));
+        pb.directory(new File("C:\\Users\\lollo\\Desktop\\Università\\Triennale\\ISPW\\progettoISPW\\src"));
 
         pb.redirectErrorStream(true);
         serverProcess = pb.start();
