@@ -3,6 +3,7 @@ package ldg.progettoispw.engineering.api;
 public class SentimentAdapter implements SentimentAnalyzer {
 
     private final SentimentClient client;
+    //il codice di tale classe andrebbe messo qui, ma va ve bene anche se la dichiaro e basta
 
     public SentimentAdapter(SentimentClient client) {
         this.client = client;

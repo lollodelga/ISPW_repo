@@ -13,19 +13,16 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.shape.Rectangle?>
 
-<AnchorPane prefHeight="600.0" prefWidth="1000.0"
-            xmlns="http://javafx.com/javafx/21"
-            xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="ldg.progettoispw.view.tutor.ManageReviewsCtrlGrafico">
+<AnchorPane prefHeight="600.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ldg.progettoispw.view.tutor.ManageReviewsCtrlGrafico">
 
-    <!-- 🔹 SFONDO -->
+    <!-- SFONDO -->
     <ImageView fitHeight="600.0" fitWidth="1000.0" preserveRatio="false">
         <image>
             <Image url="@../../images/wallpaper.jpeg" />
         </image>
     </ImageView>
 
-    <!-- 🔹 BARRA SUPERIORE -->
+    <!-- BARRA SUPERIORE -->
     <AnchorPane prefHeight="63.0" prefWidth="1000.0" style="-fx-background-color: white;">
         <children>
             <ImageView fitHeight="48.0" fitWidth="171.0" layoutX="14.0" layoutY="8.0" preserveRatio="true">
@@ -34,15 +31,7 @@
                 </image>
             </ImageView>
 
-            <Button fx:id="btnBack" layoutX="820.0" layoutY="12.0"
-                    onAction="#backAction"
-                    text="⟵ Indietro"
-                    style="-fx-background-color: transparent;
-                           -fx-text-fill: #3498db;
-                           -fx-font-size: 20px;
-                           -fx-font-weight: bold;
-                           -fx-cursor: hand;
-                           -fx-border-color: transparent;">
+            <Button fx:id="btnBack" layoutX="820.0" layoutY="12.0" onAction="#backAction" style="-fx-background-color: transparent;                            -fx-text-fill: #3498db;                            -fx-font-size: 20px;                            -fx-font-weight: bold;                            -fx-cursor: hand;                            -fx-border-color: transparent;" text="⟵ Indietro">
                 <tooltip>
                     <Tooltip text="Torna alla schermata precedente" />
                 </tooltip>
@@ -50,37 +39,30 @@
         </children>
     </AnchorPane>
 
-    <!-- 🔹 CONTENUTO PRINCIPALE -->
+    <!-- CONTENUTO PRINCIPALE -->
     <AnchorPane layoutY="63.0" prefWidth="1000.0">
         <children>
 
             <!-- Rettangolo sfondo traslucido azzurro -->
-            <Rectangle arcHeight="20.0" arcWidth="20.0"
-                       fill="#3498DBAA"
-                       height="505.0" layoutX="198.0" layoutY="29.0"
-                       stroke="TRANSPARENT" width="606.0" />
+            <Rectangle arcHeight="20.0" arcWidth="20.0" fill="#3498DBAA" height="505.0" layoutX="198.0" layoutY="29.0" stroke="TRANSPARENT" width="606.0" />
 
-            <VBox alignment="TOP_CENTER" layoutX="250.0" layoutY="40.0"
-                  prefWidth="500.0" spacing="20.0">
+            <VBox alignment="TOP_CENTER" layoutX="250.0" layoutY="40.0" prefWidth="500.0" spacing="20.0">
 
                 <!-- Titolo -->
-                <Label fx:id="titleLabel"
-                       style="-fx-font-size: 28px; -fx-font-weight: bold; -fx-text-fill: white;"
-                       text="Recensioni e Sentiment" />
+                <Label fx:id="titleLabel" style="-fx-font-size: 28px; -fx-font-weight: bold; -fx-text-fill: white;" text="Recensioni e Sentiment" />
 
                 <!-- Grafico a colonne -->
                 <BarChart fx:id="barChart" prefHeight="250.0" prefWidth="480.0">
                     <xAxis>
-                        <CategoryAxis label="Tutor"/>
+                        <CategoryAxis label="Stelle" />
                     </xAxis>
                     <yAxis>
-                        <NumberAxis label="Sentiment Medio"/>
+                        <NumberAxis label="Numero Recensioni" />
                     </yAxis>
                 </BarChart>
 
                 <!-- Lista recensioni -->
-                <ScrollPane fx:id="scrollReviews" prefHeight="154.0" prefWidth="500.0"
-                            style="-fx-background-color: transparent; -fx-background: transparent;">
+                <ScrollPane fx:id="scrollReviews" fitToWidth="true" hbarPolicy="NEVER" prefHeight="159.0" prefWidth="500.0" style="-fx-background-color: transparent; -fx-background: transparent;" vbarPolicy="AS_NEEDED">
                     <content>
                         <VBox fx:id="reviewsContainer" alignment="TOP_CENTER" spacing="10.0" style="-fx-padding: 10;" />
                     </content>

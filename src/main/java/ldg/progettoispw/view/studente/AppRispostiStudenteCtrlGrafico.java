@@ -140,6 +140,7 @@ public class AppRispostiStudenteCtrlGrafico extends HomeCtrlGrafico implements I
             } else {
                 lblErroreRecensione.setVisible(false);
                 appointmentPane.setVisible(false);
+                txtRecensione.clear();
                 LOGGER.info(risultato);
             }
 
