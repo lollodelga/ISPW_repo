@@ -30,7 +30,13 @@ public class PythonServerLauncher {
                     // Sleep senza bloccare un carrier thread reale
                     Thread.sleep(3000);
 
-                } catch (Exception e) {
+                } catch (InterruptedException e) {
+                    // Ripristino lo stato di interruzione e esco dal loop
+                    Thread.currentThread().interrupt();
+                    System.out.println("[MONITOR] Thread interrotto, uscita dal monitor.");
+                    break;
+
+                } catch (IOException e) {
                     System.err.println("[ERRORE Monitor]: " + e.getMessage());
                 }
             }
