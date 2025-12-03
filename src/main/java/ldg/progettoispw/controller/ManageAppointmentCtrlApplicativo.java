@@ -83,8 +83,13 @@ public class ManageAppointmentCtrlApplicativo {
                 case "rifiuta" -> context.cancel();
                 default -> throw new IllegalArgumentException("Azione non valida: " + action);
             }
-        }catch (DBException e){
-            LOGGER.log(Level.SEVERE, "Errore nel database: " + e.getMessage(), e);
+
+        } catch (DBException e) {
+            if (LOGGER.isLoggable(Level.SEVERE)) {
+                LOGGER.log(Level.SEVERE,
+                        "Errore nel database: " + e.getMessage(),
+                        e);
+            }
         }
     }
 

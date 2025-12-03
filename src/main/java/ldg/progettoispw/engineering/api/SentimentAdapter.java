@@ -1,5 +1,7 @@
 package ldg.progettoispw.engineering.api;
 
+import ldg.progettoispw.engineering.exception.SentimentException;
+
 public class SentimentAdapter implements SentimentAnalyzer {
 
     private final SentimentClient client;
@@ -10,7 +12,7 @@ public class SentimentAdapter implements SentimentAnalyzer {
     }
 
     @Override
-    public int analyze(String text) throws Exception {
+    public int analyze(String text) throws SentimentException {
         String response = client.getSentiment(text);
         return client.parseSentiment(response);
     }

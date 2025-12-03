@@ -17,49 +17,54 @@ public class SentimentClient {
      * Chiama il server Python per ottenere il sentiment
      * @param text Testo da analizzare
      * @return JSON di risposta dal server Python
-     * @throws Exception
+     * @throws SentimentException in caso di errore HTTP o I/O
      */
-    public String getSentiment(String text) throws Exception {
-        // URL del server Python
-        URL url = new URL("http://127.0.0.1:8000/bert-sentiment");
+    public String getSentiment(String text) throws SentimentException {
+        try {
+            URL url = new URL("http://127.0.0.1:8000/bert-sentiment");
 
-        // Connessione
-        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-        conn.setRequestMethod("POST");
-        conn.setRequestProperty("Content-Type", "application/json");
-        conn.setDoOutput(true);
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("POST");
+            conn.setRequestProperty("Content-Type", "application/json");
+            conn.setDoOutput(true);
 
-        // JSON di input come array con un solo elemento (come previsto dal Python)
-        String jsonInput = "{\"text\": [\"" + text.replace("\"", "\\\"") + "\"]}";
+            String jsonInput = "{\"text\": [\"" + text.replace("\"", "\\\"") + "\"]}";
 
-        // Invia il body
-        try (OutputStream os = conn.getOutputStream()) {
-            os.write(jsonInput.getBytes(StandardCharsets.UTF_8));
-        }
-
-        // Leggi la risposta
-        StringBuilder response = new StringBuilder();
-        try (BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream(), StandardCharsets.UTF_8))) {
-            String line;
-            while ((line = br.readLine()) != null) {
-                response.append(line);
+            try (OutputStream os = conn.getOutputStream()) {
+                os.write(jsonInput.getBytes(StandardCharsets.UTF_8));
             }
-        }
 
-        return response.toString();
+            StringBuilder response = new StringBuilder();
+            try (BufferedReader br = new BufferedReader(
+                    new InputStreamReader(conn.getInputStream(), StandardCharsets.UTF_8)
+            )) {
+                String line;
+                while ((line = br.readLine()) != null) {
+                    response.append(line);
+                }
+            }
+
+            return response.toString();
+
+        } catch (Exception e) {
+            throw new SentimentException("Errore nella chiamata al servizio di sentiment.", e);
+        }
     }
 
+
+    /**
+     * Converte il JSON del server in un valore intero 1–5
+     */
     public int parseSentiment(String jsonResponse) throws SentimentException {
         try {
             ObjectMapper mapper = new ObjectMapper();
             JsonNode root = mapper.readTree(jsonResponse);
 
             String label = root.get("label").asText();
-            return Integer.parseInt(label.substring(0, 1));
 
+            return Integer.parseInt(label.substring(0, 1));
         } catch (Exception e) {
             throw new SentimentException("Errore nel parsing del sentiment", e);
         }
     }
-
 }

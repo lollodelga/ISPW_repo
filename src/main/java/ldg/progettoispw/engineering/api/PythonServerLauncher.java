@@ -5,35 +5,41 @@ import java.io.IOException;
 
 public class PythonServerLauncher {
 
+    private PythonServerLauncher() {
+        throw new UnsupportedOperationException("Utility class - non deve essere istanziata");
+    }
+
     private static Process serverProcess;
     private static volatile boolean monitorActive = false;
 
     /** Avvia il monitor che assicura che il server Python sia sempre attivo. */
     public static synchronized void launch() {
-        if (monitorActive) {
-            System.out.println("[INFO] Il monitor è già attivo.");
+        if (isMonitorAlreadyActive()) {
             return;
         }
 
         monitorActive = true;
+        startMonitorThread();
+        registerShutdownHook();
+    }
 
-        // Thread virtuale che controlla continuamente lo stato del server
-        Thread monitorThread = Thread.ofVirtual().start(() -> {
+    private static boolean isMonitorAlreadyActive() {
+        if (monitorActive) {
+            System.out.println("[INFO] Il monitor è già attivo.");
+            return true;
+        }
+        return false;
+    }
+
+    private static void startMonitorThread() {
+        Thread.ofVirtual().start(() -> {
             while (monitorActive) {
                 try {
-                    // Se il processo non esiste o è morto → riavvia
-                    if (serverProcess == null || !serverProcess.isAlive()) {
-                        System.out.println("[SERVER] Uvicorn non attivo. Avvio in corso...");
-                        startPythonServer();
-                    }
-
-                    // Sleep senza bloccare un carrier thread reale
+                    ensureServerRunning();
                     Thread.sleep(3000);
 
                 } catch (InterruptedException e) {
-                    // Ripristino lo stato di interruzione e esco dal loop
-                    Thread.currentThread().interrupt();
-                    System.out.println("[MONITOR] Thread interrotto, uscita dal monitor.");
+                    handleMonitorInterrupted();
                     break;
 
                 } catch (IOException e) {
@@ -41,8 +47,21 @@ public class PythonServerLauncher {
                 }
             }
         });
+    }
 
-        // Hook quando Java termina
+    private static void ensureServerRunning() throws IOException {
+        if (serverProcess == null || !serverProcess.isAlive()) {
+            System.out.println("[SERVER] Uvicorn non attivo. Avvio in corso...");
+            startPythonServer();
+        }
+    }
+
+    private static void handleMonitorInterrupted() {
+        Thread.currentThread().interrupt();
+        System.out.println("[MONITOR] Thread interrotto, uscita dal monitor.");
+    }
+
+    private static void registerShutdownHook() {
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             monitorActive = false;
             if (serverProcess != null && serverProcess.isAlive()) {
@@ -50,6 +69,7 @@ public class PythonServerLauncher {
             }
         }));
     }
+
 
     /** Avvia il server uvicorn */
     private static void startPythonServer() throws IOException {
