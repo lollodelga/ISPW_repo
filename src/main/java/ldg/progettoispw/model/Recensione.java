@@ -7,7 +7,9 @@ public class Recensione {
     private String testo;
     private int sentimentScore;  // INT, non double
 
-    public Recensione() {}
+    public Recensione() {
+        // Costruttore vuoto necessario per JavaFX / FXML / deserializzazione
+    }
 
     public int getId() { return id; }
     public void setId(int id) { this.id = id; }

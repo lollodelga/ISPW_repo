@@ -1,14 +1,11 @@
 package ldg.progettoispw.view.tutor;
 
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.chart.BarChart;
 import javafx.scene.chart.CategoryAxis;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
-import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.VBox;
 import javafx.scene.control.ScrollPane;
@@ -17,6 +14,8 @@ import ldg.progettoispw.engineering.bean.RecensioneBean;
 import ldg.progettoispw.view.HomeCtrlGrafico;
 
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class ManageReviewsCtrlGrafico extends HomeCtrlGrafico {
 
@@ -30,6 +29,8 @@ public class ManageReviewsCtrlGrafico extends HomeCtrlGrafico {
     private ScrollPane scrollReviews;
 
     private ManageReviewCtrlApplicativo controllerApplicativo;
+
+    private static final Logger LOGGER = Logger.getLogger(ManageReviewsCtrlGrafico.class.getName());
 
     @FXML
     public void initialize() {
@@ -48,7 +49,7 @@ public class ManageReviewsCtrlGrafico extends HomeCtrlGrafico {
             popolaListaRecensioni(recensioni);
 
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.log(Level.SEVERE, "Errore nel caricamento delle recensioni o nel grafico", e);
         }
     }
 

@@ -7,7 +7,9 @@ public class RecensioneBean {
     private String recensione;
     private int sentimentValue;
 
-    public RecensioneBean() {}
+    public RecensioneBean() {
+        // Costruttore vuoto necessario per JavaFX / FXML / deserializzazione
+    }
 
     public int getId() {
         return id;

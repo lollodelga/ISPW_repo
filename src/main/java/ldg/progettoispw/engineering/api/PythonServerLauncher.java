@@ -8,9 +8,7 @@ public class PythonServerLauncher {
     private static Process serverProcess;
     private static volatile boolean monitorActive = false;
 
-    /**
-     * Avvia il monitor che assicura che il server Python sia sempre attivo.
-     */
+    /** Avvia il monitor che assicura che il server Python sia sempre attivo. */
     public static synchronized void launch() {
         if (monitorActive) {
             System.out.println("[INFO] Il monitor è già attivo.");
@@ -19,8 +17,8 @@ public class PythonServerLauncher {
 
         monitorActive = true;
 
-        // Thread che controlla continuamente lo stato del server
-        Thread monitorThread = new Thread(() -> {
+        // Thread virtuale che controlla continuamente lo stato del server
+        Thread monitorThread = Thread.ofVirtual().start(() -> {
             while (monitorActive) {
                 try {
                     // Se il processo non esiste o è morto → riavvia
@@ -29,16 +27,14 @@ public class PythonServerLauncher {
                         startPythonServer();
                     }
 
-                    Thread.sleep(3000); // 3 secondi tra un controllo e l’altro
+                    // Sleep senza bloccare un carrier thread reale
+                    Thread.sleep(3000);
 
                 } catch (Exception e) {
                     System.err.println("[ERRORE Monitor]: " + e.getMessage());
                 }
             }
         });
-
-        monitorThread.setDaemon(true);
-        monitorThread.start();
 
         // Hook quando Java termina
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
@@ -49,12 +45,10 @@ public class PythonServerLauncher {
         }));
     }
 
-    /**
-     * Avvia il server uvicorn
-     */
+    /** Avvia il server uvicorn */
     private static void startPythonServer() throws IOException {
         ProcessBuilder pb = new ProcessBuilder(
-                "python",
+                "C:\\Users\\lollo\\AppData\\Local\\Programs\\Python\\Python314\\python.exe",
                 "-m", "uvicorn",
                 "sentiment:app",
                 "--host", "127.0.0.1",
@@ -62,13 +56,11 @@ public class PythonServerLauncher {
                 "--log-level", "critical"
         );
 
-        // 👉 Path assoluto della directory dove c'è sentiment.py
+        // Path assoluto della directory dove c'è sentiment.py
         pb.directory(new File("C:\\Users\\lollo\\Desktop\\Università\\Triennale\\ISPW\\progettoISPW\\src"));
-
         pb.redirectErrorStream(true);
-        serverProcess = pb.start();
 
+        serverProcess = pb.start();
         System.out.println("[SERVER] Uvicorn avviato.");
     }
-
 }
