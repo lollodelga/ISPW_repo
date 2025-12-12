@@ -2,6 +2,9 @@ package ldg.progettoispw.engineering.api;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -15,82 +18,59 @@ public class PythonServerLauncher {
     }
 
     private static Process serverProcess;
-    private static volatile boolean monitorActive = false;
+    private static ScheduledExecutorService scheduler;
 
-    /** Avvia il monitor che assicura che il server Python sia sempre attivo. */
     public static synchronized void launch() {
-        if (isMonitorAlreadyActive()) {
+        // Se lo scheduler esiste già ed è attivo, non facciamo nulla
+        if (scheduler != null && !scheduler.isShutdown()) {
+            LOGGER.info("Il monitor è già attivo.");
             return;
         }
 
-        monitorActive = true;
-        startMonitorThread();
+        startMonitorService();
         registerShutdownHook();
     }
 
-    private static boolean isMonitorAlreadyActive() {
-        if (monitorActive) {
-            // Riga 28: Sostituito System.out con LOGGER.info
-            LOGGER.info("Il monitor è già attivo.");
-            return true;
-        }
-        return false;
-    }
-
-    private static void startMonitorThread() {
-        // 1. Creiamo un Thread classico (Platform Thread)
-        Thread monitor = new Thread(() -> {
-            while (monitorActive) {
-                try {
-                    ensureServerRunning();
-                    // Dorme per 3 secondi prima del prossimo controllo
-                    Thread.sleep(3000);
-
-                } catch (InterruptedException e) {
-                    handleMonitorInterrupted();
-                    break;
-
-                } catch (IOException e) {
-                    LOGGER.log(Level.SEVERE, "Errore nel monitor del server Python", e);
-                }
-            }
+    private static void startMonitorService() {
+        // Creiamo uno scheduler con un thread DAEMON (importante per chiudere l'app)
+        scheduler = Executors.newSingleThreadScheduledExecutor(r -> {
+            Thread t = new Thread(r, "Python-Monitor-Thread");
+            t.setDaemon(true); // Fondamentale: così si chiude quando chiudi JavaFX
+            return t;
         });
 
-        // 2. Impostiamo il nome (utile per il debug se qualcosa si blocca)
-        monitor.setName("Python-Server-Monitor");
-
-        // 3. Impostiamo come DAEMON (Fondamentale!)
-        // Se non metti questo a true, quando chiudi la finestra dell'app JavaFX,
-        // questo thread continuerà a girare in background impedendo al programma di chiudersi davvero.
-        monitor.setDaemon(true);
-
-        // 4. Avviamo il thread
-        monitor.start();
+        // "Esegui ensureServerRunning ogni 3 secondi"
+        // initialDelay: 0 (parte subito)
+        // period: 3 (ogni 3 secondi)
+        // unit: SECONDS
+        scheduler.scheduleWithFixedDelay(() -> {
+            try {
+                ensureServerRunning();
+            } catch (IOException e) {
+                LOGGER.log(Level.SEVERE, "Errore nel monitor del server Python", e);
+            }
+        }, 0, 3, TimeUnit.SECONDS);
     }
 
     private static void ensureServerRunning() throws IOException {
         if (serverProcess == null || !serverProcess.isAlive()) {
-            // Riga 54: Sostituito System.out con LOGGER.info
             LOGGER.info("Uvicorn non attivo. Avvio in corso...");
             startPythonServer();
         }
     }
 
-    private static void handleMonitorInterrupted() {
-        Thread.currentThread().interrupt();
-        // Riga 61: Sostituito System.out con LOGGER.info
-        LOGGER.info("Thread interrotto, uscita dal monitor.");
-    }
-
     private static void registerShutdownHook() {
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-            monitorActive = false;
+            // Spegniamo lo scheduler in modo pulito
+            if (scheduler != null) {
+                scheduler.shutdownNow();
+            }
+            // Uccidiamo il processo Python
             if (serverProcess != null && serverProcess.isAlive()) {
                 serverProcess.destroy();
             }
         }));
     }
-
     /** Avvia il server uvicorn */
     private static void startPythonServer() throws IOException {
 
