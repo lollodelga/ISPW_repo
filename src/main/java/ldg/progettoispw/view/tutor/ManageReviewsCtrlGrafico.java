@@ -32,6 +32,7 @@ public class ManageReviewsCtrlGrafico extends HomeCtrlGrafico {
 
     private static final Logger LOGGER = Logger.getLogger(ManageReviewsCtrlGrafico.class.getName());
 
+    @Override
     @FXML
     public void initialize() {
         controllerApplicativo = new ManageReviewCtrlApplicativo();

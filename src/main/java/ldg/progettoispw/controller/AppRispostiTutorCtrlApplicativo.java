@@ -53,11 +53,7 @@ public class AppRispostiTutorCtrlApplicativo {
             }
 
         } catch (DBException e) {
-            if (LOGGER.isLoggable(Level.SEVERE)) {
-                LOGGER.log(Level.SEVERE,
-                        "Errore nel cambiare stato all'appuntamento: " + e.getMessage(),
-                        e);
-            }
+            LOGGER.log(Level.SEVERE, "Errore nel cambiare stato all'appuntamento", e);
         }
     }
 }

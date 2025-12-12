@@ -2,8 +2,13 @@ package ldg.progettoispw.engineering.api;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class PythonServerLauncher {
+
+    // 1. Dichiarazione del Logger
+    private static final Logger LOGGER = Logger.getLogger(PythonServerLauncher.class.getName());
 
     private PythonServerLauncher() {
         throw new UnsupportedOperationException("Utility class - non deve essere istanziata");
@@ -25,7 +30,8 @@ public class PythonServerLauncher {
 
     private static boolean isMonitorAlreadyActive() {
         if (monitorActive) {
-            System.out.println("[INFO] Il monitor è già attivo.");
+            // Riga 28: Sostituito System.out con LOGGER.info
+            LOGGER.info("Il monitor è già attivo.");
             return true;
         }
         return false;
@@ -38,12 +44,14 @@ public class PythonServerLauncher {
                     ensureServerRunning();
                     Thread.sleep(3000);
 
-                } catch (InterruptedException e) {
+                } catch (InterruptedException _) {
                     handleMonitorInterrupted();
                     break;
 
                 } catch (IOException e) {
-                    System.err.println("[ERRORE Monitor]: " + e.getMessage());
+                    // Riga 46: Sostituito System.err con LOGGER.log(SEVERE)
+                    // Passiamo l'eccezione 'e' così stampa anche lo stack trace se serve
+                    LOGGER.log(Level.SEVERE, "Errore nel monitor del server Python", e);
                 }
             }
         });
@@ -51,14 +59,16 @@ public class PythonServerLauncher {
 
     private static void ensureServerRunning() throws IOException {
         if (serverProcess == null || !serverProcess.isAlive()) {
-            System.out.println("[SERVER] Uvicorn non attivo. Avvio in corso...");
+            // Riga 54: Sostituito System.out con LOGGER.info
+            LOGGER.info("Uvicorn non attivo. Avvio in corso...");
             startPythonServer();
         }
     }
 
     private static void handleMonitorInterrupted() {
         Thread.currentThread().interrupt();
-        System.out.println("[MONITOR] Thread interrotto, uscita dal monitor.");
+        // Riga 61: Sostituito System.out con LOGGER.info
+        LOGGER.info("Thread interrotto, uscita dal monitor.");
     }
 
     private static void registerShutdownHook() {
@@ -70,11 +80,32 @@ public class PythonServerLauncher {
         }));
     }
 
-
     /** Avvia il server uvicorn */
     private static void startPythonServer() throws IOException {
+
+        String pythonExec = "python";
+        String scriptPath = System.getProperty("user.dir") + File.separator + "src";
+
+        java.util.Properties prop = new java.util.Properties();
+        try (java.io.InputStream input = new java.io.FileInputStream("src/main/resources/config.properties")) {
+            prop.load(input);
+
+            String loadedExec = prop.getProperty("python.exec");
+            if (loadedExec != null && !loadedExec.isEmpty()) {
+                pythonExec = loadedExec;
+            }
+
+            String loadedDir = prop.getProperty("python.dir");
+            if (loadedDir != null && !loadedDir.isEmpty()) {
+                scriptPath = loadedDir;
+            }
+
+        } catch (IOException e) {
+            LOGGER.log(Level.WARNING, "Impossibile leggere config.properties, uso configurazioni di default.", e);
+        }
+
         ProcessBuilder pb = new ProcessBuilder(
-                "C:\\Users\\lollo\\AppData\\Local\\Programs\\Python\\Python314\\python.exe",
+                pythonExec,
                 "-m", "uvicorn",
                 "sentiment:app",
                 "--host", "127.0.0.1",
@@ -82,11 +113,16 @@ public class PythonServerLauncher {
                 "--log-level", "critical"
         );
 
-        // Path assoluto della directory dove c'è sentiment.py
-        pb.directory(new File("C:\\Users\\lollo\\Desktop\\Università\\Triennale\\ISPW\\progettoISPW\\src"));
+        File workingDir = new File(scriptPath);
+
+        if (!workingDir.exists()) {
+            LOGGER.log(Level.WARNING, "Attenzione: La cartella configurata non esiste: {0}", scriptPath);
+        }
+
+        pb.directory(workingDir);
         pb.redirectErrorStream(true);
 
         serverProcess = pb.start();
-        System.out.println("[SERVER] Uvicorn avviato.");
+        LOGGER.info("Uvicorn avviato correttamente.");
     }
 }

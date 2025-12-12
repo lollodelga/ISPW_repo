@@ -3,6 +3,7 @@ package ldg.progettoispw.view.tutor;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Alert; // Import necessario per l'Alert
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.AnchorPane;
@@ -34,13 +35,15 @@ public class AppRispostiTutorCtrlGrafico extends HomeCtrlGrafico implements Init
 
     private AppRispostiTutorCtrlApplicativo ctrlApp;
     private AppointmentBean selectedAppointment;
+
+    // Logger
     private static final Logger LOGGER = Logger.getLogger(AppRispostiTutorCtrlGrafico.class.getName());
     private static final String WHITE_TEXT_STYLE = "-fx-text-fill: white;";
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         ctrlApp = new AppRispostiTutorCtrlApplicativo();
-        appointmentPane.setVisible(false); // popup inizialmente nascosto
+        appointmentPane.setVisible(false);
 
         try {
             List<AppointmentBean> appointments = ctrlApp.getAppuntamentiTutor();
@@ -49,17 +52,23 @@ public class AppRispostiTutorCtrlGrafico extends HomeCtrlGrafico implements Init
                 resultsContainer.getChildren().add(box);
             }
         } catch (DBException e) {
-            LOGGER.log(Level.SEVERE, "Errore nel database: " + e.getMessage(), e);
+            // --- CORREZIONE RIGA 52 ---
+            // Rimosso il "+ e.getMessage()".
+            // Passiamo l'eccezione come parametro separato.
+            LOGGER.log(Level.SEVERE, "Errore nel caricamento appuntamenti tutor", e);
+
+            // AGGIUNTA FONDAMENTALE PER ESAME: Avviso l'utente!
+            showError("Errore Caricamento", "Impossibile recuperare gli appuntamenti dal database.");
         }
     }
 
+    // ... (metodo createAppointmentBox uguale a prima) ...
     private VBox createAppointmentBox(AppointmentBean bean) {
         VBox box = new VBox();
         box.setSpacing(5);
         box.setStyle("-fx-background-color: #3498DB55; -fx-padding: 10; -fx-background-radius: 10; -fx-border-radius: 10; -fx-border-color: #ffffffAA;");
         box.setOnMouseClicked(event -> showAppointmentDetails(bean));
 
-        // Label specifiche per il box della lista
         Label lblStudenteBox = new Label("Studente: " + bean.getStudenteEmail());
         Label lblDataBox = new Label("Data: " + bean.getData());
         Label lblOraBox = new Label("Ora: " + bean.getOra());
@@ -77,13 +86,11 @@ public class AppRispostiTutorCtrlGrafico extends HomeCtrlGrafico implements Init
     private void showAppointmentDetails(AppointmentBean bean) {
         selectedAppointment = bean;
 
-        // Popola il popup con i dettagli
         lblStudente.setText("Studente: " + bean.getStudenteEmail());
         lblData.setText("Data: " + bean.getData());
         lblOra.setText("Ora: " + bean.getOra());
         lblStato.setText("Stato: " + bean.getStato());
 
-        // Mostra i pulsanti solo se l'appuntamento è confermato
         boolean showActions = "confermato".equalsIgnoreCase(bean.getStato());
         btnAnnulla.setVisible(showActions);
         btnCompletato.setVisible(showActions);
@@ -94,6 +101,7 @@ public class AppRispostiTutorCtrlGrafico extends HomeCtrlGrafico implements Init
     @FXML
     private void onAnnullaClick(ActionEvent event) {
         if (selectedAppointment != null) {
+            // NOTA: Qui dovresti idealmente gestire DBException se updateAppointmentStatus la lancia
             ctrlApp.updateAppointmentStatus(
                     selectedAppointment.getStudenteEmail(),
                     selectedAppointment.getData(),
@@ -110,6 +118,7 @@ public class AppRispostiTutorCtrlGrafico extends HomeCtrlGrafico implements Init
     @FXML
     private void onCompletatoClick(ActionEvent event) {
         if (selectedAppointment != null) {
+            // NOTA: Idem come sopra, se il metodo del controller lancia eccezioni, metti try-catch
             ctrlApp.updateAppointmentStatus(
                     selectedAppointment.getStudenteEmail(),
                     selectedAppointment.getData(),
@@ -121,6 +130,15 @@ public class AppRispostiTutorCtrlGrafico extends HomeCtrlGrafico implements Init
             appointmentPane.setVisible(false);
         }
         switchScene("/ldg/progettoispw/AppRispostiTutor.fxml", event);
+    }
+
+    // --- Metodo Helper per Alert ---
+    private void showError(String title, String message) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
     }
 
     @FXML

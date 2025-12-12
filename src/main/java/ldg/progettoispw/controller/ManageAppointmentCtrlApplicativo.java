@@ -9,7 +9,6 @@ import ldg.progettoispw.engineering.gof.state.AppointmentContext;
 import ldg.progettoispw.model.Appointment;
 
 import java.util.List;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -56,13 +55,8 @@ public class ManageAppointmentCtrlApplicativo {
 
     /**
      * Gestisce un'azione generica (conferma o rifiuta) sull'appuntamento.
-     *
-     * @param bean   il bean ricevuto dal controller grafico
-     * @param action tipo di azione: "conferma" oppure "rifiuta"
-     * @throws DBException              in caso di errore durante l'aggiornamento del database
-     * @throws IllegalArgumentException se l'azione non è valida
      */
-    public void handleAppointmentAction(AppointmentBean bean, String action){
+    public void handleAppointmentAction(AppointmentBean bean, String action) throws DBException {
         // 🔹 Converte il bean nel model
         Appointment model = new Appointment(
                 bean.getId(),
@@ -75,40 +69,26 @@ public class ManageAppointmentCtrlApplicativo {
 
         // 🔹 Crea il contesto (pattern State)
         AppointmentContext context = new AppointmentContext(model);
-        try {
 
             // 🔹 Esegue l’azione richiesta
-            switch (action.toLowerCase()) {
-                case "conferma" -> context.confirm();
-                case "rifiuta" -> context.cancel();
-                default -> throw new IllegalArgumentException("Azione non valida: " + action);
+        switch (action.toLowerCase()) {
+            case "conferma" -> context.confirm();
+            case "rifiuta" -> context.cancel();
+            default -> throw new IllegalArgumentException("Azione non valida: " + action);
             }
-
-        } catch (DBException e) {
-            if (LOGGER.isLoggable(Level.SEVERE)) {
-                LOGGER.log(Level.SEVERE,
-                        "Errore nel database: " + e.getMessage(),
-                        e);
-            }
-        }
     }
 
     /**
      * Metodo helper per confermare un appuntamento.
-     *
-     * @param bean AppointmentBean dell’appuntamento da confermare
      */
-    public void confermaAppuntamento(AppointmentBean bean) {
+    public void confermaAppuntamento(AppointmentBean bean) throws DBException {
         handleAppointmentAction(bean, "conferma");
     }
 
     /**
      * Metodo helper per rifiutare un appuntamento.
-     *
-     * @param bean AppointmentBean dell’appuntamento da rifiutare
      */
-    public void rifiutaAppuntamento(AppointmentBean bean) {
+    public void rifiutaAppuntamento(AppointmentBean bean) throws DBException {
         handleAppointmentAction(bean, "rifiuta");
-
     }
 }
