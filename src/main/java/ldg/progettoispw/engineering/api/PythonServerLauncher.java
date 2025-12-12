@@ -38,23 +38,34 @@ public class PythonServerLauncher {
     }
 
     private static void startMonitorThread() {
-        Thread.ofVirtual().start(() -> {
+        // 1. Creiamo un Thread classico (Platform Thread)
+        Thread monitor = new Thread(() -> {
             while (monitorActive) {
                 try {
                     ensureServerRunning();
+                    // Dorme per 3 secondi prima del prossimo controllo
                     Thread.sleep(3000);
 
-                } catch (InterruptedException _) {
+                } catch (InterruptedException e) {
                     handleMonitorInterrupted();
                     break;
 
                 } catch (IOException e) {
-                    // Riga 46: Sostituito System.err con LOGGER.log(SEVERE)
-                    // Passiamo l'eccezione 'e' così stampa anche lo stack trace se serve
                     LOGGER.log(Level.SEVERE, "Errore nel monitor del server Python", e);
                 }
             }
         });
+
+        // 2. Impostiamo il nome (utile per il debug se qualcosa si blocca)
+        monitor.setName("Python-Server-Monitor");
+
+        // 3. Impostiamo come DAEMON (Fondamentale!)
+        // Se non metti questo a true, quando chiudi la finestra dell'app JavaFX,
+        // questo thread continuerà a girare in background impedendo al programma di chiudersi davvero.
+        monitor.setDaemon(true);
+
+        // 4. Avviamo il thread
+        monitor.start();
     }
 
     private static void ensureServerRunning() throws IOException {
