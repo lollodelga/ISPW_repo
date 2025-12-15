@@ -2,6 +2,7 @@ package ldg.progettoispw.view;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import ldg.progettoispw.controller.HomePageController;
 import ldg.progettoispw.util.GControllerHome;
@@ -30,6 +31,21 @@ public abstract class HomeCtrlGrafico extends BaseGCon implements GControllerHom
         labelData.setText("Nascita: " + birthDate);
     }
 
+    protected void showError(String title, String message) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
+
+    protected void showSuccess(String title, String message) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
 
     @FXML
     void logout(ActionEvent event) {

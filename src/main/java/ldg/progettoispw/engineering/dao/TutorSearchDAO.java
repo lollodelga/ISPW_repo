@@ -1,38 +1,30 @@
 package ldg.progettoispw.engineering.dao;
 
 import ldg.progettoispw.engineering.exception.DBException;
+import ldg.progettoispw.engineering.query.TutorSearchQuery;
 import ldg.progettoispw.model.Tutor;
 
-import java.sql.*;
-import java.util.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 public class TutorSearchDAO {
 
     private final ConnectionFactory connectionFactory = ConnectionFactory.getInstance();
 
-    private static final String FIND_TUTORS_BY_SUBJECT = """
-        SELECT u.email, u.nome, u.cognome, s.materia
-        FROM user u
-        JOIN assusersubject aus ON u.email = aus.tutor_email
-        JOIN subject s ON aus.subject_id = s.id
-        WHERE u.ruolo = 1 AND s.materia LIKE ?
-        ORDER BY u.cognome, u.nome
-        """;
-
     public List<Tutor> findTutorsBySubject(String subject) throws DBException {
+        // Uso una LinkedHashMap per mantenere l'ordine di inserimento
+        // ed evitare duplicati dello stesso tutor se insegna più materie simili.
         Map<String, Tutor> tutorMap = new LinkedHashMap<>();
 
-        String query = """
-        SELECT u.email, u.nome, u.cognome, s.materia
-        FROM user u
-        JOIN assusersubject aus ON u.email = aus.tutor
-        JOIN subject s ON aus.subject = s.materia
-        WHERE u.ruolo = 1 AND s.materia LIKE ?
-        ORDER BY u.cognome, u.nome
-        """;
-
+        // Utilizzo la query dalla classe esterna
         try (Connection conn = connectionFactory.getDBConnection();
-             PreparedStatement ps = conn.prepareStatement(query)) {
+             PreparedStatement ps = conn.prepareStatement(TutorSearchQuery.FIND_TUTORS_BY_SUBJECT)) {
 
             ps.setString(1, "%" + subject + "%");
 
@@ -43,22 +35,19 @@ public class TutorSearchDAO {
                     String cognome = rs.getString("cognome");
                     String materia = rs.getString("materia");
 
-                    Tutor tutor = tutorMap.get(email);
-                    if (tutor == null) {
-                        tutor = new Tutor(email, nome, cognome);
-                        tutorMap.put(email, tutor);
-                    }
+                    // Logica di aggregazione: se il tutor è già nella mappa, lo recupero,
+                    // altrimenti lo creo e lo aggiungo.
+                    Tutor tutor = tutorMap.computeIfAbsent(email, k -> new Tutor(k, nome, cognome));
 
+                    // Aggiungo la materia alla lista delle competenze del tutor
                     tutor.addMateria(materia);
                 }
             }
 
         } catch (SQLException e) {
-            throw new DBException("Errore durante la ricerca dei tutor per materia.", e);
+            throw new DBException("Errore durante la ricerca dei tutor per materia: " + e.getMessage(), e);
         }
 
         return new ArrayList<>(tutorMap.values());
     }
-
-
 }

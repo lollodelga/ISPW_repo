@@ -3,7 +3,6 @@ package ldg.progettoispw.view.tutor;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Alert; // Import necessario per l'Alert
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.AnchorPane;
@@ -130,15 +129,6 @@ public class AppRispostiTutorCtrlGrafico extends HomeCtrlGrafico implements Init
             appointmentPane.setVisible(false);
         }
         switchScene("/ldg/progettoispw/AppRispostiTutor.fxml", event);
-    }
-
-    // --- Metodo Helper per Alert ---
-    private void showError(String title, String message) {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle(title);
-        alert.setHeaderText(null);
-        alert.setContentText(message);
-        alert.showAndWait();
     }
 
     @FXML

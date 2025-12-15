@@ -124,14 +124,6 @@ public class ManageAppointmentCtrlGrafico extends HomeCtrlGrafico {
         }
     }
 
-    private void showError(String title, String message) {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle(title);
-        alert.setHeaderText(null); // Rimuove l'header per pulizia
-        alert.setContentText(message);
-        alert.showAndWait();
-    }
-
     @FXML
     private void onChiudiClick(ActionEvent event) {
         appointmentPane.setVisible(false);

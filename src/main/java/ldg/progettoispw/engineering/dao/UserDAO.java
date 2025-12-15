@@ -1,6 +1,7 @@
 package ldg.progettoispw.engineering.dao;
 
 import ldg.progettoispw.engineering.exception.DBException;
+import ldg.progettoispw.engineering.query.UserQuery;
 
 import java.sql.*;
 import java.text.SimpleDateFormat;
@@ -16,10 +17,10 @@ public class UserDAO {
      */
     public String[] takeData(String email, String password) throws DBException {
         String[] data = new String[6];
-        String query = "SELECT nome, cognome, compleanno, ruolo FROM user WHERE email = ? AND password = ?";
 
+        // Usa la query dalla classe esterna
         try (Connection conn = cf.getDBConnection();
-             PreparedStatement ps = conn.prepareStatement(query)) {
+             PreparedStatement ps = conn.prepareStatement(UserQuery.SELECT_USER_DATA)) {
 
             ps.setString(1, email);
             ps.setString(2, password);
@@ -30,6 +31,7 @@ public class UserDAO {
                     data[1] = rs.getString("cognome");
 
                     Date date = rs.getDate("compleanno");
+                    // Uso SimpleDateFormat per convertire la data SQL in Stringa
                     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
                     data[2] = (date != null) ? sdf.format(date) : null;
 
@@ -51,17 +53,10 @@ public class UserDAO {
      * Ritorna una stringa con le materie separate da virgola, es. "Matematica, Inglese, Storia"
      */
     public String takeSubjects(String email) throws DBException {
-        String query = """
-            SELECT s.materia 
-            FROM assusersubject a 
-            JOIN subject s ON a.subject = s.materia 
-            WHERE a.tutor = ?
-        """;
-
         List<String> subjects = new ArrayList<>();
 
         try (Connection conn = cf.getDBConnection();
-             PreparedStatement ps = conn.prepareStatement(query)) {
+             PreparedStatement ps = conn.prepareStatement(UserQuery.SELECT_SUBJECTS_BY_TUTOR)) {
 
             ps.setString(1, email);
 
