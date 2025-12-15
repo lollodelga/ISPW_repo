@@ -5,12 +5,10 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.layout.VBox; // Nota: AnchorPane non serve importarlo qui se usato solo dal padre
+import javafx.scene.layout.VBox;
 import ldg.progettoispw.controller.AppRispostiTutorCtrlApplicativo;
 import ldg.progettoispw.engineering.bean.AppointmentBean;
 import ldg.progettoispw.engineering.exception.DBException;
-// Importa la nuova base
-// import ldg.progettoispw.view.tutor.BaseAppointmentCtrlGrafico;
 
 import java.net.URL;
 import java.util.List;
@@ -18,14 +16,10 @@ import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-// ESTENDE LA NUOVA CLASSE BASE
 public class AppRispostiTutorCtrlGrafico extends BaseAppointmentCtrlGrafico implements Initializable {
 
     @FXML private Button btnAnnulla;
     @FXML private Button btnCompletato;
-    @FXML private Button btnChiudi;
-
-    // I campi (lblStudente, lblData, appointmentPane, resultsContainer, etc.) SONO STATI RIMOSSI
 
     private AppRispostiTutorCtrlApplicativo ctrlApp;
     private AppointmentBean selectedAppointment;

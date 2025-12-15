@@ -14,6 +14,8 @@ import ldg.progettoispw.view.HomeCtrlGrafico;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class BookAppointmentCtrlGrafico extends HomeCtrlGrafico {
 
@@ -26,17 +28,22 @@ public class BookAppointmentCtrlGrafico extends HomeCtrlGrafico {
     @FXML private Label statusLabel;
     @FXML private AnchorPane appointmentPane;
 
+    private static final Logger LOGGER = Logger.getLogger(BookAppointmentCtrlGrafico.class.getName());
+
+    private final BookAppointmentCtrlApplicativo appCtrl = new BookAppointmentCtrlApplicativo();
+    private TutorBean selectedTutor;
+
     @Override
     @FXML
     public void initialize() {
-        for (int h = 8; h <= 18; h++) { // es. 8:00–18:00
+        // 1. FONDAMENTALE: Carica i dati utente dalla classe padre
+        super.initialize();
+
+        // Inizializza la combo delle ore
+        for (int h = 8; h <= 18; h++) {
             hourCombo.getItems().add(String.format("%02d:00", h));
         }
     }
-
-
-    private final BookAppointmentCtrlApplicativo appCtrl = new BookAppointmentCtrlApplicativo();
-    private TutorBean selectedTutor; // per sapere quale tutor l’utente ha selezionato
 
     @FXML
     public void searchTutor() {
@@ -50,11 +57,9 @@ public class BookAppointmentCtrlGrafico extends HomeCtrlGrafico {
             return;
         }
 
-        // ✅ Crea il bean per la materia
         SubjectBean subjectBean = new SubjectBean(subjectInput);
 
         try {
-            // ✅ Chiamata al controller applicativo
             List<TutorBean> tutors = appCtrl.searchTutorBySubject(subjectBean);
 
             if (tutors.isEmpty()) {
@@ -63,7 +68,7 @@ public class BookAppointmentCtrlGrafico extends HomeCtrlGrafico {
                 return;
             }
 
-            // ✅ Mostra al massimo 10 risultati
+            // Mostra al massimo 10 risultati
             List<TutorBean> limitedTutors = tutors.stream().limit(10).toList();
 
             for (TutorBean tutor : limitedTutors) {
@@ -73,49 +78,43 @@ public class BookAppointmentCtrlGrafico extends HomeCtrlGrafico {
                 );
                 tutorButton.setStyle(
                         "-fx-font-size: 15px; -fx-background-color: #f0f0f0; " +
-                                "-fx-padding: 6; -fx-background-radius: 10;"
+                                "-fx-padding: 6; -fx-background-radius: 10; -fx-cursor: hand;"
                 );
+                tutorButton.setMaxWidth(Double.MAX_VALUE);
+
                 tutorButton.setOnAction(e -> selectTutor(tutor));
                 resultsContainer.getChildren().add(tutorButton);
             }
 
-            // ✅ Rende visibile la scrollPane solo dopo la ricerca
             scrollResults.setVisible(true);
 
-        } catch (DBException _) {
-            errorLabel.setText("Errore durante la ricerca nel database.");
+        } catch (DBException e) {
+            LOGGER.log(Level.SEVERE, "Errore durante la ricerca tutor", e);
+            errorLabel.setText("Errore di connessione al database.");
             errorLabel.setVisible(true);
         }
     }
 
-    // quando l'utente clicca su un tutor
     private void selectTutor(TutorBean tutor) {
         this.selectedTutor = tutor;
 
         errorLabel.setText("Tutor selezionato: " + tutor.getNome() + " " + tutor.getCognome());
         errorLabel.setVisible(true);
 
-        // Mostra il pannello prenotazione
         appointmentPane.setVisible(true);
 
-        // Reset dei campi
         statusLabel.setVisible(false);
         datePicker.setValue(LocalDate.now());
     }
 
     @FXML
     private void cancelSelection(ActionEvent event) {
-        // Nascondi la finestra di prenotazione
         appointmentPane.setVisible(false);
-
-        // Rimuovi la selezione corrente
         selectedTutor = null;
 
-        // Mostra un messaggio informativo
         errorLabel.setText("Nessun tutor selezionato. Seleziona un altro tutor per continuare.");
         errorLabel.setVisible(true);
 
-        // Ripristina eventuali campi
         statusLabel.setVisible(false);
         datePicker.setValue(null);
         hourCombo.getSelectionModel().clearSelection();
@@ -125,7 +124,6 @@ public class BookAppointmentCtrlGrafico extends HomeCtrlGrafico {
     public void bookAppointment(ActionEvent event) {
         statusLabel.setVisible(false);
 
-        // 🔹 Controllo tutor selezionato
         if (selectedTutor == null) {
             statusLabel.setText("Seleziona prima un tutor.");
             statusLabel.setTextFill(Color.RED);
@@ -133,36 +131,39 @@ public class BookAppointmentCtrlGrafico extends HomeCtrlGrafico {
             return;
         }
 
-        // 🔹 Recupero data e ora
         LocalDate selectedDate = datePicker.getValue();
         String hourText = hourCombo.getValue();
 
         if (selectedDate == null || hourText == null || hourText.isEmpty()) {
-            statusLabel.setText("Inserisci data e ora (es. 09:00).");
+            statusLabel.setText("Inserisci data e ora validi.");
             statusLabel.setTextFill(Color.RED);
             statusLabel.setVisible(true);
             return;
         }
 
-        // 🔹 Parsing dell’ora (formato garantito dalla ComboBox: HH:00)
         int hour;
         try {
             hour = Integer.parseInt(hourText.split(":")[0]);
-        } catch (NumberFormatException _) {
-            statusLabel.setText("Formato ora non valido. Usa HH:00 (es. 09:00).");
-            statusLabel.setTextFill(Color.RED);
+        } catch (NumberFormatException e) {
+            statusLabel.setText("Formato ora non valido.");
             statusLabel.setVisible(true);
             return;
         }
 
-        // 🔹 Prenotazione effettiva
         try {
             appCtrl.bookAppointment(selectedTutor, selectedDate, hour);
-            statusLabel.setText("Appuntamento prenotato con successo!");
-            statusLabel.setTextFill(Color.GREEN);
-            statusLabel.setVisible(true);
-            appointmentPane.setVisible(false); // chiudi il pannello dopo la prenotazione
+
+            // CHIUDE il pannello e mostra un POPUP di successo
+            appointmentPane.setVisible(false);
+            showSuccess("Prenotazione Confermata", "Appuntamento prenotato con successo!");
+
+            // Pulisce la selezione per evitare doppie prenotazioni
+            selectedTutor = null;
+            errorLabel.setText("");
+
         } catch (DBException e) {
+            // Gestione errore DB con Logger e UI
+            LOGGER.log(Level.SEVERE, "Errore prenotazione appuntamento", e);
             statusLabel.setText("Errore: " + e.getMessage());
             statusLabel.setTextFill(Color.RED);
             statusLabel.setVisible(true);

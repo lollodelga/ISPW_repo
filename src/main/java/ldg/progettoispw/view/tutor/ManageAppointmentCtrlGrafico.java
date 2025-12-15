@@ -10,16 +10,15 @@ import ldg.progettoispw.engineering.exception.DBException;
 
 import java.util.List;
 
-// ESTENDE LA NUOVA CLASSE BASE
 public class ManageAppointmentCtrlGrafico extends BaseAppointmentCtrlGrafico {
-
-    // I campi FXML duplicati sono stati rimossi perché ereditati
 
     private ManageAppointmentCtrlApplicativo ctrlApplicativo;
     private AppointmentBean selectedAppointment;
 
+    @Override
     @FXML
     public void initialize() {
+        super.initialize();
         ctrlApplicativo = new ManageAppointmentCtrlApplicativo();
         appointmentPane.setVisible(false);
         loadPendingAppointments();

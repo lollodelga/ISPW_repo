@@ -25,9 +25,6 @@ public class ManageReviewsCtrlGrafico extends HomeCtrlGrafico {
     @FXML
     private VBox reviewsContainer;
 
-    @FXML
-    private ScrollPane scrollReviews;
-
     private ManageReviewCtrlApplicativo controllerApplicativo;
 
     private static final Logger LOGGER = Logger.getLogger(ManageReviewsCtrlGrafico.class.getName());
