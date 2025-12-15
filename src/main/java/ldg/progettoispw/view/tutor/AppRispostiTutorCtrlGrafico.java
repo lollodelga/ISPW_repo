@@ -5,12 +5,12 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.VBox; // Nota: AnchorPane non serve importarlo qui se usato solo dal padre
 import ldg.progettoispw.controller.AppRispostiTutorCtrlApplicativo;
 import ldg.progettoispw.engineering.bean.AppointmentBean;
 import ldg.progettoispw.engineering.exception.DBException;
-import ldg.progettoispw.view.HomeCtrlGrafico;
+// Importa la nuova base
+// import ldg.progettoispw.view.tutor.BaseAppointmentCtrlGrafico;
 
 import java.net.URL;
 import java.util.List;
@@ -18,24 +18,18 @@ import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class AppRispostiTutorCtrlGrafico extends HomeCtrlGrafico implements Initializable {
+// ESTENDE LA NUOVA CLASSE BASE
+public class AppRispostiTutorCtrlGrafico extends BaseAppointmentCtrlGrafico implements Initializable {
 
     @FXML private Button btnAnnulla;
     @FXML private Button btnCompletato;
     @FXML private Button btnChiudi;
 
-    @FXML private Label lblStudente;
-    @FXML private Label lblData;
-    @FXML private Label lblOra;
-    @FXML private Label lblStato;
-
-    @FXML private VBox resultsContainer;
-    @FXML private AnchorPane appointmentPane;
+    // I campi (lblStudente, lblData, appointmentPane, resultsContainer, etc.) SONO STATI RIMOSSI
 
     private AppRispostiTutorCtrlApplicativo ctrlApp;
     private AppointmentBean selectedAppointment;
 
-    // Logger
     private static final Logger LOGGER = Logger.getLogger(AppRispostiTutorCtrlGrafico.class.getName());
     private static final String WHITE_TEXT_STYLE = "-fx-text-fill: white;";
 
@@ -51,17 +45,11 @@ public class AppRispostiTutorCtrlGrafico extends HomeCtrlGrafico implements Init
                 resultsContainer.getChildren().add(box);
             }
         } catch (DBException e) {
-            // --- CORREZIONE RIGA 52 ---
-            // Rimosso il "+ e.getMessage()".
-            // Passiamo l'eccezione come parametro separato.
             LOGGER.log(Level.SEVERE, "Errore nel caricamento appuntamenti tutor", e);
-
-            // AGGIUNTA FONDAMENTALE PER ESAME: Avviso l'utente!
             showError("Errore Caricamento", "Impossibile recuperare gli appuntamenti dal database.");
         }
     }
 
-    // ... (metodo createAppointmentBox uguale a prima) ...
     private VBox createAppointmentBox(AppointmentBean bean) {
         VBox box = new VBox();
         box.setSpacing(5);
@@ -85,6 +73,7 @@ public class AppRispostiTutorCtrlGrafico extends HomeCtrlGrafico implements Init
     private void showAppointmentDetails(AppointmentBean bean) {
         selectedAppointment = bean;
 
+        // Accesso ai campi ereditati
         lblStudente.setText("Studente: " + bean.getStudenteEmail());
         lblData.setText("Data: " + bean.getData());
         lblOra.setText("Ora: " + bean.getOra());
@@ -100,7 +89,6 @@ public class AppRispostiTutorCtrlGrafico extends HomeCtrlGrafico implements Init
     @FXML
     private void onAnnullaClick(ActionEvent event) {
         if (selectedAppointment != null) {
-            // NOTA: Qui dovresti idealmente gestire DBException se updateAppointmentStatus la lancia
             ctrlApp.updateAppointmentStatus(
                     selectedAppointment.getStudenteEmail(),
                     selectedAppointment.getData(),
@@ -117,7 +105,6 @@ public class AppRispostiTutorCtrlGrafico extends HomeCtrlGrafico implements Init
     @FXML
     private void onCompletatoClick(ActionEvent event) {
         if (selectedAppointment != null) {
-            // NOTA: Idem come sopra, se il metodo del controller lancia eccezioni, metti try-catch
             ctrlApp.updateAppointmentStatus(
                     selectedAppointment.getStudenteEmail(),
                     selectedAppointment.getData(),

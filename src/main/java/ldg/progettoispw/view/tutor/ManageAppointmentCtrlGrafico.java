@@ -1,49 +1,23 @@
 package ldg.progettoispw.view.tutor;
 
-import javafx.scene.control.Alert;
 import javafx.event.ActionEvent;
-import ldg.progettoispw.controller.ManageAppointmentCtrlApplicativo;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.VBox;
+import ldg.progettoispw.controller.ManageAppointmentCtrlApplicativo;
 import ldg.progettoispw.engineering.bean.AppointmentBean;
 import ldg.progettoispw.engineering.exception.DBException;
-import ldg.progettoispw.view.HomeCtrlGrafico;
 
 import java.util.List;
 
+// ESTENDE LA NUOVA CLASSE BASE
+public class ManageAppointmentCtrlGrafico extends BaseAppointmentCtrlGrafico {
 
-/**
- * Controller grafico per la gestione delle richieste di appuntamento da parte dei tutor.
- *
- * Quando viene inizializzato:
- *  - recupera la lista di appuntamenti in attesa tramite ManageAppointmentCtrlApplicativo
- *  - crea un pulsante per ciascun appuntamento
- *  - al click sul pulsante mostra un piccolo pannello (appointmentPane)
- *
- * Il pannello sarà in seguito completato con pulsanti di conferma/rifiuto/chiusura.
- */
-public class ManageAppointmentCtrlGrafico extends HomeCtrlGrafico {
-
-    @FXML
-    private Label lblStudente;
-    @FXML
-    private Label lblData;
-    @FXML
-    private Label lblOra;
-    @FXML
-    private Label lblStato;
-    @FXML
-    private VBox resultsContainer;
-    @FXML
-    private AnchorPane appointmentPane;
+    // I campi FXML duplicati sono stati rimossi perché ereditati
 
     private ManageAppointmentCtrlApplicativo ctrlApplicativo;
     private AppointmentBean selectedAppointment;
 
-    @Override
     @FXML
     public void initialize() {
         ctrlApplicativo = new ManageAppointmentCtrlApplicativo();
@@ -79,13 +53,10 @@ public class ManageAppointmentCtrlGrafico extends HomeCtrlGrafico {
     }
 
     private void openAppointmentPanel(AppointmentBean bean) {
-        // Aggiorna il bean selezionato
         selectedAppointment = bean;
-
-        // Mostra pannello
         appointmentPane.setVisible(true);
 
-        // Aggiorna le label con le informazioni dell'appuntamento
+        // Accesso ai campi ereditati
         lblStudente.setText("Studente: " + bean.getStudenteEmail());
         lblData.setText("Data: " + bean.getData());
         lblOra.setText("Ora: " + bean.getOra());
@@ -95,17 +66,11 @@ public class ManageAppointmentCtrlGrafico extends HomeCtrlGrafico {
     @FXML
     private void onConfermaClick(ActionEvent event) {
         try {
-            // 1. Chiamo il Controller Applicativo (che ora lancia DBException)
             ctrlApplicativo.confermaAppuntamento(selectedAppointment);
-
-            // 2. Se non ci sono errori, ricarico la scena per aggiornare la lista
             switchScene("/ldg/progettoispw/AppPendTutor.fxml", event);
-
         } catch (DBException e) {
-            // 3. GESTIONE ERRORE: Mostro il popup all'utente
             showError("Errore Database", "Impossibile confermare l'appuntamento:\n" + e.getMessage());
         } catch (IllegalArgumentException e) {
-            // Gestisco anche errori di logica (es. stato non valido)
             showError("Attenzione", e.getMessage());
         }
     }
@@ -114,9 +79,7 @@ public class ManageAppointmentCtrlGrafico extends HomeCtrlGrafico {
     private void onRifiutaClick(ActionEvent event) {
         try {
             ctrlApplicativo.rifiutaAppuntamento(selectedAppointment);
-
             switchScene("/ldg/progettoispw/AppPendTutor.fxml", event);
-
         } catch (DBException e) {
             showError("Errore Database", "Impossibile rifiutare l'appuntamento:\n" + e.getMessage());
         } catch (IllegalArgumentException e) {
@@ -129,7 +92,8 @@ public class ManageAppointmentCtrlGrafico extends HomeCtrlGrafico {
         appointmentPane.setVisible(false);
     }
 
-
     @FXML
-    private void backAction(ActionEvent event) { switchScene("/ldg/progettoispw/HomePageTutor.fxml", event);    }
+    private void backAction(ActionEvent event) {
+        switchScene("/ldg/progettoispw/HomePageTutor.fxml", event);
+    }
 }
