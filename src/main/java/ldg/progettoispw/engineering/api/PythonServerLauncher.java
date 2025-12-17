@@ -78,7 +78,7 @@ public class PythonServerLauncher {
         String scriptPath = System.getProperty("user.dir") + File.separator + "src";
 
         java.util.Properties prop = new java.util.Properties();
-        try (java.io.InputStream input = new java.io.FileInputStream("src/main/resources/config.properties")) {
+        try (java.io.InputStream input = new java.io.FileInputStream("resources/config.properties")) {
             prop.load(input);
 
             String loadedExec = prop.getProperty("python.exec");
