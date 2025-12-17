@@ -11,7 +11,7 @@ import java.util.logging.Logger;
 public class ConnectionFactory {
     private static final Logger logger = Logger.getLogger(ConnectionFactory.class.getName());
     private boolean connectedOnce = false;
-    private static final String PATH = "src/main/resources/db.properties";
+    private static final String PATH = "resources/db.properties";
     private static ConnectionFactory instance = null;
     private Connection conn = null;
 
