@@ -138,7 +138,7 @@ class ManageAppointmentCtrlApplicativoTest {
     void testHandleAppointmentAction_InvalidAction() {
         AppointmentBean bean = createDummyBean();
 
-        // Anche se lancia eccezione prima, mockiamo il context per isolare il test
+        // Anche se lancia eccezione dopo, mockiamo il context per isolare il test
         try (MockedConstruction<AppointmentContext> contextMock = mockConstruction(AppointmentContext.class)) {
 
             IllegalArgumentException ex = assertThrows(IllegalArgumentException.class, () ->
@@ -146,6 +146,10 @@ class ManageAppointmentCtrlApplicativoTest {
             );
 
             assertEquals("Azione non valida: azione_inventata", ex.getMessage());
+
+            // ✅ CORREZIONE: Verifichiamo che il Context sia stato comunque istanziato
+            // (perché nel codice il 'new' avviene PRIMA del controllo sullo switch)
+            assertEquals(1, contextMock.constructed().size());
         }
     }
 

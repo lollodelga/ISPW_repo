@@ -74,7 +74,6 @@ class AppRispostiStudenteCtrlApplicativoTest {
         expectedList.add(new AppointmentBean()); // Aggiungiamo un elemento dummy
 
         // 2. Mocking Avanzato
-        // try-with-resources garantisce la chiusura dei mock statici alla fine del test
         try (MockedStatic<LoginSessionManager> sessionMock = mockStatic(LoginSessionManager.class);
              MockedConstruction<AppointmentDAO> daoMock = mockConstruction(AppointmentDAO.class,
                      (mock, context) -> {
@@ -91,7 +90,10 @@ class AppRispostiStudenteCtrlApplicativoTest {
             // 4. Verifica
             assertNotNull(result);
             assertEquals(1, result.size());
-            assertSame(expectedList, result); // Deve essere la stessa lista restituita dal mock
+            assertSame(expectedList, result);
+
+            // ✅ CORREZIONE: Usiamo la variabile per verificare che il costruttore sia stato chiamato 1 volta.
+            assertEquals(1, daoMock.constructed().size());
         }
     }
 
@@ -197,7 +199,7 @@ class AppRispostiStudenteCtrlApplicativoTest {
         // Il DB non deve essere chiamato se fallisce l'analisi prima
         try {
             verify(mockRecensioneDAO, never()).insertRecensione(any());
-        } catch (DBException e) {
+        } catch (DBException _) {
             fail("Non dovrebbe lanciare eccezioni qui");
         }
     }

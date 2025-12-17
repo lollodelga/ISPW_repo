@@ -115,6 +115,9 @@ class AppInAttesaStudenteCtrlApplicativoTest {
             });
 
             assertEquals("Errore di connessione", exception.getMessage());
+
+            // ✅ CORREZIONE: Usiamo la variabile per verificare che il DAO sia stato creato
+            assertEquals(1, daoMock.constructed().size());
         }
     }
 }

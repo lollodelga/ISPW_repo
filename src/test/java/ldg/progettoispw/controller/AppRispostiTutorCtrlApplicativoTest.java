@@ -114,7 +114,7 @@ class AppRispostiTutorCtrlApplicativoTest {
             try {
                 verify(mockCreatedContext).complete();
                 verify(mockCreatedContext, never()).cancel(); // Assicuriamoci che non abbia chiamato cancel
-            } catch (DBException e) {
+            } catch (DBException _) {
                 fail("Non dovrebbe lanciare eccezioni nei verify");
             }
         }
@@ -138,7 +138,7 @@ class AppRispostiTutorCtrlApplicativoTest {
             try {
                 verify(mockCreatedContext).cancel(); // Deve chiamare cancel
                 verify(mockCreatedContext, never()).complete();
-            } catch (DBException e) {
+            } catch (DBException _) {
                 fail("Non dovrebbe lanciare eccezioni");
             }
         }
@@ -163,7 +163,7 @@ class AppRispostiTutorCtrlApplicativoTest {
             try {
                 verify(mockCreatedContext, never()).complete();
                 verify(mockCreatedContext, never()).cancel();
-            } catch (DBException e) {
+            } catch (DBException _) {
                 fail("Non dovrebbe lanciare eccezioni");
             }
         }

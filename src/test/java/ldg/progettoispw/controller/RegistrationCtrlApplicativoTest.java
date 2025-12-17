@@ -176,7 +176,7 @@ class RegistrationCtrlApplicativoTest {
             RegistrationDAO createdDao = daoMock.constructed().get(0);
             try {
                 verify(createdDao, never()).insertSubject(anyString());
-            } catch (DBException e) {
+            } catch (DBException _) {
                 // ignore
             }
         }
@@ -200,6 +200,9 @@ class RegistrationCtrlApplicativoTest {
             int result = controller.registerUser(bean);
 
             assertEquals(DB_ERROR, result);
+
+            // ✅ CORREZIONE: Usiamo la variabile per confermare che il DAO è stato creato
+            assertEquals(1, daoMock.constructed().size());
         }
     }
 
