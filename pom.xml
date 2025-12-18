@@ -90,7 +90,7 @@
                 <artifactId>javafx-maven-plugin</artifactId>
                 <version>0.0.8</version>
                 <configuration>
-                    <mainClass>ldg.progettoispw.Main</mainClass>
+                    <mainClass>ldg.progettoispw/ldg.progettoispw.Main</mainClass>
                 </configuration>
             </plugin>
 

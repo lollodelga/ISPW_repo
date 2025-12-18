@@ -8,6 +8,7 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
+import java.net.URI;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 
@@ -21,7 +22,7 @@ public class SentimentClient {
      */
     public String getSentiment(String text) throws SentimentException {
         try {
-            URL url = new URL("http://127.0.0.1:8000/bert-sentiment");
+            URL url = URI.create("http://127.0.0.1:8000/bert-sentiment").toURL();
 
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("POST");

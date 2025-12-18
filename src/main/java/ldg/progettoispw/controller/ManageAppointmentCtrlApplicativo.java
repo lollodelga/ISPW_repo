@@ -9,7 +9,6 @@ import ldg.progettoispw.engineering.gof.state.AppointmentContext;
 import ldg.progettoispw.model.Appointment;
 
 import java.util.List;
-import java.util.logging.Logger;
 
 /**
  * Controller applicativo per la gestione degli appuntamenti dei tutor.
@@ -28,7 +27,6 @@ public class ManageAppointmentCtrlApplicativo {
         //lo tengo vuoto, perché voglio sia istanziato senza fare nulla
     }
 
-    private static final Logger LOGGER = Logger.getLogger(ManageAppointmentCtrlApplicativo.class.getName());
     /**
      * Recupera tutti gli appuntamenti con stato "in_attesa" per il tutor attualmente loggato.
      *
@@ -70,12 +68,12 @@ public class ManageAppointmentCtrlApplicativo {
         // 🔹 Crea il contesto (pattern State)
         AppointmentContext context = new AppointmentContext(model);
 
-            // 🔹 Esegue l’azione richiesta
+        // 🔹 Esegue l’azione richiesta
         switch (action.toLowerCase()) {
             case "conferma" -> context.confirm();
             case "rifiuta" -> context.cancel();
             default -> throw new IllegalArgumentException("Azione non valida: " + action);
-            }
+        }
     }
 
     /**
