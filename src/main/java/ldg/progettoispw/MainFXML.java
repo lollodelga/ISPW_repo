@@ -8,7 +8,7 @@ import javafx.stage.Stage;
 import ldg.progettoispw.engineering.applicativo.LoginSessionManager;
 import ldg.progettoispw.engineering.dao.ConnectionFactory;
 
-public class MainProgetto extends Application {
+public class MainFXML extends Application {
     @Override
     public void start(Stage stage) throws Exception {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("FirstPage.fxml"));
