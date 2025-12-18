@@ -11,10 +11,6 @@ import java.util.List;
 public class AppointmentDAO {
     private final ConnectionFactory connectionFactory = ConnectionFactory.getInstance();
 
-    private static final String FIELD_STUDENTE_EMAIL = AppointmentQuery.FIELD_STUDENTE_EMAIL;
-    private static final String FIELD_TUTOR_EMAIL = AppointmentQuery.FIELD_TUTOR_EMAIL;
-
-
     public void insertAppointment(String studentEmail, String tutorEmail, Date date, Time time) throws DBException {
         if (!isTutorAvailable(tutorEmail, date, time))
             throw new DBException("Orario non disponibile per il tutor selezionato.");
