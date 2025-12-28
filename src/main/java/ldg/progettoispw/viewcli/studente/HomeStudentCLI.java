@@ -2,11 +2,7 @@ package ldg.progettoispw.viewcli.studente;
 
 import ldg.progettoispw.viewcli.HomeCLI;
 
-import java.util.logging.Logger;
-
 public class HomeStudentCLI extends HomeCLI {
-
-    private static final Logger LOGGER = Logger.getLogger(HomeStudentCLI.class.getName());
 
     @Override
     protected String getFixedRole() {
@@ -19,26 +15,15 @@ public class HomeStudentCLI extends HomeCLI {
     }
 
     @Override
-    protected void printMenuOptions() {
-        LOGGER.info("1. Cerca Tutor e Prenota");
-        LOGGER.info("2. Richieste in sospeso");
-        LOGGER.info("3. Richieste completate (e Recensioni)");
-    }
+    protected void setupMenu() {
+        // Configuriamo il menu usando le lambda expressions
+        addMenuOption("1", "Cerca Tutor e Prenota",
+                () -> new SearchTutorCLI().start());
 
-    @Override
-    protected boolean handleMenuOption(String choice) {
-        switch (choice) {
-            case "1":
-                new SearchTutorCLI().start();
-                return true;
-            case "2":
-                new AppInAttesaStudentCLI().start();
-                return true;
-            case "3":
-                new AppRispostiStudentCLI().start();
-                return true;
-            default:
-                return false; // Opzione non gestita
-        }
+        addMenuOption("2", "Richieste in sospeso",
+                () -> new AppInAttesaStudentCLI().start());
+
+        addMenuOption("3", "Richieste completate (e Recensioni)",
+                () -> new AppRispostiStudentCLI().start());
     }
 }
