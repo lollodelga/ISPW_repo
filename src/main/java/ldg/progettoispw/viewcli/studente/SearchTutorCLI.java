@@ -31,30 +31,30 @@ public class SearchTutorCLI extends BaseCLI {
 
             String subjectInput = readInput("Inserisci Materia");
 
+            // FIX SONARQUBE: Ristrutturato il ciclo per rimuovere 'continue'
             if (subjectInput.equals("0")) {
                 searching = false;
-                continue;
-            }
-
-            if (subjectInput.isEmpty()) {
+            } else if (subjectInput.isEmpty()) {
                 showError("Inserisci una materia valida.");
-                continue;
+            } else {
+                performSearch(subjectInput);
+            }
+        }
+    }
+
+    private void performSearch(String subjectInput) {
+        try {
+            SubjectBean subjectBean = new SubjectBean(subjectInput);
+            List<TutorBean> tutors = appCtrl.searchTutorBySubject(subjectBean);
+
+            if (tutors.isEmpty()) {
+                showError("Nessun tutor trovato per: " + subjectInput);
+            } else {
+                handleTutorSelection(tutors);
             }
 
-            try {
-                SubjectBean subjectBean = new SubjectBean(subjectInput);
-                List<TutorBean> tutors = appCtrl.searchTutorBySubject(subjectBean);
-
-                if (tutors.isEmpty()) {
-                    showError("Nessun tutor trovato per: " + subjectInput);
-                } else {
-                    // Se trovo i tutor, avvio il processo di selezione
-                    handleTutorSelection(tutors);
-                }
-
-            } catch (DBException e) {
-                showError("Errore DB: " + e.getMessage());
-            }
+        } catch (DBException e) {
+            showError("Errore DB: " + e.getMessage());
         }
     }
 
@@ -65,7 +65,6 @@ public class SearchTutorCLI extends BaseCLI {
         LOGGER.info("\n--- Risultati Ricerca ---");
         for (int i = 0; i < limitedTutors.size(); i++) {
             TutorBean t = limitedTutors.get(i);
-            // Sostituisco printf con String.format + LOGGER
             String item = String.format("%d. %s %s (Materie: %s)",
                     (i + 1), t.getNome(), t.getCognome(), String.join(", ", t.getMaterie()));
             LOGGER.info(item);
@@ -85,7 +84,7 @@ public class SearchTutorCLI extends BaseCLI {
             } else {
                 showError("Selezione non valida.");
             }
-        } catch (NumberFormatException e) {
+        } catch (NumberFormatException _) { // FIX SONARQUBE: Unnamed pattern
             showError("Inserisci un numero valido.");
         }
     }
@@ -104,7 +103,7 @@ public class SearchTutorCLI extends BaseCLI {
                     showError("Non puoi prenotare nel passato.");
                     date = null;
                 }
-            } catch (DateTimeParseException e) {
+            } catch (DateTimeParseException _) { // FIX SONARQUBE: Unnamed pattern
                 showError("Formato data errato. Usa YYYY-MM-DD (es. 2025-05-20)");
             }
         }
@@ -120,7 +119,7 @@ public class SearchTutorCLI extends BaseCLI {
                 } else {
                     showError("L'orario deve essere tra le 08:00 e le 18:00.");
                 }
-            } catch (NumberFormatException e) {
+            } catch (NumberFormatException _) { // FIX SONARQUBE: Unnamed pattern
                 showError("Inserisci un numero intero.");
             }
         }

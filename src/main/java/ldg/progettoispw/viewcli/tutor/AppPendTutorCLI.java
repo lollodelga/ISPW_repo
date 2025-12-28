@@ -84,7 +84,7 @@ public class AppPendTutorCLI extends BaseCLI {
             } else {
                 showError("Numero non valido.");
             }
-        } catch (NumberFormatException e) {
+        } catch (NumberFormatException _) {
             showError("Inserisci un numero.");
         }
     }

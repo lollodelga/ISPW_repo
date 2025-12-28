@@ -5,9 +5,11 @@ import ldg.progettoispw.engineering.bean.RecensioneBean;
 import ldg.progettoispw.viewcli.BaseCLI;
 
 import java.util.List;
+import java.util.logging.Logger;
 
 public class ManageReviewsCLI extends BaseCLI {
 
+    private static final Logger LOGGER = Logger.getLogger(ManageReviewsCLI.class.getName());
     private final ManageReviewCtrlApplicativo ctrl;
 
     public ManageReviewsCLI() {
@@ -28,19 +30,25 @@ public class ManageReviewsCLI extends BaseCLI {
             printAsciiChart(sentimentValues);
 
             // 2. Stampa la lista recensioni
-            System.out.println("\n--- Dettaglio Commenti ---");
+            LOGGER.info("\n--- Dettaglio Commenti ---");
+
             if (reviews.isEmpty()) {
-                System.out.println("Nessuna recensione ricevuta.");
+                LOGGER.info("Nessuna recensione ricevuta.");
             } else {
                 for (RecensioneBean r : reviews) {
-                    System.out.println("------------------------------------------------");
-                    System.out.println("Da: " + r.getStudentEmail());
-                    System.out.println("Valutazione: " + r.getSentimentValue() + "/5");
-                    System.out.println("Commento: " + r.getRecensione());
+                    // Formattiamo il blocco recensione in un'unica stringa di log
+                    String item = String.format(
+                            "------------------------------------------------%n" +
+                                    "Da: %s%n" +
+                                    "Valutazione: %s/5%n" +
+                                    "Commento: %s",
+                            r.getStudentEmail(), r.getSentimentValue(), r.getRecensione()
+                    );
+                    LOGGER.info(item);
                 }
             }
 
-            System.out.println("\nPremi Invio per tornare alla Dashboard...");
+            LOGGER.info("\nPremi Invio per tornare alla Dashboard...");
             scanner.nextLine();
 
         } catch (Exception e) {
@@ -49,7 +57,7 @@ public class ManageReviewsCLI extends BaseCLI {
     }
 
     private void printAsciiChart(List<Integer> values) {
-        System.out.println("\n[ STATISTICHE SENTIMENT ]");
+        LOGGER.info("\n[ STATISTICHE SENTIMENT ]");
 
         int[] counts = new int[5];
         for (int v : values) {
@@ -63,7 +71,9 @@ public class ManageReviewsCLI extends BaseCLI {
             // Crea una barra di asterischi semplice
             String bar = "*".repeat(count);
 
-            System.out.printf("%d Stelle (%d): %s%n", stelle, count, bar);
+            // Sostituisco printf con String.format + Logger
+            String row = String.format("%d Stelle (%d): %s", stelle, count, bar);
+            LOGGER.info(row);
         }
     }
 }

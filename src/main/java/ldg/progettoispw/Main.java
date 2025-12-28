@@ -10,6 +10,9 @@ public class Main {
 
     private static final Logger LOGGER = Logger.getLogger(Main.class.getName());
 
+    // FIX SONARQUBE: Definita costante per evitare duplicazione di stringhe letterali
+    private static final String SEPARATOR_LINE = "=================================";
+
     public static void main(String[] args) {
 
         Scanner scanner = new Scanner(System.in);
@@ -17,9 +20,9 @@ public class Main {
         // ------------------------------------------------
         // FASE 1: SCELTA PERSISTENZA (SWAP A FREDDO)
         // ------------------------------------------------
-        LOGGER.info("=================================");
+        LOGGER.info(SEPARATOR_LINE);
         LOGGER.info("   CONFIGURAZIONE SISTEMA        ");
-        LOGGER.info("=================================");
+        LOGGER.info(SEPARATOR_LINE);
         LOGGER.info("1. Database (MySQL)");
         LOGGER.info("2. File System (CSV)");
         LOGGER.info("3. Modalità DEMO (In Memoria)");
@@ -49,9 +52,9 @@ public class Main {
         // FASE 2: SCELTA INTERFACCIA (GUI vs CLI)
         // ------------------------------------------------
         LOGGER.info("");
-        LOGGER.info("=================================");
+        LOGGER.info(SEPARATOR_LINE);
         LOGGER.info("   SELEZIONA INTERFACCIA         ");
-        LOGGER.info("=================================");
+        LOGGER.info(SEPARATOR_LINE);
         LOGGER.info("1. Interfaccia Grafica (JavaFX)");
         LOGGER.info("2. Riga di Comando (CLI)");
         LOGGER.info("Inserisci scelta (1 o 2): ");

@@ -11,7 +11,6 @@ public abstract class BaseCLI {
 
     protected final Scanner scanner;
 
-    // FIX SONARQUBE: Il costruttore di una classe abstract deve essere protected
     protected BaseCLI() {
         // Inizializza lo scanner una volta per tutte le sottoclassi
         this.scanner = new Scanner(System.in);
@@ -22,31 +21,24 @@ public abstract class BaseCLI {
      */
     public abstract void start();
 
-    /**
-     * Equivalente di showWarning() della GUI.
-     * FIX SONARQUBE: Uso LOGGER.log(Level.SEVERE, ...) invece di System.out
-     */
     protected void showError(String message) {
-        // Uso {0} per i parametri nel logger (best practice)
         LOGGER.log(Level.SEVERE, "\n***********************************\nERRORE: {0}\n***********************************", message);
     }
 
-    /**
-     * Helper per stampare intestazioni uniformi.
-     * FIX SONARQUBE: Uso LOGGER.info(...)
-     */
     protected void printHeader(String title) {
+        // Qui usiamo String.format esplicitamente perché il formato è complesso,
+        // ma per il prompt sotto usiamo il logger direttamente.
         String header = String.format("%n===================================%n   %s%n===================================", title.toUpperCase());
         LOGGER.info(header);
     }
 
     /**
      * Helper per leggere input stringa puliti.
-     * FIX SONARQUBE: Uso LOGGER.info(...) invece di System.out.print
      */
     protected String readInput(String prompt) {
-        // Nota: Il Logger aggiunge un newline, quindi l'input sarà nella riga successiva
-        LOGGER.info(prompt + ": ");
+        // FIX SONARQUBE: Uso LOGGER.log con parametri {0} invece della concatenazione (+)
+        // Questo evita di creare nuove stringhe se il logger è disattivato.
+        LOGGER.log(Level.INFO, "{0}: ", prompt);
         return scanner.nextLine().trim();
     }
 }
