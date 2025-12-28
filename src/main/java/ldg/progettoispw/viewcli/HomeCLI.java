@@ -5,6 +5,7 @@ import ldg.progettoispw.util.GControllerHome;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public abstract class HomeCLI extends BaseCLI implements GControllerHome {
@@ -14,22 +15,19 @@ public abstract class HomeCLI extends BaseCLI implements GControllerHome {
     protected final HomePageController controller;
     private String userDataHeader;
 
-    // Usiamo LinkedHashMap per mantenere l'ordine di inserimento (1, 2, 3...)
+    // LinkedHashMap mantiene l'ordine di inserimento
     private final Map<String, MenuEntry> menuOptions = new LinkedHashMap<>();
 
     protected HomeCLI() {
         super();
         this.controller = new HomePageController();
-        // Chiamiamo il metodo astratto che i figli useranno per riempire la mappa
         setupMenu();
     }
 
-    // --- Metodi Astratti Nuovi ---
     protected abstract String getFixedRole();
     protected abstract String getDashboardTitle();
-    protected abstract void setupMenu(); // I figli riempiranno il menu qui
+    protected abstract void setupMenu();
 
-    // --- Helper per aggiungere opzioni ---
     protected void addMenuOption(String key, String description, Runnable action) {
         menuOptions.put(key, new MenuEntry(description, action));
     }
@@ -42,9 +40,10 @@ public abstract class HomeCLI extends BaseCLI implements GControllerHome {
             printHeader(getDashboardTitle());
             printUserInfo();
 
-            // 1. Stampa le opzioni dalla Mappa
+            // Stampa le opzioni dalla Mappa
             for (Map.Entry<String, MenuEntry> entry : menuOptions.entrySet()) {
-                LOGGER.info(entry.getKey() + ". " + entry.getValue().description);
+                // FIX SONARQUBE: Uso log(Level, msg, params) invece della concatenazione (+)
+                LOGGER.log(Level.INFO, "{0}. {1}", new Object[]{entry.getKey(), entry.getValue().description});
             }
             LOGGER.info("0. Logout");
 
@@ -54,7 +53,7 @@ public abstract class HomeCLI extends BaseCLI implements GControllerHome {
                 logout();
                 running = false;
             } else if (menuOptions.containsKey(choice)) {
-                // 2. Esegue l'azione associata (Command Pattern)
+                // Esegue l'azione associata
                 menuOptions.get(choice).action.run();
             } else {
                 showError("Opzione non valida.");
@@ -62,7 +61,6 @@ public abstract class HomeCLI extends BaseCLI implements GControllerHome {
         }
     }
 
-    // ... (updateUserData, printUserInfo, logout restano uguali a prima) ...
     @Override
     public void updateUserData(String name, String surname, String birthDate, String subjects) {
         this.userDataHeader = String.format("""
@@ -85,7 +83,6 @@ public abstract class HomeCLI extends BaseCLI implements GControllerHome {
         controller.logout();
     }
 
-    // Piccola classe interna per tenere insieme descrizione e azione
     private static class MenuEntry {
         String description;
         Runnable action;
