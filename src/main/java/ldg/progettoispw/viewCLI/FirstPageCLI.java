@@ -24,12 +24,11 @@ public class FirstPageCLI {
                     // Avvia la vista del Login (CLI)
                     LoginCLI loginView = new LoginCLI();
                     loginView.start();
-                    running = false; // Esce dal loop della home se il login va a buon fine o cambia schermata
                     break;
 
                 case "2":
                     System.out.println("\n>>> Funzionalità REGISTRAZIONE in costruzione...");
-                    // Qui metterai: new RegisterCLI().start();
+                    new RegistrationCLI().start();
                     break;
 
                 case "0":

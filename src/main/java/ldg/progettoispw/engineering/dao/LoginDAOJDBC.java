@@ -9,7 +9,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class LoginDAO {
+public class LoginDAOJDBC {
     private final ConnectionFactory connectionFactory = ConnectionFactory.getInstance();
 
     public static final int SUCCESS = 0;

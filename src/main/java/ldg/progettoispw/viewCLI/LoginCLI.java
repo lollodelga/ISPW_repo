@@ -2,66 +2,66 @@ package ldg.progettoispw.viewCLI;
 
 import ldg.progettoispw.controller.LoginCtrlApplicativo;
 import ldg.progettoispw.engineering.exception.*;
+import ldg.progettoispw.viewCLI.studente.HomeStudentCLI;
+import ldg.progettoispw.viewCLI.tutor.HomeTutorCLI;
 
-import java.util.Scanner;
-
-public class LoginCLI {
+public class LoginCLI extends BaseCLI {
 
     private final LoginCtrlApplicativo loginController;
-    private final Scanner scanner;
 
     public LoginCLI() {
+        super(); // Chiama il costruttore di BaseCLI (inizializza scanner)
         this.loginController = new LoginCtrlApplicativo();
-        this.scanner = new Scanner(System.in);
     }
 
+    @Override
     public void start() {
         boolean executing = true;
 
         while (executing) {
-            System.out.println("\n-----------------------------");
-            System.out.println("           LOGIN             ");
-            System.out.println("-----------------------------");
-            System.out.println("(Premi '0' come email per tornare indietro)");
+            // Usa il metodo helper del padre per il titolo
+            printHeader("Login Utente");
+            System.out.println("(Scrivi '0' come email per tornare indietro)");
 
-            System.out.print("Email: ");
-            String email = scanner.nextLine().trim();
+            // Usa il metodo helper per leggere
+            String email = readInput("Inserisci Email");
 
-            // Gestione pulsante "Indietro" (Back Action)
             if (email.equals("0")) {
-                return; // Esce dal metodo start() e torna al menu precedente (FirstPageCLI)
+                return; // Torna alla FirstPage
             }
 
-            System.out.print("Password: ");
-            String password = scanner.nextLine().trim();
+            String password = readInput("Inserisci Password");
 
             try {
-                // 1. Chiamata al Controller Applicativo (Stesso della GUI)
                 int role = loginController.verificaCredenziali(email, password);
 
-                System.out.println("✅ Login effettuato con successo!");
+                System.out.println("\nLogin effettuato con successo!");
 
-                // 2. Reindirizzamento in base al ruolo (Switch Scene)
                 if (role == 1) {
                     System.out.println(">>> Accesso come TUTOR...");
-                    // HomeTutorCLI homeTutor = new HomeTutorCLI();
-                    // homeTutor.start();
-                    executing = false; // Esce dal loop dopo il logout
+                    // Avvia la Dashboard Tutor
+                    new HomeTutorCLI().start();
+
+                    // Quando l'utente fa Logout dalla Dashboard, il codice riprende qui.
+                    // Mettendo executing = false, usciamo dal ciclo di Login e torniamo alla FirstPage.
+                    executing = false;
                 } else {
                     System.out.println(">>> Accesso come STUDENTE...");
-                    // HomeStudentCLI homeStudent = new HomeStudentCLI();
-                    // homeStudent.start();
-                    executing = false; // Esce dal loop dopo il logout
+                    // Avvia la Dashboard Studente
+                    new HomeStudentCLI().start();
+
+                    executing = false;
                 }
 
             } catch (InvalidEmailException | UserDoesNotExistException | IncorrectPasswordException e) {
-                // 3. Gestione Errori (Show Warning)
-                System.out.println("❌ ERRORE: " + e.getMessage());
-                System.out.println("Riprova...");
+                // Gestione errori credenziali
+                showError(e.getMessage());
+                System.out.println("Premi invio per riprovare...");
+                scanner.nextLine(); // Pausa scenica
 
             } catch (DBException e) {
-                // Errore grave DB
-                System.out.println("⛔ ERRORE DI SISTEMA: " + e.getMessage());
+                // Gestione errori tecnici
+                showError("Errore critico del database: " + e.getMessage());
                 return;
             }
         }

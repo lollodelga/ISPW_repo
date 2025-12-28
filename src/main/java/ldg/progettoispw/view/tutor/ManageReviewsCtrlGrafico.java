@@ -8,7 +8,7 @@ import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.VBox;
-import javafx.scene.control.ScrollPane;
+
 import ldg.progettoispw.controller.ManageReviewCtrlApplicativo;
 import ldg.progettoispw.engineering.bean.RecensioneBean;
 import ldg.progettoispw.view.HomeCtrlGrafico;
