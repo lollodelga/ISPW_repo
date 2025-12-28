@@ -1,6 +1,6 @@
-package ldg.progettoispw.viewCLI.tutor;
+package ldg.progettoispw.viewcli.tutor;
 
-import ldg.progettoispw.viewCLI.HomeCLI;
+import ldg.progettoispw.viewcli.HomeCLI;
 
 public class HomeTutorCLI extends HomeCLI {
 

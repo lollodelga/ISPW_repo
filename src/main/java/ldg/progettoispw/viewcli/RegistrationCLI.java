@@ -1,10 +1,13 @@
-package ldg.progettoispw.viewCLI;
+package ldg.progettoispw.viewcli;
 
 import ldg.progettoispw.controller.RegistrationCtrlApplicativo;
 import ldg.progettoispw.engineering.bean.UserBean;
 
+import java.util.logging.Logger;
+
 public class RegistrationCLI extends BaseCLI {
 
+    private static final Logger LOGGER = Logger.getLogger(RegistrationCLI.class.getName());
     private final RegistrationCtrlApplicativo controller;
 
     public RegistrationCLI() {
@@ -18,18 +21,16 @@ public class RegistrationCLI extends BaseCLI {
 
         while (executing) {
             printHeader("REGISTRAZIONE UTENTE");
-            System.out.println("(Scrivi '0' come Nome per tornare al menu iniziale)");
+            LOGGER.info("(Scrivi '0' come Nome per tornare al menu iniziale)");
 
-            // 1. Raccolta Dati Base
             String nome = readInput("Nome");
-            if (nome.equals("0")) return; // Back action
+            if (nome.equals("0")) return;
 
             String cognome = readInput("Cognome");
             String nascita = readInput("Data di Nascita (gg/mm/aaaa)");
             String email = readInput("Email");
             String password = readInput("Password");
 
-            // 2. Selezione Ruolo (Ciclo finché non è valido)
             String roleCode = null;
             while (roleCode == null) {
                 String choice = readInput("Seleziona Ruolo (1 = Tutor, 2 = Studente)");
@@ -42,14 +43,12 @@ public class RegistrationCLI extends BaseCLI {
                 }
             }
 
-            // 3. Materie (Prompt dinamico in base al ruolo, come nella GUI)
             String promptMaterie = roleCode.equals("1")
                     ? "Materie trattate (separate da virgola)"
                     : "Materie di studio (separate da virgola)";
 
             String materie = readInput(promptMaterie);
 
-            // 4. Creazione Bean e Chiamata al Controller
             UserBean bean = new UserBean();
             bean.setName(nome);
             bean.setSurname(cognome);
@@ -61,18 +60,15 @@ public class RegistrationCLI extends BaseCLI {
 
             int result = controller.registerUser(bean);
 
-            // 5. Gestione Risultato
             if (result == 0) {
-                System.out.println("\nRegistrazione completata con successo!");
-                System.out.println("Ora puoi effettuare il login con le tue credenziali.");
-
-                // Premi invio per continuare
-                System.out.println("Premi Invio per tornare al menu principale...");
+                LOGGER.info("Registrazione completata con successo!");
+                LOGGER.info("Ora puoi effettuare il login con le tue credenziali.");
+                LOGGER.info("Premi Invio per tornare al menu principale...");
                 scanner.nextLine();
-                executing = false; // Esce dal loop e torna alla FirstPageCLI
+                executing = false;
             } else {
                 handleRegistrationError(result);
-                System.out.println("Riprova a compilare il form...\n");
+                LOGGER.info("Riprova a compilare il form...");
             }
         }
     }

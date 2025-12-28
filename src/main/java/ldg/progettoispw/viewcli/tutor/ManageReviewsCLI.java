@@ -1,8 +1,8 @@
-package ldg.progettoispw.viewCLI.tutor;
+package ldg.progettoispw.viewcli.tutor;
 
 import ldg.progettoispw.controller.ManageReviewCtrlApplicativo;
 import ldg.progettoispw.engineering.bean.RecensioneBean;
-import ldg.progettoispw.viewCLI.BaseCLI;
+import ldg.progettoispw.viewcli.BaseCLI;
 
 import java.util.List;
 

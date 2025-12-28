@@ -1,17 +1,19 @@
-package ldg.progettoispw.viewCLI.studente;
+package ldg.progettoispw.viewcli.studente;
 
 import ldg.progettoispw.controller.BookAppointmentCtrlApplicativo;
 import ldg.progettoispw.engineering.bean.SubjectBean;
 import ldg.progettoispw.engineering.bean.TutorBean;
 import ldg.progettoispw.engineering.exception.DBException;
-import ldg.progettoispw.viewCLI.BaseCLI;
+import ldg.progettoispw.viewcli.BaseCLI;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 import java.util.List;
+import java.util.logging.Logger;
 
 public class SearchTutorCLI extends BaseCLI {
 
+    private static final Logger LOGGER = Logger.getLogger(SearchTutorCLI.class.getName());
     private final BookAppointmentCtrlApplicativo appCtrl;
 
     public SearchTutorCLI() {
@@ -25,7 +27,7 @@ public class SearchTutorCLI extends BaseCLI {
 
         while (searching) {
             printHeader("PRENOTA APPUNTAMENTO");
-            System.out.println("(Scrivi '0' per tornare alla Dashboard)");
+            LOGGER.info("(Scrivi '0' per tornare alla Dashboard)");
 
             String subjectInput = readInput("Inserisci Materia");
 
@@ -60,13 +62,15 @@ public class SearchTutorCLI extends BaseCLI {
         // Limito a 10 risultati come nella GUI
         List<TutorBean> limitedTutors = tutors.stream().limit(10).toList();
 
-        System.out.println("\n--- Risultati Ricerca ---");
+        LOGGER.info("\n--- Risultati Ricerca ---");
         for (int i = 0; i < limitedTutors.size(); i++) {
             TutorBean t = limitedTutors.get(i);
-            System.out.printf("%d. %s %s (Materie: %s)%n",
+            // Sostituisco printf con String.format + LOGGER
+            String item = String.format("%d. %s %s (Materie: %s)",
                     (i + 1), t.getNome(), t.getCognome(), String.join(", ", t.getMaterie()));
+            LOGGER.info(item);
         }
-        System.out.println("0. Torna alla ricerca");
+        LOGGER.info("0. Torna alla ricerca");
 
         String choice = readInput("Seleziona il numero del Tutor");
 
@@ -124,8 +128,8 @@ public class SearchTutorCLI extends BaseCLI {
         // Conferma finale
         try {
             appCtrl.bookAppointment(tutor, date, hour);
-            System.out.println("\nAPPUNTAMENTO PRENOTATO CON SUCCESSO!");
-            System.out.println("Premi Invio per tornare al menu...");
+            LOGGER.info("\nAPPUNTAMENTO PRENOTATO CON SUCCESSO!");
+            LOGGER.info("Premi Invio per tornare al menu...");
             scanner.nextLine();
         } catch (DBException e) {
             showError("Errore durante la prenotazione: " + e.getMessage());

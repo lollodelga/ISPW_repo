@@ -1,8 +1,12 @@
-package ldg.progettoispw.viewCLI.studente;
+package ldg.progettoispw.viewcli.studente;
 
-import ldg.progettoispw.viewCLI.HomeCLI;
+import ldg.progettoispw.viewcli.HomeCLI;
+
+import java.util.logging.Logger;
 
 public class HomeStudentCLI extends HomeCLI {
+
+    private static final Logger LOGGER = Logger.getLogger(HomeStudentCLI.class.getName());
 
     @Override
     protected String getFixedRole() {
@@ -17,24 +21,24 @@ public class HomeStudentCLI extends HomeCLI {
             printHeader("DASHBOARD STUDENTE");
             printUserInfo();
 
-            System.out.println("1. Cerca Tutor e Prenota");
-            System.out.println("2. Richieste in sospeso");
-            System.out.println("3. Richieste completate (e Recensioni)");
-            System.out.println("0. Logout");
+            LOGGER.info("1. Cerca Tutor e Prenota");
+            LOGGER.info("2. Richieste in sospeso");
+            LOGGER.info("3. Richieste completate (e Recensioni)");
+            LOGGER.info("0. Logout");
 
             String choice = readInput("Scegli un'opzione");
 
             switch (choice) {
                 case "1":
-                    // ✅ Avvia la ricerca tutor
+                    // Avvia la ricerca tutor
                     new SearchTutorCLI().start();
                     break;
                 case "2":
-                    // ✅ Avvia la visualizzazione richieste in attesa
+                    // Avvia la visualizzazione richieste in attesa
                     new AppInAttesaStudentCLI().start();
                     break;
                 case "3":
-                    // ✅ Avvia storico e recensioni
+                    // Avvia storico e recensioni
                     new AppRispostiStudentCLI().start();
                     break;
                 case "0":
