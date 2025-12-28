@@ -5,12 +5,8 @@ import ldg.progettoispw.util.GControllerHome;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public abstract class HomeCLI extends BaseCLI implements GControllerHome {
-
-    private static final Logger LOGGER = Logger.getLogger(HomeCLI.class.getName());
 
     protected final HomePageController controller;
     private String userDataHeader;
@@ -40,12 +36,11 @@ public abstract class HomeCLI extends BaseCLI implements GControllerHome {
             printHeader(getDashboardTitle());
             printUserInfo();
 
-            // Stampa le opzioni dalla Mappa
+            // Stampa le opzioni dalla Mappa usando Printer
             for (Map.Entry<String, MenuEntry> entry : menuOptions.entrySet()) {
-                // FIX SONARQUBE: Uso log(Level, msg, params) invece della concatenazione (+)
-                LOGGER.log(Level.INFO, "{0}. {1}", new Object[]{entry.getKey(), entry.getValue().description});
+                Printer.println(entry.getKey() + ". " + entry.getValue().description);
             }
-            LOGGER.info("0. Logout");
+            Printer.println("0. Logout");
 
             String choice = readInput("Scegli un'opzione");
 
@@ -63,6 +58,7 @@ public abstract class HomeCLI extends BaseCLI implements GControllerHome {
 
     @Override
     public void updateUserData(String name, String surname, String birthDate, String subjects) {
+        // Formattazione dati utente
         this.userDataHeader = String.format("""
             ------------------------------------------
             Dati Utente:
@@ -75,11 +71,12 @@ public abstract class HomeCLI extends BaseCLI implements GControllerHome {
 
     protected void printUserInfo() {
         controller.refreshUserData(this);
-        LOGGER.info(userDataHeader);
+        // Stampa i dati aggiornati
+        Printer.println(userDataHeader);
     }
 
     protected void logout() {
-        LOGGER.info("Logout in corso...");
+        Printer.println("Logout in corso...");
         controller.logout();
     }
 

@@ -3,11 +3,8 @@ package ldg.progettoispw.viewcli;
 import ldg.progettoispw.controller.RegistrationCtrlApplicativo;
 import ldg.progettoispw.engineering.bean.UserBean;
 
-import java.util.logging.Logger;
-
 public class RegistrationCLI extends BaseCLI {
 
-    private static final Logger LOGGER = Logger.getLogger(RegistrationCLI.class.getName());
     private final RegistrationCtrlApplicativo controller;
 
     public RegistrationCLI() {
@@ -21,7 +18,7 @@ public class RegistrationCLI extends BaseCLI {
 
         while (executing) {
             printHeader("REGISTRAZIONE UTENTE");
-            LOGGER.info("(Scrivi '0' come Nome per tornare al menu iniziale)");
+            Printer.println("(Scrivi '0' come Nome per tornare al menu iniziale)");
 
             String nome = readInput("Nome");
             if (nome.equals("0")) return;
@@ -61,14 +58,14 @@ public class RegistrationCLI extends BaseCLI {
             int result = controller.registerUser(bean);
 
             if (result == 0) {
-                LOGGER.info("Registrazione completata con successo!");
-                LOGGER.info("Ora puoi effettuare il login con le tue credenziali.");
-                LOGGER.info("Premi Invio per tornare al menu principale...");
+                Printer.printlnBlu("\nRegistrazione completata con successo!");
+                Printer.println("Ora puoi effettuare il login con le tue credenziali.");
+                Printer.print("Premi Invio per tornare al menu principale...");
                 scanner.nextLine();
                 executing = false;
             } else {
                 handleRegistrationError(result);
-                LOGGER.info("Riprova a compilare il form...");
+                Printer.println("Riprova a compilare il form...");
             }
         }
     }

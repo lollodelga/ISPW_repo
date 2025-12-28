@@ -4,13 +4,12 @@ import ldg.progettoispw.controller.AppInAttesaStudenteCtrlApplicativo;
 import ldg.progettoispw.engineering.bean.AppointmentBean;
 import ldg.progettoispw.engineering.exception.DBException;
 import ldg.progettoispw.viewcli.BaseCLI;
+import ldg.progettoispw.viewcli.Printer; // Import necessario
 
 import java.util.List;
-import java.util.logging.Logger;
 
 public class AppInAttesaStudentCLI extends BaseCLI {
 
-    private static final Logger LOGGER = Logger.getLogger(AppInAttesaStudentCLI.class.getName());
     private final AppInAttesaStudenteCtrlApplicativo ctrl;
 
     public AppInAttesaStudentCLI() {
@@ -26,7 +25,7 @@ public class AppInAttesaStudentCLI extends BaseCLI {
             List<AppointmentBean> pending = ctrl.getAppuntamentiInAttesa();
 
             if (pending.isEmpty()) {
-                LOGGER.info("Nessuna richiesta in attesa.");
+                Printer.println("Nessuna richiesta in attesa.");
             } else {
                 for (AppointmentBean app : pending) {
                     // Formattiamo l'output in un'unica stringa per pulizia
@@ -38,12 +37,12 @@ public class AppInAttesaStudentCLI extends BaseCLI {
                                     "Stato: %s",
                             app.getTutorEmail(), app.getData(), app.getOra(), app.getStato()
                     );
-                    LOGGER.info(details);
+                    Printer.println(details);
                 }
-                LOGGER.info("--------------------------------");
+                Printer.println("--------------------------------");
             }
 
-            LOGGER.info("Premi Invio per tornare alla Dashboard...");
+            Printer.print("\nPremi Invio per tornare alla Dashboard...");
             scanner.nextLine();
 
         } catch (DBException e) {

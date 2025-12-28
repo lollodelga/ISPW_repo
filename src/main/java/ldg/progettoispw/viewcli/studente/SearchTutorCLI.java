@@ -5,15 +5,14 @@ import ldg.progettoispw.engineering.bean.SubjectBean;
 import ldg.progettoispw.engineering.bean.TutorBean;
 import ldg.progettoispw.engineering.exception.DBException;
 import ldg.progettoispw.viewcli.BaseCLI;
+import ldg.progettoispw.viewcli.Printer; // Import necessario
 
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 import java.util.List;
-import java.util.logging.Logger;
 
 public class SearchTutorCLI extends BaseCLI {
 
-    private static final Logger LOGGER = Logger.getLogger(SearchTutorCLI.class.getName());
     private final BookAppointmentCtrlApplicativo appCtrl;
 
     public SearchTutorCLI() {
@@ -27,7 +26,7 @@ public class SearchTutorCLI extends BaseCLI {
 
         while (searching) {
             printHeader("PRENOTA APPUNTAMENTO");
-            LOGGER.info("(Scrivi '0' per tornare alla Dashboard)");
+            Printer.println("(Scrivi '0' per tornare alla Dashboard)");
 
             String subjectInput = readInput("Inserisci Materia");
 
@@ -62,14 +61,14 @@ public class SearchTutorCLI extends BaseCLI {
         // Limito a 10 risultati come nella GUI
         List<TutorBean> limitedTutors = tutors.stream().limit(10).toList();
 
-        LOGGER.info("\n--- Risultati Ricerca ---");
+        Printer.println("\n--- Risultati Ricerca ---");
         for (int i = 0; i < limitedTutors.size(); i++) {
             TutorBean t = limitedTutors.get(i);
             String item = String.format("%d. %s %s (Materie: %s)",
                     (i + 1), t.getNome(), t.getCognome(), String.join(", ", t.getMaterie()));
-            LOGGER.info(item);
+            Printer.println(item);
         }
-        LOGGER.info("0. Torna alla ricerca");
+        Printer.println("0. Torna alla ricerca");
 
         String choice = readInput("Seleziona il numero del Tutor");
 
@@ -127,8 +126,8 @@ public class SearchTutorCLI extends BaseCLI {
         // Conferma finale
         try {
             appCtrl.bookAppointment(tutor, date, hour);
-            LOGGER.info("\nAPPUNTAMENTO PRENOTATO CON SUCCESSO!");
-            LOGGER.info("Premi Invio per tornare al menu...");
+            Printer.printlnBlu("\nAPPUNTAMENTO PRENOTATO CON SUCCESSO!");
+            Printer.print("Premi Invio per tornare al menu...");
             scanner.nextLine();
         } catch (DBException e) {
             showError("Errore durante la prenotazione: " + e.getMessage());

@@ -16,7 +16,7 @@ public class HomeStudentCLI extends HomeCLI {
 
     @Override
     protected void setupMenu() {
-        // Configuriamo il menu usando le lambda expressions
+
         addMenuOption("1", "Cerca Tutor e Prenota",
                 () -> new SearchTutorCLI().start());
 

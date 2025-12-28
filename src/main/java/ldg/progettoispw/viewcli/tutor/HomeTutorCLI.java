@@ -16,7 +16,7 @@ public class HomeTutorCLI extends HomeCLI {
 
     @Override
     protected void setupMenu() {
-        // Configuriamo il menu del tutor
+
         addMenuOption("1", "Recensioni ricevute (e Statistiche)",
                 () -> new ManageReviewsCLI().start());
 

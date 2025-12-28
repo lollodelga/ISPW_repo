@@ -5,11 +5,8 @@ import ldg.progettoispw.engineering.exception.*;
 import ldg.progettoispw.viewcli.studente.HomeStudentCLI;
 import ldg.progettoispw.viewcli.tutor.HomeTutorCLI;
 
-import java.util.logging.Logger;
-
 public class LoginCLI extends BaseCLI {
 
-    private static final Logger LOGGER = Logger.getLogger(LoginCLI.class.getName());
     private final LoginCtrlApplicativo loginController;
 
     public LoginCLI() {
@@ -22,8 +19,8 @@ public class LoginCLI extends BaseCLI {
         boolean executing = true;
 
         while (executing) {
-            printHeader("Login Utente");
-            LOGGER.info("(Scrivi '0' come email per tornare indietro)");
+            printHeader("LOGIN UTENTE");
+            Printer.println("(Scrivi '0' come email per tornare indietro)");
 
             String email = readInput("Inserisci Email");
 
@@ -36,21 +33,22 @@ public class LoginCLI extends BaseCLI {
             try {
                 int role = loginController.verificaCredenziali(email, password);
 
-                LOGGER.info("Login effettuato con successo!");
+                // Feedback visivo positivo
+                Printer.printlnBlu("\nLogin effettuato con successo!");
 
                 if (role == 1) {
-                    LOGGER.info("Accesso come TUTOR...");
+                    Printer.println("Accesso come TUTOR...");
                     new HomeTutorCLI().start();
                     executing = false;
                 } else {
-                    LOGGER.info("Accesso come STUDENTE...");
+                    Printer.println("Accesso come STUDENTE...");
                     new HomeStudentCLI().start();
                     executing = false;
                 }
 
             } catch (InvalidEmailException | UserDoesNotExistException | IncorrectPasswordException e) {
                 showError(e.getMessage());
-                LOGGER.info("Premi invio per riprovare...");
+                Printer.print("Premi invio per riprovare...");
                 scanner.nextLine();
 
             } catch (DBException e) {

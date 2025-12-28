@@ -4,13 +4,12 @@ import ldg.progettoispw.controller.ManageAppointmentCtrlApplicativo;
 import ldg.progettoispw.engineering.bean.AppointmentBean;
 import ldg.progettoispw.engineering.exception.DBException;
 import ldg.progettoispw.viewcli.BaseCLI;
+import ldg.progettoispw.viewcli.Printer; // Import necessario
 
 import java.util.List;
-import java.util.logging.Logger;
 
 public class AppPendTutorCLI extends BaseCLI {
 
-    private static final Logger LOGGER = Logger.getLogger(AppPendTutorCLI.class.getName());
     private final ManageAppointmentCtrlApplicativo ctrl;
 
     public AppPendTutorCLI() {
@@ -24,7 +23,7 @@ public class AppPendTutorCLI extends BaseCLI {
 
         while (managing) {
             printHeader("RICHIESTE IN ATTESA");
-            LOGGER.info("(Scegli il numero per gestire la richiesta o '0' per uscire)");
+            Printer.println("(Scegli il numero per gestire la richiesta o '0' per uscire)");
 
             try {
                 List<AppointmentBean> pending = ctrl.getAppuntamentiInAttesa();
@@ -34,7 +33,7 @@ public class AppPendTutorCLI extends BaseCLI {
                     return; // Esce dal metodo start, tornando al menu precedente
                 }
 
-                // FIX SONARQUBE: Estratta logica di stampa per ridurre complessità
+                // Stampa lista
                 printAppointmentList(pending);
 
                 String input = readInput("Selezione");
@@ -56,8 +55,8 @@ public class AppPendTutorCLI extends BaseCLI {
      * Gestisce il caso di lista vuota.
      */
     private void handleEmptyList() {
-        LOGGER.info("Nessuna richiesta in attesa.");
-        LOGGER.info("Premi Invio per tornare alla Dashboard...");
+        Printer.println("Nessuna richiesta in attesa.");
+        Printer.print("Premi Invio per tornare alla Dashboard...");
         scanner.nextLine();
     }
 
@@ -69,7 +68,7 @@ public class AppPendTutorCLI extends BaseCLI {
             AppointmentBean a = pending.get(i);
             String item = String.format("%d. Studente: %s | Data: %s %s",
                     (i + 1), a.getStudenteEmail(), a.getData(), a.getOra());
-            LOGGER.info(item);
+            Printer.println(item);
         }
     }
 
@@ -97,13 +96,13 @@ public class AppPendTutorCLI extends BaseCLI {
                         "Ora:      %s",
                 app.getStudenteEmail(), app.getData(), app.getOra()
         );
-        LOGGER.info(details);
+        Printer.println(details);
 
-        LOGGER.info("");
-        LOGGER.info("Azioni disponibili:");
-        LOGGER.info("1. [ACCETTA] Conferma appuntamento");
-        LOGGER.info("2. [RIFIUTA] Rifiuta appuntamento");
-        LOGGER.info("0. Torna indietro");
+        Printer.println("");
+        Printer.println("Azioni disponibili:");
+        Printer.println("1. [ACCETTA] Conferma appuntamento");
+        Printer.println("2. [RIFIUTA] Rifiuta appuntamento");
+        Printer.println("0. Torna indietro");
 
         String action = readInput("Scelta");
 
@@ -111,12 +110,12 @@ public class AppPendTutorCLI extends BaseCLI {
             switch (action) {
                 case "1":
                     ctrl.confermaAppuntamento(app);
-                    LOGGER.info("Appuntamento CONFERMATO con successo.");
+                    Printer.printlnBlu("Appuntamento CONFERMATO con successo.");
                     scanner.nextLine();
                     break;
                 case "2":
                     ctrl.rifiutaAppuntamento(app);
-                    LOGGER.info("Appuntamento RIFIUTATO.");
+                    Printer.printlnBlu("Appuntamento RIFIUTATO.");
                     scanner.nextLine();
                     break;
                 case "0":

@@ -1,10 +1,6 @@
 package ldg.progettoispw.viewcli;
 
-import java.util.logging.Logger;
-
 public class FirstPageCLI extends BaseCLI {
-
-    private static final Logger LOGGER = Logger.getLogger(FirstPageCLI.class.getName());
 
     @Override
     public void start() {
@@ -13,9 +9,9 @@ public class FirstPageCLI extends BaseCLI {
         while (running) {
             printHeader("BENVENUTO IN TUTOR ONLINE");
 
-            LOGGER.info("1. Login");
-            LOGGER.info("2. Registrazione");
-            LOGGER.info("0. Esci");
+            Printer.println("1. Login");
+            Printer.println("2. Registrazione");
+            Printer.println("0. Esci");
 
             String input = readInput("Scegli un'opzione");
 
@@ -26,12 +22,12 @@ public class FirstPageCLI extends BaseCLI {
                     break;
 
                 case "2":
-                    LOGGER.info("Funzionalità REGISTRAZIONE in costruzione...");
+                    Printer.println("\n>>> Funzionalità REGISTRAZIONE in costruzione...");
                     new RegistrationCLI().start();
                     break;
 
                 case "0":
-                    LOGGER.info("Arrivederci!");
+                    Printer.println("Arrivederci!");
                     running = false;
                     break;
 

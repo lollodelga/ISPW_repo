@@ -5,13 +5,12 @@ import ldg.progettoispw.engineering.bean.AppointmentBean;
 import ldg.progettoispw.engineering.bean.RecensioneBean;
 import ldg.progettoispw.engineering.exception.DBException;
 import ldg.progettoispw.viewcli.BaseCLI;
+import ldg.progettoispw.viewcli.Printer; // Import necessario
 
 import java.util.List;
-import java.util.logging.Logger;
 
 public class AppRispostiStudentCLI extends BaseCLI {
 
-    private static final Logger LOGGER = Logger.getLogger(AppRispostiStudentCLI.class.getName());
     private final AppRispostiStudenteCtrlApplicativo ctrl;
 
     public AppRispostiStudentCLI() {
@@ -25,14 +24,14 @@ public class AppRispostiStudentCLI extends BaseCLI {
 
         while (viewing) {
             printHeader("STORICO APPUNTAMENTI");
-            LOGGER.info("(Scegli il numero per i dettagli o '0' per uscire)");
+            Printer.println("(Scegli il numero per i dettagli o '0' per uscire)");
 
             try {
                 List<AppointmentBean> apps = ctrl.getAppuntamentiStudente();
 
                 if (apps.isEmpty()) {
-                    LOGGER.info("Nessun appuntamento nello storico.");
-                    LOGGER.info("Premi Invio per uscire...");
+                    Printer.println("Nessun appuntamento nello storico.");
+                    Printer.print("Premi Invio per uscire...");
                     scanner.nextLine();
                     return;
                 }
@@ -42,14 +41,13 @@ public class AppRispostiStudentCLI extends BaseCLI {
                     AppointmentBean a = apps.get(i);
                     String item = String.format("%d. %s - %s (Con: %s) [%s]",
                             (i + 1), a.getData(), a.getOra(), a.getTutorEmail(), a.getStato());
-                    LOGGER.info(item);
+                    Printer.println(item);
                 }
 
                 String input = readInput("Selezione");
                 if (input.equals("0")) {
                     viewing = false;
                 } else {
-                    // FIX SONARQUBE: Estratto il blocco try innestato in un metodo dedicato
                     processSelection(input, apps);
                 }
 
@@ -61,7 +59,7 @@ public class AppRispostiStudentCLI extends BaseCLI {
     }
 
     /**
-     * Gestisce la logica di selezione dell'appuntamento per evitare try-catch annidati.
+     * Gestisce la logica di selezione dell'appuntamento.
      */
     private void processSelection(String input, List<AppointmentBean> apps) {
         try {
@@ -85,7 +83,7 @@ public class AppRispostiStudentCLI extends BaseCLI {
                         "Stato: %s",
                 app.getTutorEmail(), app.getData(), app.getOra(), app.getStato()
         );
-        LOGGER.info(details);
+        Printer.println(details);
 
         // Se è completato, offro opzione recensione
         if ("completato".equalsIgnoreCase(app.getStato())) {
@@ -94,13 +92,13 @@ public class AppRispostiStudentCLI extends BaseCLI {
                 writeReview(app);
             }
         } else {
-            LOGGER.info("(Premi Invio per tornare alla lista)");
+            Printer.print("(Premi Invio per tornare alla lista)");
             scanner.nextLine();
         }
     }
 
     private void writeReview(AppointmentBean app) {
-        LOGGER.info("Scrivi la tua recensione (Invio per confermare):");
+        Printer.println("Scrivi la tua recensione (Invio per confermare):");
         String testo = scanner.nextLine().trim();
 
         if (testo.isEmpty()) {
@@ -119,8 +117,8 @@ public class AppRispostiStudentCLI extends BaseCLI {
             if (result.startsWith("Errore")) {
                 showError(result);
             } else {
-                LOGGER.info(result); // Successo
-                LOGGER.info("Premi Invio per continuare...");
+                Printer.printlnBlu(result); // Successo in blu
+                Printer.print("Premi Invio per continuare...");
                 scanner.nextLine();
             }
 

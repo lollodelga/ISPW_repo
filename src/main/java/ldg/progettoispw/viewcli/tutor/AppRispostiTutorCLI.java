@@ -4,13 +4,12 @@ import ldg.progettoispw.controller.AppRispostiTutorCtrlApplicativo;
 import ldg.progettoispw.engineering.bean.AppointmentBean;
 import ldg.progettoispw.engineering.exception.DBException;
 import ldg.progettoispw.viewcli.BaseCLI;
+import ldg.progettoispw.viewcli.Printer; // Import necessario
 
 import java.util.List;
-import java.util.logging.Logger;
 
 public class AppRispostiTutorCLI extends BaseCLI {
 
-    private static final Logger LOGGER = Logger.getLogger(AppRispostiTutorCLI.class.getName());
     private final AppRispostiTutorCtrlApplicativo ctrl;
 
     public AppRispostiTutorCLI() {
@@ -24,7 +23,7 @@ public class AppRispostiTutorCLI extends BaseCLI {
 
         while (viewing) {
             printHeader("STORICO E GESTIONE APPUNTAMENTI");
-            LOGGER.info("(Scegli il numero per gestire o '0' per uscire)");
+            Printer.println("(Scegli il numero per gestire o '0' per uscire)");
 
             try {
                 List<AppointmentBean> apps = ctrl.getAppuntamentiTutor();
@@ -34,7 +33,7 @@ public class AppRispostiTutorCLI extends BaseCLI {
                     return; // Esce dal loop
                 }
 
-                // FIX SONARQUBE: Estratto metodo per ridurre complessità
+                // Stampa la lista
                 printAppointmentList(apps);
 
                 String input = readInput("Selezione");
@@ -56,8 +55,8 @@ public class AppRispostiTutorCLI extends BaseCLI {
      * Gestisce il caso di lista vuota.
      */
     private void handleEmptyList() {
-        LOGGER.info("Nessun appuntamento in storico.");
-        LOGGER.info("Premi Invio per uscire...");
+        Printer.println("Nessun appuntamento in storico.");
+        Printer.print("Premi Invio per uscire...");
         scanner.nextLine();
     }
 
@@ -69,7 +68,7 @@ public class AppRispostiTutorCLI extends BaseCLI {
             AppointmentBean a = apps.get(i);
             String item = String.format("%d. %s - %s (Stud: %s) [%s]",
                     (i + 1), a.getData(), a.getOra(), a.getStudenteEmail(), a.getStato());
-            LOGGER.info(item);
+            Printer.println(item);
         }
     }
 
@@ -96,23 +95,23 @@ public class AppRispostiTutorCLI extends BaseCLI {
                         "Stato Attuale: %s",
                 app.getStudenteEmail(), app.getStato()
         );
-        LOGGER.info(details);
+        Printer.println(details);
 
         // Se l'appuntamento non è 'confermato', non si può fare nulla
         if (!"confermato".equalsIgnoreCase(app.getStato())) {
-            LOGGER.info("");
-            LOGGER.info("(Nessuna azione disponibile per questo stato)");
-            LOGGER.info("Premi Invio per tornare...");
+            Printer.println("");
+            Printer.println("(Nessuna azione disponibile per questo stato)");
+            Printer.print("Premi Invio per tornare...");
             scanner.nextLine();
             return;
         }
 
         // Logica di gestione stato
-        LOGGER.info("");
-        LOGGER.info("Azioni:");
-        LOGGER.info("C. [COMPLETA] Segna come completato");
-        LOGGER.info("A. [ANNULLA]  Segna come annullato");
-        LOGGER.info("0. Indietro");
+        Printer.println("");
+        Printer.println("Azioni:");
+        Printer.println("C. [COMPLETA] Segna come completato");
+        Printer.println("A. [ANNULLA]  Segna come annullato");
+        Printer.println("0. Indietro");
 
         String choice = readInput("Scelta").toUpperCase();
 
@@ -127,7 +126,8 @@ public class AppRispostiTutorCLI extends BaseCLI {
                     app.getStato(),
                     newStatus
             );
-            LOGGER.info("Stato aggiornato con successo!");
+            Printer.printlnBlu("Stato aggiornato con successo!");
+            Printer.print("Premi Invio per continuare...");
             scanner.nextLine();
         }
     }
