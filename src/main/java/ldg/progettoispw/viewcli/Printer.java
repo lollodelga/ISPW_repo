@@ -1,14 +1,15 @@
 package ldg.progettoispw.viewcli;
 
+// Questa annotazione zittisce l'errore "Replace this use of System.out by a logger"
+// specificamente per questa classe.
+@SuppressWarnings("java:S106")
 public class Printer {
 
-    // Codici ANSI per i colori in console
     public static final String ANSI_RESET = "\u001B[0m";
     public static final String ANSI_RED = "\u001B[31m";
     public static final String ANSI_BLUE = "\u001B[34m";
-    public static final String ANSI_CYAN = "\u001B[36m"; // Opzionale, carino per i sottotitoli
+    public static final String ANSI_CYAN = "\u001B[36m";
 
-    // Costruttore privato per impedire l'istanziazione (è una utility class)
     private Printer() {}
 
     /**
@@ -36,6 +37,8 @@ public class Printer {
      * Stampa un messaggio di errore in ROSSO.
      */
     public static void errorPrint(String message) {
+        // Nota: System.err sarebbe tecnicamente più corretto per gli errori,
+        // ma System.out va bene uguale per mantenere l'ordine di stampa in console.
         System.out.println(ANSI_RED + "ERRORE: " + message + ANSI_RESET);
     }
 
