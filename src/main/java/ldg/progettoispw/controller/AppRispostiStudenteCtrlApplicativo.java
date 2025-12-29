@@ -9,8 +9,9 @@ import ldg.progettoispw.engineering.bean.AppointmentBean;
 import ldg.progettoispw.engineering.bean.RecensioneBean;
 import ldg.progettoispw.engineering.bean.UserBean;
 import ldg.progettoispw.engineering.dao.AppointmentDAO;
-import ldg.progettoispw.engineering.dao.RecensioneDAO;
 import ldg.progettoispw.engineering.exception.DBException;
+import ldg.progettoispw.engineering.factory.DAOFactory;
+import ldg.progettoispw.util.RecensioneDAO;
 
 import java.util.List;
 
@@ -18,8 +19,7 @@ public class AppRispostiStudenteCtrlApplicativo {
 
     private final ReviewFilter reviewChecker = new ReviewFilter();
     private final SentimentAnalyzer sentimentAnalyzer = new SentimentAdapter(new SentimentClient());
-    private final RecensioneDAO recensioneDAO = new RecensioneDAO();
-
+    private final RecensioneDAO recensioneDAO = DAOFactory.getRecensioneDAO();
     /**
      * Restituisce la lista degli appuntamenti confermati/completati/annullati dello studente loggato.
      */

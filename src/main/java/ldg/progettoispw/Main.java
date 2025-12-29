@@ -1,29 +1,56 @@
 package ldg.progettoispw;
 
+import ldg.progettoispw.engineering.factory.DataSynchronizer;
+import ldg.progettoispw.engineering.factory.PersistenceConfig;
 import ldg.progettoispw.viewcli.FirstPageCLI;
-import ldg.progettoispw.viewcli.Printer; // Importa la tua classe dal package corretto
+import ldg.progettoispw.viewcli.Printer;
 
 import java.util.Scanner;
-import java.util.logging.Logger;
 
 public class Main {
-
-    // Logger mantenuto solo per usi interni (se necessario), ma l'UI usa Printer
-    private static final Logger LOGGER = Logger.getLogger(Main.class.getName());
-
     public static void main(String[] args) {
-
         Scanner scanner = new Scanner(System.in);
 
-        // ------------------------------------------------
-        // SCELTA INTERFACCIA (GUI vs CLI)
-        // ------------------------------------------------
+        // --- FASE 1: SCELTA PERSISTENZA ---
+        Printer.printlnBlu("=================================");
+        Printer.printlnBlu("   CONFIGURAZIONE SISTEMA        ");
+        Printer.printlnBlu("=================================");
+        Printer.println("1. Database (MySQL)");
+        Printer.println("2. File System (CSV)");
+        Printer.println("3. Modalità DEMO (In Memoria)"); // Nuova opzione
+        Printer.print("Scegli modalità salvataggio: ");
 
-        // Uso Printer per avere l'output colorato e pulito
-        Printer.printlnBlu("================================="); // o .printHeader() se l'hai rinominato
+        String persChoice = scanner.nextLine();
+
+        switch (persChoice) {
+            case "2":
+                Printer.println(">> Modalità selezionata: FILE SYSTEM (CSV)");
+                PersistenceConfig.getInstance().setType(PersistenceConfig.PersistenceType.CSV);
+                break;
+            case "3":
+                Printer.println(">> Modalità selezionata: DEMO (RAM - Volatile)");
+                PersistenceConfig.getInstance().setType(PersistenceConfig.PersistenceType.DEMO);
+                break;
+            default:
+                Printer.println(">> Modalità selezionata: DATABASE (MySQL)");
+                PersistenceConfig.getInstance().setType(PersistenceConfig.PersistenceType.JDBC);
+                break;
+        }
+
+        // --- FASE 2: SINCRONIZZAZIONE AUTOMATICA ---
+        // NON sincronizziamo se siamo in DEMO (partiamo puliti o con dati finti)
+        if (PersistenceConfig.getInstance().getType() != PersistenceConfig.PersistenceType.DEMO) {
+            DataSynchronizer sync = new DataSynchronizer();
+            sync.syncData();
+        } else {
+            Printer.println(">> Sync disabilitato per modalità DEMO.");
+        }
+
+        // --- FASE 3: SCELTA INTERFACCIA ---
+        Printer.println(""); // Spazio
+        Printer.printlnBlu("=================================");
         Printer.printlnBlu("   SELEZIONA INTERFACCIA         ");
         Printer.printlnBlu("=================================");
-
         Printer.println("1. Interfaccia Grafica (JavaFX)");
         Printer.println("2. Riga di Comando (CLI)");
         Printer.print("Inserisci scelta (1 o 2): ");
@@ -41,7 +68,6 @@ public class Main {
             homeCLI.start();
         }
         else {
-            // Usa il metodo di errore della tua classe Printer per coerenza grafica
             Printer.errorPrint("Scelta non valida. Riavvia il programma.");
         }
     }

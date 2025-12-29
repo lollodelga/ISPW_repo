@@ -22,9 +22,7 @@ public class ConnectionFactory {
     private final Object lock = new Object();
     private static final int ATTESA_MS = 2000;
 
-    private ConnectionFactory() {
-        // costruttore privato
-    }
+    private ConnectionFactory() { }
 
     public static synchronized ConnectionFactory getInstance() {
         if (instance == null) {
@@ -35,7 +33,6 @@ public class ConnectionFactory {
 
     public synchronized Connection getDBConnection() {
         final int MAX_TENTATIVI = 3;
-
         for (int tentativo = 1; tentativo <= MAX_TENTATIVI; tentativo++) {
             try {
                 return tryConnect();
@@ -43,7 +40,6 @@ public class ConnectionFactory {
                 handleConnectionFailure(tentativo, MAX_TENTATIVI, e);
             }
         }
-
         return null;
     }
 
@@ -52,8 +48,8 @@ public class ConnectionFactory {
             getInfo(); // carica parametri db
             conn = DriverManager.getConnection(jdbc, user, password);
 
+            // RIMOSSO LOG INFO
             if (!connectedOnce) {
-                logger.info("Connessione al database stabilita.");
                 connectedOnce = true;
             }
         }
@@ -74,7 +70,6 @@ public class ConnectionFactory {
         }
     }
 
-
     private void waitBeforeRetry() {
         try {
             synchronized (lock) {
@@ -91,9 +86,6 @@ public class ConnectionFactory {
         }
     }
 
-    /**
-     * Legge i parametri di connessione dal file db.properties.
-     */
     private void getInfo() {
         try (FileInputStream fis = new FileInputStream(PATH)) {
             Properties prop = new Properties();
@@ -116,7 +108,7 @@ public class ConnectionFactory {
         try {
             if (conn != null && !conn.isClosed()) {
                 conn.close();
-                logger.info("Connessione al database chiusa.");
+                // RIMOSSO LOG INFO
             }
         } catch (SQLException e) {
             logger.warning("Errore durante la chiusura della connessione: " + e.getMessage());

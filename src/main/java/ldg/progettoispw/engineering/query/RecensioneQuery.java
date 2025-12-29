@@ -1,7 +1,7 @@
 package ldg.progettoispw.engineering.query;
 
 /**
- * Contiene tutte le stringhe SQL (Query) utilizzate dalla classe RecensioneDAO.
+ * Contiene tutte le stringhe SQL (Query) utilizzate dalla classe RecensioneDAOJDBC.
  */
 public class RecensioneQuery {
 

@@ -3,16 +3,17 @@ package ldg.progettoispw.controller;
 import ldg.progettoispw.engineering.applicativo.LoginSessionManager;
 import ldg.progettoispw.engineering.bean.RecensioneBean;
 import ldg.progettoispw.engineering.bean.UserBean;
-import ldg.progettoispw.engineering.dao.RecensioneDAO;
 import ldg.progettoispw.engineering.exception.DBException;
+import ldg.progettoispw.engineering.factory.DAOFactory;
 import ldg.progettoispw.model.Recensione;
+import ldg.progettoispw.util.RecensioneDAO;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class ManageReviewCtrlApplicativo {
 
-    private final RecensioneDAO recensioneDAO = new RecensioneDAO();
+    private final RecensioneDAO recensioneDAO = DAOFactory.getRecensioneDAO();
 
     /**
      * Classe di supporto per restituire due liste contemporaneamente

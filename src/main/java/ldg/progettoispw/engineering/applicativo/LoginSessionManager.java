@@ -17,30 +17,26 @@ public class LoginSessionManager {
         throw new UnsupportedOperationException("Classe di utilità, non istanziabile.");
     }
 
-    // Salva i dati dell'utente loggato nel file
     public static void saveUserSession(UserBean userBean) {
         try (BufferedWriter writer = Files.newBufferedWriter(Paths.get(SESSION_FILE))) {
             String[] data = userBean.getArray();
-            // Importante: Separo ogni campo con una virgola, ma dentro il campo 'materie' sostituisco eventuali virgole
-            data[5] = data[5].replace(",", ";"); // Proteggo il campo materie
+            data[5] = data[5].replace(",", ";");
             writer.write(String.join(",", data));
         } catch (IOException e) {
             logger.severe("Errore durante il salvataggio della sessione: " + e.getMessage());
         }
     }
 
-    // Legge i dati dell'utente loggato dal file
     public static UserBean loadUserSession() {
         try (BufferedReader reader = Files.newBufferedReader(Paths.get(SESSION_FILE))) {
             String line = reader.readLine();
             if (line != null) {
-                String[] data = line.split(",", 6); // divido massimo in 6 parti
-                // Rimetto eventuali ';' dentro le materie
+                String[] data = line.split(",", 6);
                 if (data.length == 6) {
                     data[5] = data[5].replace(";", ",");
                 }
                 UserBean userBean = new UserBean();
-                userBean.setOfAll(data); // popola tutto il bean
+                userBean.setOfAll(data);
                 return userBean;
             }
         } catch (IOException e) {
@@ -49,11 +45,10 @@ public class LoginSessionManager {
         return null;
     }
 
-    // Cancella il file della sessione
     public static void clearSession() {
         try {
             Files.deleteIfExists(Paths.get(SESSION_FILE));
-            logger.info("Sessione cancellata.");
+            // RIMOSSO LOG INFO "Sessione cancellata."
         } catch (IOException e) {
             logger.warning("Errore durante la cancellazione della sessione: " + e.getMessage());
         }

@@ -3,7 +3,6 @@ package ldg.progettoispw.view.studente;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
@@ -37,7 +36,6 @@ public class AppRispostiStudenteCtrlGrafico extends HomeCtrlGrafico implements I
     private AppRispostiStudenteCtrlApplicativo ctrlApp;
     private AppointmentBean selectedAppointment;
 
-    // Logger corretto
     private static final Logger LOGGER = Logger.getLogger(AppRispostiStudenteCtrlGrafico.class.getName());
     private static final String WHITE_TEXT_STYLE = "-fx-text-fill: white;";
 
@@ -63,16 +61,10 @@ public class AppRispostiStudenteCtrlGrafico extends HomeCtrlGrafico implements I
             });
 
         } catch (DBException e) {
-            // --- CORREZIONE SONARQUBE (Riga 66 circa) ---
-            // Invece di "msg: " + e.getMessage(), passiamo l'eccezione come parametro.
             LOGGER.log(Level.SEVERE, "Errore nel caricamento appuntamenti dal database", e);
-
-            // Opzionale: Mostra un alert se il caricamento fallisce
             showError("Errore Sistema", "Impossibile caricare i dati.");
         }
     }
-
-    // ... (metodi createAppointmentBox, showAppointmentDetails, centerPopup non cambiano) ...
 
     @FXML
     private void onInviaRecensioneClick() {
@@ -90,7 +82,6 @@ public class AppRispostiStudenteCtrlGrafico extends HomeCtrlGrafico implements I
             recensioneBean.setStudentEmail(selectedAppointment.getStudenteEmail());
             recensioneBean.setRecensione(testo);
 
-            // Manteniamo la TUA logica: restituisce una Stringa
             String risultato = ctrlApp.inviaRecensione(recensioneBean);
 
             if (risultato.startsWith("Errore")) {
@@ -101,25 +92,18 @@ public class AppRispostiStudenteCtrlGrafico extends HomeCtrlGrafico implements I
                 appointmentPane.setVisible(false);
                 txtRecensione.clear();
 
-                // Log info semplice (senza eccezioni)
-                LOGGER.info(risultato);
+                // RIMOSSO LOG INFO
                 showSuccess("Successo", "Recensione inviata correttamente.");
             }
 
         } catch (Exception e) {
-            // Questo catch serve solo per errori imprevisti (es. NullPointer),
-            // dato che le eccezioni DB/Sentiment sono gestite dentro inviaRecensione() e tornano stringhe.
-
             lblErroreRecensione.setText("Errore imprevisto nell'invio.");
             lblErroreRecensione.setVisible(true);
-
-            // --- CORREZIONE SONARQUBE (Riga 150 circa) ---
-            // Rimuoviamo la concatenazione (+ e.getMessage())
             LOGGER.log(Level.SEVERE, "Errore critico durante l'invio recensione", e);
         }
     }
 
-    // --- Metodi che servono per completare la classe ---
+    // --- Metodi Helper invariati ---
 
     private VBox createAppointmentBox(AppointmentBean bean) {
         VBox box = new VBox();
@@ -143,7 +127,6 @@ public class AppRispostiStudenteCtrlGrafico extends HomeCtrlGrafico implements I
 
     private void showAppointmentDetails(AppointmentBean bean) {
         selectedAppointment = bean;
-
         lblTutor.setText("Tutor: " + bean.getTutorEmail());
         lblData.setText("Data: " + bean.getData());
         lblOra.setText("Ora: " + bean.getOra());
