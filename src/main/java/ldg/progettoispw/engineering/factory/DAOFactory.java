@@ -11,13 +11,11 @@ public class DAOFactory {
     public static RecensioneDAO getRecensioneDAO() {
         PersistenceConfig.PersistenceType type = PersistenceConfig.getInstance().getType();
 
-        if (type == PersistenceConfig.PersistenceType.CSV) {
-            return new RecensioneDAOCSV();
-        } else if (type == PersistenceConfig.PersistenceType.DEMO) {
-            return null; // O implementazione Memory
-        } else {
-            return new RecensioneDAOJDBC();
-        }
+        return switch (type) {
+            case CSV  -> new RecensioneDAOCSV();
+            case DEMO -> null; // Qui restituirò new demo()
+            default   -> new RecensioneDAOJDBC();
+        };
     }
 
     // Metodi specifici per il Sincronizzatore

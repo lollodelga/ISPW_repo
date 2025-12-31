@@ -14,8 +14,4 @@ public class CompletatoState extends BaseState {
         context.updateStatusInDB("pagato");
         context.setState(new PagatoState());
     }
-
-    // complete() lancia eccezione (già completato)
-    // confirm() lancia eccezione
-    // cancel() lancia eccezione (troppo tardi per annullare, lezione già fatta)
 }

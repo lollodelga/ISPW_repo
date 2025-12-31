@@ -19,10 +19,4 @@ public class InAttesaState extends BaseState {
         context.updateStatusInDB("annullato");
         context.setState(new AnnullatoState());
     }
-
-    // NON SERVE implementare complete() o pay():
-    // BaseState lancia già l'eccezione corretta ("Operazione non consentita in stato in_attesa").
-
-    // NON SERVE implementare getName():
-    // BaseState lo gestisce già.
 }

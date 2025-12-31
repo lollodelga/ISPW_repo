@@ -15,7 +15,10 @@ public class DataSynchronizer {
 
         RecensioneDAO source;
         RecensioneDAO dest;
-        String sourceName, destName;
+
+        // CORREZIONE: Dichiarazione su righe separate
+        String sourceName;
+        String destName;
 
         if (currentType == PersistenceConfig.PersistenceType.CSV) {
             // Target: CSV -> Prendo da JDBC

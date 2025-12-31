@@ -13,17 +13,7 @@ public class RecensioneQuery {
     public static final String INSERT_RECENSIONE =
             "INSERT INTO recensioni (tutor_email, student_email, recensione, sentiment_value) VALUES (?, ?, ?, ?)";
 
-    // Statistiche (Sentiment Distribution)
-    public static final String SELECT_SENTIMENT_DISTRIBUTION =
-            """
-            SELECT sentiment_value, COUNT(*) AS cnt
-            FROM recensioni
-            WHERE tutor_email = ?
-            GROUP BY sentiment_value
-            ORDER BY sentiment_value
-            """;
-
-    // Recupero lista recensioni
+    // Recupero lista per tutor (Colonne esplicite, NO SELECT *)
     public static final String SELECT_BY_TUTOR =
             """
             SELECT id, student_email, recensione, sentiment_value
@@ -31,4 +21,14 @@ public class RecensioneQuery {
             WHERE tutor_email = ?
             ORDER BY id DESC
             """;
+
+    // Recupero TUTTE le recensioni (per migrazione/export) - Colonne esplicite
+    public static final String SELECT_ALL =
+            "SELECT tutor_email, student_email, recensione, sentiment_value FROM recensioni";
+
+    // Conteggio totale
+    public static final String COUNT_ALL = "SELECT count(*) FROM recensioni";
+
+    // Cancellazione totale
+    public static final String DELETE_ALL = "DELETE FROM recensioni";
 }

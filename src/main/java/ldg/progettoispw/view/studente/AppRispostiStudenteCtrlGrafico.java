@@ -23,7 +23,10 @@ public class AppRispostiStudenteCtrlGrafico extends HomeCtrlGrafico implements I
 
     @FXML private VBox resultsContainer;
     @FXML private AnchorPane appointmentPane;
-    @FXML private Label lblTutor, lblData, lblOra, lblStato;
+    @FXML private Label lblTutor;
+    @FXML private Label lblData;
+    @FXML private Label lblOra;
+    @FXML private Label lblStato;
 
     // Elementi dinamici (Paga vs Recensione)
     @FXML private Button btnPaga;
@@ -57,7 +60,7 @@ public class AppRispostiStudenteCtrlGrafico extends HomeCtrlGrafico implements I
                 resultsContainer.getChildren().add(createBox(bean));
             }
 
-        } catch (DBException e) {
+        } catch (DBException _) {
             showError("Errore Database", "Impossibile recuperare lo storico.");
         } catch (IllegalStateException e) {
             showError("Errore Sessione", e.getMessage());

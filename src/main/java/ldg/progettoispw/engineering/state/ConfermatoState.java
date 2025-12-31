@@ -10,7 +10,6 @@ public class ConfermatoState extends BaseState {
 
     @Override
     public void complete(AppointmentContext context) throws DBException {
-        // Transizione: Confermato -> Completato
         context.updateStatusInDB("completato");
         context.setState(new CompletatoState());
     }
@@ -20,6 +19,4 @@ public class ConfermatoState extends BaseState {
         context.updateStatusInDB("annullato");
         context.setState(new AnnullatoState());
     }
-
-    // Se provi a chiamare pay() qui, BaseState lancerà eccezione (giusto così)
 }

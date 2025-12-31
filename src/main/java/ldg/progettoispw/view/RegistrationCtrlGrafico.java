@@ -6,8 +6,8 @@ import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
-// import javafx.scene.shape.Rectangle; // NON SERVE PIÙ
-// import javafx.scene.text.Text;       // NON SERVE PIÙ
+import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Text;
 import ldg.progettoispw.controller.RegistrationCtrlApplicativo;
 import ldg.progettoispw.engineering.bean.UserBean;
 import ldg.progettoispw.util.GController;
@@ -20,42 +20,32 @@ public class RegistrationCtrlGrafico extends BaseGCon implements GController {
     @FXML private TextField email;
     @FXML private TextField password;
     @FXML private TextField materie;
-
     @FXML private ToggleGroup roleGroup;
     @FXML private RadioButton studenteButton;
     @FXML private RadioButton tutorButton;
-
-    // 🔹 MODIFICA 1: Cambiato da Text a Label
-    @FXML private Label textMateria;
-
+    @FXML private Text textMateria;
     @FXML private Label warningLabel;
-
-    // 🔹 MODIFICA 2: Rimosso warningRectangle (non esiste più nell'FXML nuovo)
-    // @FXML private Rectangle warningRectangle;
+    @FXML private Rectangle warningRectangle;
 
     @FXML
     public void initialize() {
         warningLabel.setVisible(false);
-
-        // Setup iniziale invisibile
+        warningRectangle.setVisible(false);
         textMateria.setVisible(false);
         materie.setVisible(false);
-
-        // Se BaseGCon richiede per forza il rettangolo, passagli null o rimuovi la chiamata
-        // setWarningElements(warningLabel, null);
-        // Oppure configura solo la label se il tuo BaseGCon lo permette
+        setWarningElements(warningLabel, warningRectangle);
     }
 
     @FXML
     void clickStudente() {
-        textMateria.setText("Materie di studio (separate da virgola)");
+        textMateria.setText("Materie di studio (materia1, materia2, ...)");
         textMateria.setVisible(true);
         materie.setVisible(true);
     }
 
     @FXML
     void clickTutor() {
-        textMateria.setText("Materie trattate (separate da virgola)");
+        textMateria.setText("Materie trattate (materia1, materia2, ...)");
         textMateria.setVisible(true);
         materie.setVisible(true);
     }
@@ -89,19 +79,13 @@ public class RegistrationCtrlGrafico extends BaseGCon implements GController {
     @Override
     public void changeView(int result, ActionEvent event) {
         switch (result) {
-            case 0 -> switchScene("/ldg/progettoispw/Login.fxml", event); // Assicurati che il nome file sia giusto (Login.fxml o LoginPage.fxml)
-            case 1 -> showGuiWarning("ERRORE: email già in uso.");
-            case 2 -> showGuiWarning("ERRORE: Riempi tutti i campi.");
-            case 3 -> showGuiWarning("ERRORE: email non valida.");
-            case 4 -> showGuiWarning("ERRORE: La password non rispetta i requisiti.");
-            case 5 -> showGuiWarning("ERRORE: La data non è valida.");
-            default -> showGuiWarning("ERRORE DI SISTEMA: riprovare");
+            case 0 -> switchScene("/ldg/progettoispw/LoginPage.fxml", event);
+            case 1 -> showWarning("ERRORE: email già in uso.");
+            case 2 -> showWarning("ERRORE: Riempi tutti i campi.");
+            case 3 -> showWarning("ERRORE: email non valida.");
+            case 4 -> showWarning("ERRORE: La password non rispetta i requisiti.");
+            case 5 -> showWarning("ERRORE: La data non è valida.");
+            default -> showWarning("ERRORE DI SISTEMA: riprovare");
         }
-    }
-
-    // Metodo helper locale se BaseGCon dipendeva dal rettangolo
-    private void showGuiWarning(String msg) {
-        warningLabel.setText(msg);
-        warningLabel.setVisible(true);
     }
 }
