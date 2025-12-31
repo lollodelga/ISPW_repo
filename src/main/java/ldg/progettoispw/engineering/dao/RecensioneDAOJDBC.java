@@ -3,17 +3,21 @@ package ldg.progettoispw.engineering.dao;
 import ldg.progettoispw.engineering.bean.RecensioneBean;
 import ldg.progettoispw.engineering.exception.DBException;
 import ldg.progettoispw.model.Recensione;
-import ldg.progettoispw.util.RecensioneDAO; // Import corretto
+import ldg.progettoispw.util.RecensioneDAO;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
+import java.util.logging.Level;  // Import Logger
+import java.util.logging.Logger; // Import Logger
 
 public class RecensioneDAOJDBC implements RecensioneDAO {
+
+    // 1. Definizione del Logger
+    private static final Logger logger = Logger.getLogger(RecensioneDAOJDBC.class.getName());
 
     private final ConnectionFactory connectionFactory = ConnectionFactory.getInstance();
 
@@ -66,9 +70,10 @@ public class RecensioneDAOJDBC implements RecensioneDAO {
              ResultSet rs = stmt.executeQuery(sql)) {
             if (rs.next()) return rs.getInt(1) == 0;
         } catch (SQLException e) {
-            e.printStackTrace();
+            // 2. CORREZIONE: Uso del Logger invece di printStackTrace
+            logger.log(Level.SEVERE, "Errore durante il controllo isEmpty su JDBC", e);
         }
-        return true;
+        return true; // Valore di default in caso di errore
     }
 
     @Override
