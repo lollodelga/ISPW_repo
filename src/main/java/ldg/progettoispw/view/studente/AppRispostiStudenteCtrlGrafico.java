@@ -5,10 +5,10 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
-import javafx.scene.input.MouseEvent;
 import ldg.progettoispw.controller.AppRispostiStudenteCtrlApplicativo;
 import ldg.progettoispw.engineering.bean.AppointmentBean;
 import ldg.progettoispw.engineering.bean.RecensioneBean;
@@ -18,17 +18,15 @@ import ldg.progettoispw.view.HomeCtrlGrafico;
 import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class AppRispostiStudenteCtrlGrafico extends HomeCtrlGrafico implements Initializable {
 
     @FXML private VBox resultsContainer;
     @FXML private AnchorPane appointmentPane;
-    @FXML private Label lblTutor;
-    @FXML private Label lblData;
-    @FXML private Label lblOra;
-    @FXML private Label lblStato;
+    @FXML private Label lblTutor, lblData, lblOra, lblStato;
+
+    // Elementi dinamici (Paga vs Recensione)
+    @FXML private Button btnPaga;
     @FXML private TextArea txtRecensione;
     @FXML private Button btnInviaRecensione;
     @FXML private Label lblErroreRecensione;
@@ -36,127 +34,144 @@ public class AppRispostiStudenteCtrlGrafico extends HomeCtrlGrafico implements I
     private AppRispostiStudenteCtrlApplicativo ctrlApp;
     private AppointmentBean selectedAppointment;
 
-    private static final Logger LOGGER = Logger.getLogger(AppRispostiStudenteCtrlGrafico.class.getName());
-    private static final String WHITE_TEXT_STYLE = "-fx-text-fill: white;";
-
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         ctrlApp = new AppRispostiStudenteCtrlApplicativo();
-
         appointmentPane.setVisible(false);
+        caricaLista();
+    }
 
+    private void caricaLista() {
+        resultsContainer.getChildren().clear();
         try {
-            List<AppointmentBean> appuntamenti = ctrlApp.getAppuntamentiStudente();
+            List<AppointmentBean> list = ctrlApp.getAppuntamentiStudente();
 
-            for (AppointmentBean bean : appuntamenti) {
-                VBox box = createAppointmentBox(bean);
-                resultsContainer.getChildren().add(box);
+            if (list.isEmpty()) {
+                Label empty = new Label("Non hai lezioni completate nello storico.");
+                empty.setStyle("-fx-text-fill: white; -fx-font-size: 14px;");
+                resultsContainer.getChildren().add(empty);
+                return;
             }
 
-            resultsContainer.sceneProperty().addListener((obsScene, oldScene, newScene) -> {
-                if (newScene != null) {
-                    newScene.widthProperty().addListener((obs, oldVal, newVal) -> centerPopup());
-                    newScene.heightProperty().addListener((obs, oldVal, newVal) -> centerPopup());
-                }
-            });
+            for (AppointmentBean bean : list) {
+                resultsContainer.getChildren().add(createBox(bean));
+            }
 
         } catch (DBException e) {
-            LOGGER.log(Level.SEVERE, "Errore nel caricamento appuntamenti dal database", e);
-            showError("Errore Sistema", "Impossibile caricare i dati.");
+            showError("Errore Database", "Impossibile recuperare lo storico.");
+        } catch (IllegalStateException e) {
+            showError("Errore Sessione", e.getMessage());
+        }
+    }
+
+    // Apre il popup e decide cosa mostrare in base allo stato
+    private void openDetails(AppointmentBean bean) {
+        selectedAppointment = bean;
+
+        // Popolamento Labels (con toString automatico di Date/Time)
+        lblTutor.setText("Tutor: " + bean.getTutorEmail());
+        lblData.setText("Data: " + bean.getData());
+        lblOra.setText("Ora: " + bean.getOra());
+        lblStato.setText("Stato: " + bean.getStato().toUpperCase());
+
+        // LOGICA DI VISIBILITÀ (Disaccoppiata dal DB, basata sul Bean)
+        String stato = bean.getStato().toLowerCase();
+        boolean isCompletato = "completato".equals(stato);
+        boolean isPagato = "pagato".equals(stato);
+
+        // 1. Bottone PAGA: visibile solo se la lezione è completata ma non pagata
+        btnPaga.setVisible(isCompletato);
+
+        // 2. Form RECENSIONE: visibile solo se la lezione è già pagata
+        txtRecensione.setVisible(isPagato);
+        btnInviaRecensione.setVisible(isPagato);
+
+        // Reset errori e visibilità pannello
+        lblErroreRecensione.setVisible(false);
+        appointmentPane.setVisible(true);
+        centerPopup();
+    }
+
+    @FXML
+    private void onPagaClick() {
+        try {
+            // 1. Chiamata al Controller Applicativo (Logica Pura)
+            ctrlApp.pagaAppuntamento(selectedAppointment);
+
+            // 2. Aggiornamento Bean Locale (Riflette il cambio stato nella View)
+            selectedAppointment.setStato("pagato");
+
+            // 3. Feedback utente e Aggiornamento Popup
+            showSuccess("Pagamento Riuscito", "Transazione di 15.00€ completata.\nOra puoi lasciare una recensione.");
+
+            // Ricarica il popup per nascondere "Paga" e mostrare "Recensione"
+            openDetails(selectedAppointment);
+
+        } catch (DBException e) {
+            showError("Errore Pagamento", "Transazione fallita: " + e.getMessage());
         }
     }
 
     @FXML
     private void onInviaRecensioneClick() {
         String testo = txtRecensione.getText().trim();
-
         if (testo.isEmpty()) {
-            lblErroreRecensione.setText("La recensione non può essere vuota.");
+            lblErroreRecensione.setText("Scrivi un commento prima di inviare.");
             lblErroreRecensione.setVisible(true);
             return;
         }
 
-        try {
-            RecensioneBean recensioneBean = new RecensioneBean();
-            recensioneBean.setTutorEmail(selectedAppointment.getTutorEmail());
-            recensioneBean.setStudentEmail(selectedAppointment.getStudenteEmail());
-            recensioneBean.setRecensione(testo);
+        RecensioneBean bean = new RecensioneBean();
+        bean.setTutorEmail(selectedAppointment.getTutorEmail());
+        bean.setStudentEmail(selectedAppointment.getStudenteEmail());
+        bean.setRecensione(testo);
 
-            String risultato = ctrlApp.inviaRecensione(recensioneBean);
+        // Chiamata Applicativo
+        String esito = ctrlApp.inviaRecensione(bean);
 
-            if (risultato.startsWith("Errore")) {
-                lblErroreRecensione.setText(risultato);
-                lblErroreRecensione.setVisible(true);
-            } else {
-                lblErroreRecensione.setVisible(false);
-                appointmentPane.setVisible(false);
-                txtRecensione.clear();
-
-                // RIMOSSO LOG INFO
-                showSuccess("Successo", "Recensione inviata correttamente.");
-            }
-
-        } catch (Exception e) {
-            lblErroreRecensione.setText("Errore imprevisto nell'invio.");
+        if (esito.startsWith("Errore")) {
+            lblErroreRecensione.setText(esito);
             lblErroreRecensione.setVisible(true);
-            LOGGER.log(Level.SEVERE, "Errore critico durante l'invio recensione", e);
+        } else {
+            showSuccess("Grazie!", esito);
+            appointmentPane.setVisible(false);
+            txtRecensione.clear();
         }
     }
 
-    // --- Metodi Helper invariati ---
+    @FXML private void onChiudiClick() { appointmentPane.setVisible(false); }
 
-    private VBox createAppointmentBox(AppointmentBean bean) {
-        VBox box = new VBox();
-        box.setSpacing(5);
-        box.setStyle("-fx-background-color: #3498DB55; -fx-padding: 10; -fx-background-radius: 10; -fx-border-radius: 10; -fx-border-color: #ffffffAA;");
-        box.setOnMouseClicked((MouseEvent event) -> showAppointmentDetails(bean));
-
-        Label lblTut = new Label("Tutor: " + bean.getTutorEmail());
-        Label lblDat = new Label("Data: " + bean.getData());
-        Label lblOr = new Label("Ora: " + bean.getOra());
-        Label lblStat = new Label("Stato: " + bean.getStato());
-
-        lblTut.setStyle(WHITE_TEXT_STYLE);
-        lblDat.setStyle(WHITE_TEXT_STYLE);
-        lblOr.setStyle(WHITE_TEXT_STYLE);
-        lblStat.setStyle(WHITE_TEXT_STYLE);
-
-        box.getChildren().addAll(lblTut, lblDat, lblOr, lblStat);
-        return box;
+    @FXML private void backAction(ActionEvent event) {
+        switchScene("/ldg/progettoispw/HomePageStudent.fxml", event);
     }
 
-    private void showAppointmentDetails(AppointmentBean bean) {
-        selectedAppointment = bean;
-        lblTutor.setText("Tutor: " + bean.getTutorEmail());
-        lblData.setText("Data: " + bean.getData());
-        lblOra.setText("Ora: " + bean.getOra());
-        lblStato.setText("Stato: " + bean.getStato());
+    // Helper creazione riga lista
+    private VBox createBox(AppointmentBean bean) {
+        VBox box = new VBox();
+        box.setSpacing(5);
+        box.setStyle("-fx-background-color: #3498DB55; -fx-padding: 10; -fx-background-radius: 10; -fx-border-color: white; -fx-cursor: hand;");
 
-        boolean completato = "completato".equalsIgnoreCase(bean.getStato());
-        txtRecensione.setVisible(completato);
-        btnInviaRecensione.setVisible(completato);
-        lblErroreRecensione.setVisible(false);
+        Label t = new Label("Tutor: " + bean.getTutorEmail());
+        Label s = new Label("Stato: " + bean.getStato());
+        Label d = new Label("Data: " + bean.getData() + " " + bean.getOra());
 
-        appointmentPane.setVisible(true);
-        centerPopup();
+        // Stile label bianche
+        String whiteText = "-fx-text-fill: white; -fx-font-weight: bold;";
+        t.setStyle(whiteText);
+        s.setStyle(whiteText);
+        d.setStyle("-fx-text-fill: #ecf0f1; -fx-font-style: italic;");
+
+        box.getChildren().addAll(t, d, s);
+
+        box.setOnMouseClicked(e -> openDetails(bean));
+        return box;
     }
 
     private void centerPopup() {
         if (appointmentPane.getScene() != null) {
-            double w = appointmentPane.getScene().getWidth();
-            double h = appointmentPane.getScene().getHeight();
-            appointmentPane.setLayoutX((w - appointmentPane.getPrefWidth()) / 2);
-            appointmentPane.setLayoutY((h - appointmentPane.getPrefHeight()) / 2);
+            double sceneWidth = appointmentPane.getScene().getWidth();
+            double paneWidth = appointmentPane.getPrefWidth();
+            appointmentPane.setLayoutX((sceneWidth - paneWidth) / 2);
         }
-    }
-
-    @FXML
-    private void onChiudiClick() {
-        appointmentPane.setVisible(false);
-    }
-
-    @FXML
-    private void backAction(ActionEvent event) {
-        switchScene("/ldg/progettoispw/HomePageStudent.fxml", event);
     }
 }

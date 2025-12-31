@@ -1,8 +1,13 @@
-package ldg.progettoispw.engineering.gof.state;
+package ldg.progettoispw.engineering.state;
 
 import ldg.progettoispw.engineering.exception.DBException;
 
-public class InAttesaState implements AppointmentState {
+public class InAttesaState extends BaseState {
+
+    public InAttesaState() {
+        super("in_attesa");
+    }
+
     @Override
     public void confirm(AppointmentContext context) throws DBException {
         context.updateStatusInDB("confermato");
@@ -15,11 +20,9 @@ public class InAttesaState implements AppointmentState {
         context.setState(new AnnullatoState());
     }
 
-    @Override
-    public void complete(AppointmentContext context) throws DBException {
-        throw new DBException("Impossibile completare un appuntamento ancora in attesa.");
-    }
+    // NON SERVE implementare complete() o pay():
+    // BaseState lancia già l'eccezione corretta ("Operazione non consentita in stato in_attesa").
 
-    @Override
-    public String getName() { return "in_attesa"; }
+    // NON SERVE implementare getName():
+    // BaseState lo gestisce già.
 }

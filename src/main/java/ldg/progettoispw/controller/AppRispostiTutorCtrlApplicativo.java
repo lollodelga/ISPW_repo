@@ -5,7 +5,7 @@ import ldg.progettoispw.engineering.bean.AppointmentBean;
 import ldg.progettoispw.engineering.bean.UserBean;
 import ldg.progettoispw.engineering.dao.AppointmentDAO;
 import ldg.progettoispw.engineering.exception.DBException;
-import ldg.progettoispw.engineering.gof.state.AppointmentContext;
+import ldg.progettoispw.engineering.state.AppointmentContext;
 import ldg.progettoispw.model.Appointment;
 
 import java.sql.Date;

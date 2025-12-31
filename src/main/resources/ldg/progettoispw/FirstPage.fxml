@@ -1,33 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane xmlns="http://javafx.com/javafx/21"
-            xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="ldg.progettoispw.view.FirstPageGCon"
-            prefHeight="600.0" prefWidth="1000.0">
+<AnchorPane prefHeight="600.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ldg.progettoispw.view.FirstPageGCon">
 
    <children>
 
-      <!-- 🔹 SFONDO -->
       <ImageView fitHeight="600.0" fitWidth="1000.0" preserveRatio="false">
          <image>
             <Image url="@../../images/wallpaper.jpeg" />
          </image>
       </ImageView>
 
-      <!-- 🔹 BARRA SUPERIORE (coerente con Login.fxml) -->
-      <AnchorPane prefHeight="63.0" prefWidth="1000.0"
-                  style="-fx-background-color: white;">
+      <AnchorPane prefHeight="63.0" prefWidth="1000.0" style="-fx-background-color: white;">
          <children>
-            <ImageView fitHeight="48.0" fitWidth="171.0"
-                       layoutX="14.0" layoutY="8.0"
-                       pickOnBounds="true" preserveRatio="true">
+            <ImageView fitHeight="48.0" fitWidth="171.0" layoutX="14.0" layoutY="8.0" pickOnBounds="true" preserveRatio="true">
                <image>
                   <Image url="@../../images/tutorLOGO.png" />
                </image>
@@ -35,39 +29,43 @@
          </children>
       </AnchorPane>
 
-      <!-- 🔹 CARD CENTRALE (coerente con Login/Registration) -->
-      <AnchorPane layoutX="350.0" layoutY="150.0" prefWidth="300.0" prefHeight="379.0"
+      <AnchorPane layoutX="350.0" layoutY="110.0" prefHeight="380.0" prefWidth="300.0"
                   style="-fx-background-color: white;
                          -fx-background-radius: 20;
-                         -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.25), 15, 0.2, 0, 2);">
+                         -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 15, 0, 0, 5);">
 
          <children>
-            <VBox alignment="CENTER" spacing="20"
-                  prefWidth="300.0" prefHeight="379.0"
-                  layoutX="0.0" layoutY="0.0">
+            <VBox alignment="CENTER" layoutX="0.0" layoutY="0.0" prefHeight="380.0" prefWidth="300.0" spacing="20">
 
-               <Text text="Benvenuto."
-                     style="-fx-font-size: 26px; -fx-font-weight: bold; -fx-fill: #3498db;" />
+               <Label text="Benvenuto." textFill="#3498db">
+                  <font>
+                     <Font name="System Bold" size="28.0" />
+                  </font>
+               </Label>
 
-               <Button fx:id="loginButton" text="ACCEDI"
-                       onMouseClicked="#startLogin"
-                       prefWidth="240.0" prefHeight="60.0"
+               <VBox maxHeight="10.0" minHeight="10.0" prefHeight="10.0" />
+
+               <Button fx:id="loginButton" mnemonicParsing="false" onMouseClicked="#startLogin"
+                       prefHeight="55.0" prefWidth="240.0" text="ACCEDI"
                        style="-fx-background-color: #3498DB;
                               -fx-text-fill: white;
                               -fx-font-size: 18px;
+                              -fx-font-weight: bold;
                               -fx-background-radius: 15;
                               -fx-cursor: hand;" />
 
-               <Text text="oppure"
-                     style="-fx-font-size: 16px; -fx-fill: #555;" />
+               <Text style="-fx-font-size: 14px; -fx-fill: #7f8c8d;" text="oppure" />
 
-               <Button fx:id="registerButton" text="REGISTRATI"
-                       onMouseClicked="#startRegister"
-                       prefWidth="240.0" prefHeight="60.0"
-                       style="-fx-background-color: #3498DB;
-                              -fx-text-fill: white;
+               <Button fx:id="registerButton" mnemonicParsing="false" onMouseClicked="#startRegister"
+                       prefHeight="55.0" prefWidth="240.0" text="REGISTRATI"
+                       style="-fx-background-color: white;
+                              -fx-text-fill: #3498DB;
                               -fx-font-size: 18px;
+                              -fx-font-weight: bold;
                               -fx-background-radius: 15;
+                              -fx-border-color: #3498DB;
+                              -fx-border-width: 2;
+                              -fx-border-radius: 15;
                               -fx-cursor: hand;" />
             </VBox>
          </children>

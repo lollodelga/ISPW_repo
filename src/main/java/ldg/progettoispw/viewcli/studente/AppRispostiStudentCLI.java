@@ -5,7 +5,7 @@ import ldg.progettoispw.engineering.bean.AppointmentBean;
 import ldg.progettoispw.engineering.bean.RecensioneBean;
 import ldg.progettoispw.engineering.exception.DBException;
 import ldg.progettoispw.viewcli.BaseCLI;
-import ldg.progettoispw.viewcli.Printer; // Import necessario
+import ldg.progettoispw.viewcli.Printer;
 
 import java.util.List;
 
@@ -24,7 +24,7 @@ public class AppRispostiStudentCLI extends BaseCLI {
 
         while (viewing) {
             printHeader("STORICO APPUNTAMENTI");
-            Printer.println("(Scegli il numero per i dettagli o '0' per uscire)");
+            Printer.println("(Scegli il numero per gestire l'appuntamento o '0' per uscire)");
 
             try {
                 List<AppointmentBean> apps = ctrl.getAppuntamentiStudente();
@@ -40,7 +40,7 @@ public class AppRispostiStudentCLI extends BaseCLI {
                 for (int i = 0; i < apps.size(); i++) {
                     AppointmentBean a = apps.get(i);
                     String item = String.format("%d. %s - %s (Con: %s) [%s]",
-                            (i + 1), a.getData(), a.getOra(), a.getTutorEmail(), a.getStato());
+                            (i + 1), a.getData(), a.getOra(), a.getTutorEmail(), a.getStato().toUpperCase());
                     Printer.println(item);
                 }
 
@@ -53,7 +53,7 @@ public class AppRispostiStudentCLI extends BaseCLI {
 
             } catch (DBException e) {
                 showError("Errore caricamento storico: " + e.getMessage());
-                return;
+                return; // Esce in caso di errore grave DB
             }
         }
     }
@@ -65,40 +65,90 @@ public class AppRispostiStudentCLI extends BaseCLI {
         try {
             int index = Integer.parseInt(input) - 1;
             if (index >= 0 && index < apps.size()) {
-                showDetailsAndReview(apps.get(index));
+                handleAppointmentActions(apps.get(index));
             } else {
                 showError("Numero non valido.");
             }
-        } catch (NumberFormatException _) {
-            showError("Inserisci un numero.");
+        } catch (NumberFormatException e) {
+            showError("Inserisci un numero valido.");
         }
     }
 
-    private void showDetailsAndReview(AppointmentBean app) {
+    /**
+     * Mostra i dettagli e decide quali azioni (Paga / Recensisci) sono disponibili
+     * in base allo stato attuale.
+     */
+    private void handleAppointmentActions(AppointmentBean app) {
+        printDetails(app);
+
+        String stato = app.getStato().toLowerCase();
+
+        // CASO 1: L'appuntamento è completato -> Bisogna pagare
+        if ("completato".equals(stato)) {
+            Printer.println("Questo appuntamento deve essere ancora pagato.");
+            String choice = readInput("Vuoi procedere al pagamento di 15.00€? (s/n)");
+            if (choice.equalsIgnoreCase("s")) {
+                performPayment(app);
+            }
+        }
+        // CASO 2: L'appuntamento è già pagato -> Si può recensire
+        else if ("pagato".equals(stato)) {
+            String choice = readInput("Vuoi scrivere una recensione per questo tutor? (s/n)");
+            if (choice.equalsIgnoreCase("s")) {
+                writeReview(app);
+            }
+        }
+        // CASO 3: Altri stati (es. annullato, confermato) -> Nessuna azione nello storico
+        else {
+            Printer.print("(Premi Invio per tornare alla lista)");
+            scanner.nextLine();
+        }
+    }
+
+    private void printDetails(AppointmentBean app) {
         String details = String.format(
                 "%n--- Dettagli Appuntamento ---%n" +
                         "Tutor: %s%n" +
                         "Data:  %s%n" +
                         "Ora:   %s%n" +
                         "Stato: %s",
-                app.getTutorEmail(), app.getData(), app.getOra(), app.getStato()
+                app.getTutorEmail(), app.getData(), app.getOra(), app.getStato().toUpperCase()
         );
         Printer.println(details);
+    }
 
-        // Se è completato, offro opzione recensione
-        if ("completato".equalsIgnoreCase(app.getStato())) {
-            String choice = readInput("Vuoi scrivere una recensione? (s/n)");
+    /**
+     * Esegue il pagamento chiamando il controller applicativo.
+     */
+    private void performPayment(AppointmentBean app) {
+        try {
+            Printer.print("Elaborazione pagamento in corso...");
+
+            // Chiamata al Controller Applicativo (Logica State Pattern)
+            ctrl.pagaAppuntamento(app);
+
+            // Aggiorno il bean locale per riflettere il cambiamento immediato
+            app.setStato("pagato");
+
+            Printer.printlnBlu("\nPagamento effettuato con successo!");
+
+            // Workflow: dopo il pagamento, offri subito la recensione
+            String choice = readInput("Vuoi scrivere subito una recensione? (s/n)");
             if (choice.equalsIgnoreCase("s")) {
                 writeReview(app);
             }
-        } else {
-            Printer.print("(Premi Invio per tornare alla lista)");
-            scanner.nextLine();
+
+        } catch (DBException e) {
+            showError("\nErrore durante il pagamento: " + e.getMessage());
         }
     }
 
+    /**
+     * Gestisce l'inserimento e l'invio della recensione.
+     */
     private void writeReview(AppointmentBean app) {
-        Printer.println("Scrivi la tua recensione (Invio per confermare):");
+        Printer.println("\n--- Nuova Recensione ---");
+        Printer.println("Scrivi il testo della tua recensione (Invio per confermare):");
         String testo = scanner.nextLine().trim();
 
         if (testo.isEmpty()) {
@@ -112,13 +162,14 @@ public class AppRispostiStudentCLI extends BaseCLI {
             recBean.setStudentEmail(app.getStudenteEmail());
             recBean.setRecensione(testo);
 
+            // Chiamata al Controller
             String result = ctrl.inviaRecensione(recBean);
 
             if (result.startsWith("Errore")) {
                 showError(result);
             } else {
-                Printer.printlnBlu(result); // Successo in blu
-                Printer.print("Premi Invio per continuare...");
+                Printer.printlnBlu(result); // Messaggio di successo in blu
+                Printer.print("Premi Invio per tornare alla lista...");
                 scanner.nextLine();
             }
 

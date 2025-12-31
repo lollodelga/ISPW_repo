@@ -38,9 +38,11 @@ public class AppointmentQuery {
     public static final String SEARCH_APP_IN_ATTESA_STUDENTE =
             "SELECT * FROM appuntamento WHERE studente_email = ? AND stato = 'in_attesa'";
 
-    // Query di ricerca (storico)
+
+    // Query di ricerca (storico: confermati, completati, annullati E PAGATI)
     public static final String SEARCH_APP_BY_STUDENT =
-            "SELECT * FROM appuntamento WHERE studente_email = ? AND stato IN ('confermato', 'completato', 'annullato')";
+            "SELECT * FROM appuntamento WHERE studente_email = ? AND stato IN ('confermato', 'completato', 'annullato', 'pagato')";
+
     public static final String SEARCH_APP_BY_TUTOR =
-            "SELECT * FROM appuntamento WHERE tutor_email = ? AND stato IN ('confermato', 'completato', 'annullato')";
+            "SELECT * FROM appuntamento WHERE tutor_email = ? AND stato IN ('confermato', 'completato', 'annullato', 'pagato')";
 }
