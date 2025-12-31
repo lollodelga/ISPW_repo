@@ -129,7 +129,7 @@ public class RecensioneDAOCSV implements RecensioneDAO {
     private int parseSentimentSafe(String value) {
         try {
             return Integer.parseInt(value);
-        } catch (NumberFormatException e) {
+        } catch (NumberFormatException _) {
             return 0;
         }
     }
