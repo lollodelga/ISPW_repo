@@ -8,13 +8,16 @@ import ldg.progettoispw.viewcli.Printer;
 import java.util.Scanner;
 
 public class Main {
+
+    private static final String SEPARATOR = "=================================";
+
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
 
         // --- FASE 1: SCELTA PERSISTENZA ---
-        Printer.printlnBlu("=================================");
+        Printer.printlnBlu(SEPARATOR);
         Printer.printlnBlu("   CONFIGURAZIONE SISTEMA        ");
-        Printer.printlnBlu("=================================");
+        Printer.printlnBlu(SEPARATOR);
         Printer.println("1. Database (MySQL)");
         Printer.println("2. File System (CSV)");
         Printer.println("3. Modalità DEMO (In Memoria)"); // Nuova opzione
@@ -48,9 +51,9 @@ public class Main {
 
         // --- FASE 3: SCELTA INTERFACCIA ---
         Printer.println(""); // Spazio
-        Printer.printlnBlu("=================================");
+        Printer.printlnBlu(SEPARATOR);
         Printer.printlnBlu("   SELEZIONA INTERFACCIA         ");
-        Printer.printlnBlu("=================================");
+        Printer.printlnBlu(SEPARATOR);
         Printer.println("1. Interfaccia Grafica (JavaFX)");
         Printer.println("2. Riga di Comando (CLI)");
         Printer.print("Inserisci scelta (1 o 2): ");
