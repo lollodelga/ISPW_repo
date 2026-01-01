@@ -2,7 +2,6 @@ package ldg.progettoispw.controller;
 
 import ldg.progettoispw.engineering.api.SentimentAdapter;
 import ldg.progettoispw.engineering.api.SentimentAnalyzer;
-import ldg.progettoispw.engineering.api.SentimentClient;
 import ldg.progettoispw.engineering.applicativo.LoginSessionManager;
 import ldg.progettoispw.engineering.applicativo.ReviewFilter;
 import ldg.progettoispw.engineering.bean.AppointmentBean;
@@ -24,7 +23,11 @@ import java.util.List;
 public class AppRispostiStudenteCtrlApplicativo {
 
     private final ReviewFilter reviewChecker = new ReviewFilter();
-    private final SentimentAnalyzer sentimentAnalyzer = new SentimentAdapter(new SentimentClient());
+
+    // L'Adapter nasconde completamente il Client.
+    // Il Controller vede solo il Target (SentimentAnalyzer).
+    private final SentimentAnalyzer sentimentAnalyzer = new SentimentAdapter();
+
     private final RecensioneDAO recensioneDAO = DAOFactory.getRecensioneDAO();
 
     public AppRispostiStudenteCtrlApplicativo() {
@@ -51,21 +54,19 @@ public class AppRispostiStudenteCtrlApplicativo {
      */
     public void pagaAppuntamento(AppointmentBean bean) throws DBException {
         // 1. Conversione Bean -> Model
-        // Non servono conversioni di date perché il tuo Bean usa già java.sql.Date/Time
         Appointment model = new Appointment();
 
         model.setId(bean.getId());
-        model.setStudentEmail(bean.getStudenteEmail()); // Uso getStudenteEmail dal Bean
+        model.setStudentEmail(bean.getStudenteEmail());
         model.setTutorEmail(bean.getTutorEmail());
-        model.setDate(bean.getData());                  // Passaggio diretto Date -> Date
-        model.setTime(bean.getOra());                   // Passaggio diretto Time -> Time
-        model.setStatus(bean.getStato());               // Uso setStatus del Model
+        model.setDate(bean.getData());
+        model.setTime(bean.getOra());
+        model.setStatus(bean.getStato());
 
         // 2. Creazione Context (Pattern State)
         AppointmentContext context = new AppointmentContext(model);
 
         // 3. Esecuzione azione (transizione Completato -> Pagato)
-        // Se lo stato attuale non permette il pagamento, il pattern lancerà DBException
         context.pay();
     }
 
@@ -81,6 +82,7 @@ public class AppRispostiStudenteCtrlApplicativo {
 
         try {
             // 2. Calcolo Sentiment Score (AI Adapter)
+            // Il controller chiama 'analyze' senza sapere che sotto c'è JSON, Python o HTTP.
             int score = sentimentAnalyzer.analyze(bean.getRecensione());
             bean.setSentimentValue(score);
 

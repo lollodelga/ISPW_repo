@@ -1,9 +1,6 @@
 package ldg.progettoispw.engineering.api;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import ldg.progettoispw.engineering.exception.SentimentException;
-
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
@@ -12,18 +9,12 @@ import java.net.URI;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 
+// Questo è l'ADAPTEE
 public class SentimentClient {
 
-    /**
-     * Chiama il server Python per ottenere il sentiment
-     * @param text Testo da analizzare
-     * @return JSON di risposta dal server Python
-     * @throws SentimentException in caso di errore HTTP o I/O
-     */
-    public String getSentiment(String text) throws SentimentException {
+    public String getRawSentimentJSON(String text) throws SentimentException {
         try {
             URL url = URI.create("http://127.0.0.1:8000/bert-sentiment").toURL();
-
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("POST");
             conn.setRequestProperty("Content-Type", "application/json");
@@ -45,27 +36,11 @@ public class SentimentClient {
                 }
             }
 
+            // Ritorna la stringa JSON grezza. NON FA PARSING.
             return response.toString();
 
         } catch (Exception e) {
-            throw new SentimentException("Errore nella chiamata al servizio di sentiment.", e);
-        }
-    }
-
-
-    /**
-     * Converte il JSON del server in un valore intero 1–5
-     */
-    public int parseSentiment(String jsonResponse) throws SentimentException {
-        try {
-            ObjectMapper mapper = new ObjectMapper();
-            JsonNode root = mapper.readTree(jsonResponse);
-
-            String label = root.get("label").asText();
-
-            return Integer.parseInt(label.substring(0, 1));
-        } catch (Exception e) {
-            throw new SentimentException("Errore nel parsing del sentiment", e);
+            throw new SentimentException("Errore nella chiamata al servizio API", e);
         }
     }
 }
