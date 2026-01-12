@@ -13,6 +13,9 @@ public class AppointmentDAOMemory implements AppointmentDAO {
     // Database volatile in RAM
     private static final List<AppointmentBean> fakeDB = new ArrayList<>();
 
+    // COSTANTE per risolvere il Code Smell "Duplicate literal"
+    private static final String STATUS_RICHIESTO = "RICHIESTO";
+
     // --- BLOCCO STATICO: Dati di prova per la Demo ---
     static {
         AppointmentBean demoAppt = new AppointmentBean();
@@ -21,10 +24,10 @@ public class AppointmentDAOMemory implements AppointmentDAO {
         demoAppt.setTutorEmail("tutor@demo.it");
         demoAppt.setData(Date.valueOf("2025-10-10")); // Data futura
         demoAppt.setOra(Time.valueOf("15:00:00"));
-        demoAppt.setStato("RICHIESTO"); // In attesa
+        demoAppt.setStato(STATUS_RICHIESTO); // Uso la costante
         fakeDB.add(demoAppt);
 
-        System.out.println("[MEMORY] Appuntamento Demo caricato (Studente -> Tutor)");
+        // Rimosso System.out per pulizia CLI
     }
 
     @Override
@@ -39,10 +42,10 @@ public class AppointmentDAOMemory implements AppointmentDAO {
         bean.setTutorEmail(tutorEmail);
         bean.setData(date);
         bean.setOra(time);
-        bean.setStato("RICHIESTO");
+        bean.setStato(STATUS_RICHIESTO); // Uso la costante
 
         fakeDB.add(bean);
-        System.out.println("[MEMORY] Appuntamento inserito: " + studentEmail + " -> " + tutorEmail);
+        // Rimosso System.out per pulizia CLI
     }
 
     @Override
@@ -70,11 +73,11 @@ public class AppointmentDAOMemory implements AppointmentDAO {
                     b.getOra().toString().equals(time.toString())) {
 
                 b.setStato(newStatus);
-                System.out.println("[MEMORY] Stato aggiornato a: " + newStatus);
+                // Rimosso System.out per pulizia CLI
                 return;
             }
         }
-        System.out.println("[MEMORY] Nessun appuntamento trovato da aggiornare.");
+        // Rimosso System.out per pulizia CLI
     }
 
     @Override
@@ -82,12 +85,15 @@ public class AppointmentDAOMemory implements AppointmentDAO {
         List<AppointmentBean> result = new ArrayList<>();
         for (AppointmentBean b : fakeDB) {
             // Logica flessibile sugli stati "In Attesa"
-            boolean isInAttesa = "RICHIESTO".equalsIgnoreCase(b.getStato()) || "IN_ATTESA".equalsIgnoreCase(b.getStato());
+            boolean isInAttesa = STATUS_RICHIESTO.equalsIgnoreCase(b.getStato()) || "IN_ATTESA".equalsIgnoreCase(b.getStato());
 
             if (isInAttesa) {
-                if (isTutor && b.getTutorEmail().equals(email)) {
-                    result.add(b);
-                } else if (!isTutor && b.getStudenteEmail().equals(email)) {
+                // Risolto Code Smell: "This branch's code block is the same..."
+                // Unisco le condizioni con OR logico
+                boolean matchTutor = isTutor && b.getTutorEmail().equals(email);
+                boolean matchStudent = !isTutor && b.getStudenteEmail().equals(email);
+
+                if (matchTutor || matchStudent) {
                     result.add(b);
                 }
             }
@@ -99,12 +105,15 @@ public class AppointmentDAOMemory implements AppointmentDAO {
     public List<AppointmentBean> getAppuntamentiByEmail(String email, int tipo) throws DBException {
         List<AppointmentBean> result = new ArrayList<>();
         for (AppointmentBean b : fakeDB) {
-            if (tipo == 0) { // Studente
-                if (b.getStudenteEmail().equals(email)) result.add(b);
-            } else if (tipo == 1) { // Tutor
-                // Esclude quelli in attesa per la vista "Agenda" se necessario,
-                // oppure ritorna tutto e filtra il controller. Qui ritorno tutto per quel tutor.
-                if (b.getTutorEmail().equals(email)) result.add(b);
+            // Risolto Code Smell: "Merge this if statement with the enclosing one"
+            // E risolto Code Smell duplicazione blocco
+
+            // tipo 0 = Studente, tipo 1 = Tutor
+            boolean matchStudent = (tipo == 0 && b.getStudenteEmail().equals(email));
+            boolean matchTutor = (tipo == 1 && b.getTutorEmail().equals(email));
+
+            if (matchStudent || matchTutor) {
+                result.add(b);
             }
         }
         return result;

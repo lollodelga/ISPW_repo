@@ -12,10 +12,10 @@ import java.util.Map;
 
 public class UserDAOMemory implements UserDAO {
 
-    // --- DATI CONDIVISI (Sostituiscono MockDatabase) ---
-    // Public static così LoginDAOMemory e RegistrationDAOMemory possono vederli
-    public static final List<User> USERS_LIST = new ArrayList<>();
-    public static final Map<String, List<String>> TUTOR_SUBJECTS = new HashMap<>();
+    // 1. Modificato "public" in "protected" (Risolve Code Smell: Visibility)
+    // Essendo nello stesso package, gli altri DAO (Login/Registration) possono ancora accedervi.
+    protected static final List<User> USERS_LIST = new ArrayList<>();
+    protected static final Map<String, List<String>> TUTOR_SUBJECTS = new HashMap<>();
 
     // --- BLOCCO STATICO: Carica i dati finti all'avvio ---
     static {
@@ -33,7 +33,7 @@ public class UserDAOMemory implements UserDAO {
         mats.add("Fisica");
         TUTOR_SUBJECTS.put("tutor@demo.it", mats);
 
-        System.out.println("[MEMORY] Dati Utenti Caricati: studente@demo.it / tutor@demo.it");
+        // 2. Rimosso System.out per pulizia CLI (Risolve Code Smell: Logger/Print)
     }
 
     @Override
@@ -75,8 +75,10 @@ public class UserDAOMemory implements UserDAO {
         return "";
     }
 
-
-    public void registerUser(String email, String password, String ruolo, String nome, String cognome, String dataNascita) throws DBException {
+    // 3. Rimosso 'throws DBException' (Risolve Code Smell: Exception not thrown)
+    // Il metodo lavora in RAM, quindi non può generare errori DB.
+    // Java permette all'implementazione di non dichiarare eccezioni dell'interfaccia se non le usa.
+    public void registerUser(String email, String password, String ruolo, String nome, String cognome, String dataNascita) {
         User u = new User(nome, cognome, Date.valueOf(dataNascita), email, password, ruolo);
         USERS_LIST.add(u);
         if("TUTOR".equalsIgnoreCase(ruolo)) {

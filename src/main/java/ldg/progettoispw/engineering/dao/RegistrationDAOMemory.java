@@ -17,14 +17,15 @@ public class RegistrationDAOMemory implements RegistrationDAO {
 
         // 2. Se non esiste, lo aggiungo
         UserDAOMemory.USERS_LIST.add(user);
-        System.out.println("[MEMORY] Utente registrato: " + user.getEmail());
+        // Rimosso System.out per pulizia CLI
 
         return 0; // Successo
     }
 
     @Override
     public void insertSubject(String subject) throws DBException {
-        System.out.println("[MEMORY] (Simulazione) Inserimento materia globale: " + subject);
+        // In modalità DEMO/RAM non serve salvare la materia in una lista globale separata.
+        // Il metodo rimane vuoto per rispettare l'interfaccia senza sporcare la CLI.
     }
 
     @Override
@@ -35,6 +36,6 @@ public class RegistrationDAOMemory implements RegistrationDAO {
         // Aggiungi la materia alla lista di quel tutor
         UserDAOMemory.TUTOR_SUBJECTS.get(email).add(subject);
 
-        System.out.println("[MEMORY] Associato " + subject + " a " + email);
+        // Rimosso System.out per pulizia CLI
     }
 }

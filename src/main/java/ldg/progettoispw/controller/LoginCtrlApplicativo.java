@@ -9,17 +9,22 @@ import ldg.progettoispw.engineering.exception.*;
 import ldg.progettoispw.engineering.factory.DAOFactory;
 import ldg.progettoispw.engineering.factory.PersistenceConfig;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class LoginCtrlApplicativo {
 
-    // 1. Dichiara le INTERFACCE (Mai le classi JDBC direttamente)
+    // Aggiunto Logger per evitare System.err
+    private static final Logger logger = Logger.getLogger(LoginCtrlApplicativo.class.getName());
+
+    // 1. Dichiara le INTERFACCE
     private final LoginDAO loginDAO;
     private final UserDAO userDAO;
 
     public LoginCtrlApplicativo() {
-        // 2. Ottieni le istanze dalla Factory (così supporta JDBC, CSV e DEMO)
+        // 2. Ottieni le istanze dalla Factory
         this.loginDAO = DAOFactory.getLoginDAO();
         this.userDAO = DAOFactory.getUserDAO();
     }
@@ -44,21 +49,15 @@ public class LoginCtrlApplicativo {
 
         int result = loginDAO.start(email, password);
 
-        // Usa le costanti dell'INTERFACCIA LoginDAO, non della classe JDBC
+        // Usa le costanti dell'INTERFACCIA LoginDAO
         switch (result) {
             case LoginDAO.SUCCESS -> {
 
                 // Recupero dati completi
                 String[] data = userDAO.takeData(email, password);
 
-                /* * NOTA: Nel tuo codice originale sovrascrivevi data[5] (Ruolo) con le materie.
-                 * Assicurati che UserBean.setOfAll si aspetti le materie all'indice 5.
-                 * Se data[5] era il ruolo, qui lo stai perdendo nel bean,
-                 * ma lo recuperi correttamente dopo con getUserRole.
-                 */
                 String subjects = userDAO.takeSubjects(email);
-                // Se subjects è vuoto e data[5] contiene il ruolo, valuta se sovrascrivere o concatenare.
-                // Per ora lascio la tua logica originale:
+
                 if (subjects != null && !subjects.isEmpty()) {
                     data[5] = subjects;
                 }
@@ -73,8 +72,8 @@ public class LoginCtrlApplicativo {
                     try {
                         PythonServerLauncher.launch();
                     } catch (Exception e) {
-                        // Logghiamo ma non blocchiamo il login se il server python fallisce
-                        System.err.println("Avviso: Impossibile avviare server Python: " + e.getMessage());
+                        // Sostituito System.err con Logger (Level.WARNING)
+                        logger.log(Level.WARNING, "Avviso: Impossibile avviare server Python: {0}", e.getMessage());
                     }
                 }
 

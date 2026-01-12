@@ -9,7 +9,7 @@ import java.util.List;
 
 public class RecensioneDAOMemory implements RecensioneDAO {
 
-    // 1. Sostituisco MockDatabase con una lista interna STATICA e AUTONOMA
+    // 1. Lista interna STATICA e AUTONOMA
     private static final List<RecensioneBean> REVIEWS_LIST = new ArrayList<>();
 
     // 2. Blocco statico per caricare dati di prova (Demo)
@@ -22,7 +22,7 @@ public class RecensioneDAOMemory implements RecensioneDAO {
         r1.setSentimentValue(1); // 1 = Positivo
 
         REVIEWS_LIST.add(r1);
-        System.out.println("[MEMORY] Recensioni di prova caricate.");
+        // Rimosso System.out per pulizia CLI
     }
 
     @Override
@@ -31,7 +31,7 @@ public class RecensioneDAOMemory implements RecensioneDAO {
         bean.setId(REVIEWS_LIST.size() + 1);
         REVIEWS_LIST.add(bean);
 
-        System.out.println("[MEMORY] Recensione salvata per tutor: " + bean.getTutorEmail());
+        // Rimosso System.out per pulizia CLI
     }
 
     @Override
@@ -69,6 +69,6 @@ public class RecensioneDAOMemory implements RecensioneDAO {
     @Override
     public void deleteAll() throws DBException {
         REVIEWS_LIST.clear();
-        System.out.println("[MEMORY] Database recensioni svuotato.");
+        // Rimosso System.out per pulizia CLI
     }
 }
