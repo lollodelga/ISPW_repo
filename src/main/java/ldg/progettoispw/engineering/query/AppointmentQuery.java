@@ -1,7 +1,7 @@
 package ldg.progettoispw.engineering.query;
 
 /**
- * Contiene tutte le stringhe SQL (Query) utilizzate dalla classe AppointmentDAOJDBC.
+ * Contiene tutte le stringhe SQL (Query) utilizzate dalla classe AppointmentDAO.
  */
 public class AppointmentQuery {
 
@@ -19,30 +19,30 @@ public class AppointmentQuery {
             SELECT COUNT(*) 
             FROM appuntamento 
             WHERE tutor_email = ? 
-              AND date = ? 
-              AND time = ? 
-              AND status <> 'annullato'
+              AND data = ? 
+              AND ora = ? 
+              AND stato <> 'annullato'
             """;
 
     // Query per l'inserimento
     public static final String INSERT_APPT =
-            "INSERT INTO appuntamento (studente_email, tutor_email, date, time, status) VALUES (?, ?, ?, ?, 'in_attesa')";
+            "INSERT INTO appuntamento (studente_email, tutor_email, data, ora, stato) VALUES (?, ?, ?, ?, 'in_attesa')";
 
-    // Query per l'aggiornamento dello status
+    // Query per l'aggiornamento dello stato
     public static final String UPDATE_STATUS =
-            "UPDATE appuntamento SET status = ? WHERE studente_email = ? AND tutor_email = ? AND date = ? AND time = ?";
+            "UPDATE appuntamento SET stato = ? WHERE studente_email = ? AND tutor_email = ? AND data = ? AND ora = ?";
 
     // Query di ricerca (in attesa)
     public static final String SEARCH_APP_IN_ATTESA_TUTOR =
-            "SELECT * FROM appuntamento WHERE tutor_email = ? AND status = 'in_attesa'";
+            "SELECT * FROM appuntamento WHERE tutor_email = ? AND stato = 'in_attesa'";
     public static final String SEARCH_APP_IN_ATTESA_STUDENTE =
-            "SELECT * FROM appuntamento WHERE studente_email = ? AND status = 'in_attesa'";
+            "SELECT * FROM appuntamento WHERE studente_email = ? AND stato = 'in_attesa'";
 
 
     // Query di ricerca (storico: confermati, completati, annullati E PAGATI)
     public static final String SEARCH_APP_BY_STUDENT =
-            "SELECT * FROM appuntamento WHERE studente_email = ? AND status IN ('confermato', 'completato', 'annullato', 'pagato')";
+            "SELECT * FROM appuntamento WHERE studente_email = ? AND stato IN ('confermato', 'completato', 'annullato', 'pagato')";
 
     public static final String SEARCH_APP_BY_TUTOR =
-            "SELECT * FROM appuntamento WHERE tutor_email = ? AND status IN ('confermato', 'completato', 'annullato', 'pagato')";
+            "SELECT * FROM appuntamento WHERE tutor_email = ? AND stato IN ('confermato', 'completato', 'annullato', 'pagato')";
 }

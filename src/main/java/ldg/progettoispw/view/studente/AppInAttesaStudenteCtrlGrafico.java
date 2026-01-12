@@ -35,7 +35,6 @@ public class AppInAttesaStudenteCtrlGrafico extends HomeCtrlGrafico {
     @Override
     @FXML
     public void initialize() {
-        super.initialize();
         loadPendingRequests();
     }
 

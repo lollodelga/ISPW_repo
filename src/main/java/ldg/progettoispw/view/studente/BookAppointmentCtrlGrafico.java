@@ -36,8 +36,6 @@ public class BookAppointmentCtrlGrafico extends HomeCtrlGrafico {
     @Override
     @FXML
     public void initialize() {
-        // 1. FONDAMENTALE: Carica i dati utente dalla classe padre
-        super.initialize();
 
         // Inizializza la combo delle ore
         for (int h = 8; h <= 18; h++) {
