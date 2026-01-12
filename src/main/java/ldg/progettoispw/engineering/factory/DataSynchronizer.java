@@ -2,7 +2,7 @@ package ldg.progettoispw.engineering.factory;
 
 import ldg.progettoispw.engineering.bean.RecensioneBean;
 import ldg.progettoispw.engineering.exception.DBException;
-import ldg.progettoispw.util.RecensioneDAO;
+import ldg.progettoispw.engineering.dao.RecensioneDAO;
 import ldg.progettoispw.viewcli.Printer;
 
 import java.util.List;

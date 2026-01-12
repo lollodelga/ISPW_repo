@@ -5,18 +5,25 @@ import ldg.progettoispw.engineering.bean.AppointmentBean;
 import ldg.progettoispw.engineering.bean.UserBean;
 import ldg.progettoispw.engineering.dao.AppointmentDAO;
 import ldg.progettoispw.engineering.exception.DBException;
+import ldg.progettoispw.engineering.factory.DAOFactory;
 import ldg.progettoispw.engineering.state.AppointmentContext;
 import ldg.progettoispw.model.Appointment;
 
 import java.sql.Date;
 import java.sql.Time;
 import java.util.List;
-import java.util.logging.Logger;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class AppRispostiTutorCtrlApplicativo {
     private static final Logger LOGGER = Logger.getLogger(AppRispostiTutorCtrlApplicativo.class.getName());
-    private final AppointmentDAO dao = new AppointmentDAO();
+
+    private final AppointmentDAO dao;
+
+    public AppRispostiTutorCtrlApplicativo() {
+        this.dao = DAOFactory.getAppointmentDAO();
+    }
+
     /**
      * Restituisce la lista degli appuntamenti del tutor loggato, esclusi quelli in attesa.
      */

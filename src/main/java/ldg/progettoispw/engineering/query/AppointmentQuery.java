@@ -1,7 +1,7 @@
 package ldg.progettoispw.engineering.query;
 
 /**
- * Contiene tutte le stringhe SQL (Query) utilizzate dalla classe AppointmentDAO.
+ * Contiene tutte le stringhe SQL (Query) utilizzate dalla classe AppointmentDAOJDBC.
  */
 public class AppointmentQuery {
 

@@ -5,17 +5,19 @@ import ldg.progettoispw.engineering.bean.AppointmentBean;
 import ldg.progettoispw.engineering.bean.UserBean;
 import ldg.progettoispw.engineering.dao.AppointmentDAO;
 import ldg.progettoispw.engineering.exception.DBException;
+import ldg.progettoispw.engineering.factory.DAOFactory;
 
 import java.util.List;
 
 public class AppInAttesaStudenteCtrlApplicativo {
 
+    private final AppointmentDAO appointmentDAO;
+
     public AppInAttesaStudenteCtrlApplicativo(){
-        //voglio esplicitarlo per avitare che sia inizializzato diversamente
+        this.appointmentDAO = DAOFactory.getAppointmentDAO();
     }
 
     public List<AppointmentBean> getAppuntamentiInAttesa() throws DBException {
-        // 1️⃣ Recupera la sessione utente
         UserBean user = LoginSessionManager.loadUserSession();
 
         if (user == null) {
@@ -24,10 +26,9 @@ public class AppInAttesaStudenteCtrlApplicativo {
 
         String studentEmail = user.getEmail();
         if (studentEmail == null || studentEmail.isEmpty()) {
-            throw new IllegalStateException("Email del tutor non trovata nella sessione.");
+            throw new IllegalStateException("Email dello studente non trovata nella sessione.");
         }
 
-        AppointmentDAO dao = new AppointmentDAO();
-        return dao.getAppuntamentiInAttesa(studentEmail, false);
+        return appointmentDAO.getAppuntamentiInAttesa(studentEmail, false);
     }
 }

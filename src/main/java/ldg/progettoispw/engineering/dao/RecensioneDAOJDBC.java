@@ -4,7 +4,6 @@ import ldg.progettoispw.engineering.bean.RecensioneBean;
 import ldg.progettoispw.engineering.exception.DBException;
 import ldg.progettoispw.engineering.query.RecensioneQuery; // Import della classe Query
 import ldg.progettoispw.model.Recensione;
-import ldg.progettoispw.util.RecensioneDAO;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;

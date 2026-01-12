@@ -1,7 +1,7 @@
 package ldg.progettoispw.engineering.query;
 
 /**
- * Contiene le query SQL utilizzate dalla classe UserDAO.
+ * Contiene le query SQL utilizzate dalla classe UserDAOJDBC.
  */
 public class UserQuery {
 

@@ -1,4 +1,4 @@
-package ldg.progettoispw.util;
+package ldg.progettoispw.engineering.dao;
 
 import ldg.progettoispw.engineering.bean.RecensioneBean;
 import ldg.progettoispw.engineering.exception.DBException;

@@ -3,7 +3,6 @@ package ldg.progettoispw.engineering.dao;
 import ldg.progettoispw.engineering.bean.RecensioneBean;
 import ldg.progettoispw.engineering.exception.DBException;
 import ldg.progettoispw.model.Recensione;
-import ldg.progettoispw.util.RecensioneDAO;
 
 import java.io.*;
 import java.util.ArrayList;

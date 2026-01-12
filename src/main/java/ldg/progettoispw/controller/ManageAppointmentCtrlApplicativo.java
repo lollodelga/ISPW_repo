@@ -5,6 +5,7 @@ import ldg.progettoispw.engineering.bean.AppointmentBean;
 import ldg.progettoispw.engineering.bean.UserBean;
 import ldg.progettoispw.engineering.dao.AppointmentDAO;
 import ldg.progettoispw.engineering.exception.DBException;
+import ldg.progettoispw.engineering.factory.DAOFactory;
 import ldg.progettoispw.engineering.state.AppointmentContext;
 import ldg.progettoispw.model.Appointment;
 
@@ -16,15 +17,17 @@ import java.util.List;
  * Flusso principale:
  * 1. Recupera la sessione utente tramite LoginSessionManager.
  * 2. Verifica che l’utente loggato sia un tutor.
- * 3. Usa AppointmentDAO per ottenere o modificare gli appuntamenti associati.
+ * 3. Usa AppointmentDAO (Interfaccia) per ottenere o modificare gli appuntamenti associati.
  *
  * Attualmente, questo controller fornisce un metodo per ottenere tutti gli appuntamenti
  * in attesa di conferma per il tutor loggato.
  */
 public class ManageAppointmentCtrlApplicativo {
 
+    private final AppointmentDAO appointmentDAO;
+
     public ManageAppointmentCtrlApplicativo() {
-        //lo tengo vuoto, perché voglio sia istanziato senza fare nulla
+        this.appointmentDAO = DAOFactory.getAppointmentDAO();
     }
 
     /**
@@ -43,8 +46,7 @@ public class ManageAppointmentCtrlApplicativo {
             throw new IllegalStateException("Email del tutor non trovata nella sessione.");
         }
 
-        AppointmentDAO dao = new AppointmentDAO();
-        return dao.getAppuntamentiInAttesa(tutorEmail, true);
+        return appointmentDAO.getAppuntamentiInAttesa(tutorEmail, true);
     }
 
     /**

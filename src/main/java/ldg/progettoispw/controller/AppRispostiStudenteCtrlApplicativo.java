@@ -8,11 +8,11 @@ import ldg.progettoispw.engineering.bean.AppointmentBean;
 import ldg.progettoispw.engineering.bean.RecensioneBean;
 import ldg.progettoispw.engineering.bean.UserBean;
 import ldg.progettoispw.engineering.dao.AppointmentDAO;
+import ldg.progettoispw.engineering.dao.RecensioneDAO;
 import ldg.progettoispw.engineering.exception.DBException;
 import ldg.progettoispw.engineering.factory.DAOFactory;
 import ldg.progettoispw.engineering.state.AppointmentContext;
 import ldg.progettoispw.model.Appointment;
-import ldg.progettoispw.util.RecensioneDAO;
 
 import java.util.List;
 
@@ -23,15 +23,14 @@ import java.util.List;
 public class AppRispostiStudenteCtrlApplicativo {
 
     private final ReviewFilter reviewChecker = new ReviewFilter();
-
-    // L'Adapter nasconde completamente il Client.
-    // Il Controller vede solo il Target (SentimentAnalyzer).
     private final SentimentAnalyzer sentimentAnalyzer = new SentimentAdapter();
 
-    private final RecensioneDAO recensioneDAO = DAOFactory.getRecensioneDAO();
+    private final RecensioneDAO recensioneDAO;
+    private final AppointmentDAO appointmentDAO;
 
     public AppRispostiStudenteCtrlApplicativo() {
-        // Costruttore vuoto intenzionale
+        this.recensioneDAO = DAOFactory.getRecensioneDAO();
+        this.appointmentDAO = DAOFactory.getAppointmentDAO();
     }
 
     /**
@@ -42,9 +41,9 @@ public class AppRispostiStudenteCtrlApplicativo {
         if (studente == null || studente.getEmail() == null) {
             throw new IllegalStateException("Sessione studente non attiva.");
         }
-        AppointmentDAO dao = new AppointmentDAO();
+
         // 0 indica che vogliamo tutti gli appuntamenti validi per lo storico
-        return dao.getAppuntamentiByEmail(studente.getEmail(), 0);
+        return appointmentDAO.getAppuntamentiByEmail(studente.getEmail(), 0);
     }
 
     /**
@@ -82,7 +81,6 @@ public class AppRispostiStudenteCtrlApplicativo {
 
         try {
             // 2. Calcolo Sentiment Score (AI Adapter)
-            // Il controller chiama 'analyze' senza sapere che sotto c'è JSON, Python o HTTP.
             int score = sentimentAnalyzer.analyze(bean.getRecensione());
             bean.setSentimentValue(score);
 

@@ -1,6 +1,6 @@
 package ldg.progettoispw.engineering.state;
 
-import ldg.progettoispw.engineering.dao.AppointmentDAO;
+import ldg.progettoispw.engineering.dao.AppointmentDAOJDBC;
 import ldg.progettoispw.engineering.exception.DBException;
 import ldg.progettoispw.model.Appointment;
 import java.sql.Date;
@@ -52,7 +52,7 @@ public class AppointmentContext {
     public void pay() throws DBException { state.pay(this); }
 
     public void updateStatusInDB(String newStatus) throws DBException {
-        AppointmentDAO dao = new AppointmentDAO();
+        AppointmentDAOJDBC dao = new AppointmentDAOJDBC();
         dao.updateAppointmentStatus(studentEmail, tutorEmail, date, time, newStatus);
     }
 }

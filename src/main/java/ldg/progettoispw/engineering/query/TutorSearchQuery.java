@@ -1,7 +1,7 @@
 package ldg.progettoispw.engineering.query;
 
 /**
- * Contiene le query SQL utilizzate dalla classe TutorSearchDAO.
+ * Contiene le query SQL utilizzate dalla classe TutorSearchDAOJDBC.
  */
 public class TutorSearchQuery {
 

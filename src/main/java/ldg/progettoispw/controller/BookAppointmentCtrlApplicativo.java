@@ -1,12 +1,13 @@
 package ldg.progettoispw.controller;
 
+import ldg.progettoispw.engineering.applicativo.LoginSessionManager;
 import ldg.progettoispw.engineering.bean.SubjectBean;
 import ldg.progettoispw.engineering.bean.TutorBean;
 import ldg.progettoispw.engineering.bean.UserBean;
 import ldg.progettoispw.engineering.dao.AppointmentDAO;
 import ldg.progettoispw.engineering.dao.TutorSearchDAO;
 import ldg.progettoispw.engineering.exception.DBException;
-import ldg.progettoispw.engineering.applicativo.LoginSessionManager;
+import ldg.progettoispw.engineering.factory.DAOFactory;
 import ldg.progettoispw.model.Tutor;
 
 import java.sql.Date;
@@ -18,12 +19,16 @@ import java.util.List;
 
 public class BookAppointmentCtrlApplicativo {
 
-    private TutorSearchDAO tutorDAO = new TutorSearchDAO();
-    private AppointmentDAO dao = new AppointmentDAO();
+    private final TutorSearchDAO tutorDAO;
+    private final AppointmentDAO dao;
 
+    public BookAppointmentCtrlApplicativo() {
+        this.tutorDAO = DAOFactory.getTutorSearchDAO();
+        this.dao = DAOFactory.getAppointmentDAO();
+    }
 
     public List<TutorBean> searchTutorBySubject(SubjectBean subjectBean) throws DBException {
-        // Recupera i model dal DAO
+        // Recupera i model dal DAO (che sia JDBC o Memory)
         List<Tutor> tutorModels = tutorDAO.findTutorsBySubject(subjectBean.getMateria());
 
         // Converte in Bean per la view
@@ -39,8 +44,6 @@ public class BookAppointmentCtrlApplicativo {
 
         return tutorBeans;
     }
-
-
 
     public void bookAppointment(TutorBean tutor, LocalDate localDate, int hour) throws DBException {
         // 1. Controlli base
@@ -65,8 +68,7 @@ public class BookAppointmentCtrlApplicativo {
         Date sqlDate = Date.valueOf(localDate);
         Time sqlTime = Time.valueOf(LocalTime.of(hour, 0)); // es. 14:00
 
-        // 5. Inserimento nel DB
+        // 5. Inserimento nel DB (o in Memoria) tramite interfaccia
         dao.insertAppointment(student.getEmail(), tutor.getEmail(), sqlDate, sqlTime);
     }
-
 }
