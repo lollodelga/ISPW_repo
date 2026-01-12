@@ -29,13 +29,9 @@ public class ManageAppointmentCtrlApplicativo {
 
     /**
      * Recupera tutti gli appuntamenti con stato "in_attesa" per il tutor attualmente loggato.
-     *
-     * @return lista di AppointmentBean in attesa per il tutor loggato
-     * @throws DBException           se avviene un errore durante l’accesso al database
-     * @throws IllegalStateException se la sessione non è attiva o l’utente non è un tutor
      */
     public List<AppointmentBean> getAppuntamentiInAttesa() throws DBException {
-        // 1️⃣ Recupera la sessione utente
+        // Recupera la sessione utente
         UserBean user = LoginSessionManager.loadUserSession();
 
         if (user == null) {
@@ -55,7 +51,7 @@ public class ManageAppointmentCtrlApplicativo {
      * Gestisce un'azione generica (conferma o rifiuta) sull'appuntamento.
      */
     public void handleAppointmentAction(AppointmentBean bean, String action) throws DBException {
-        // 🔹 Converte il bean nel model
+        // Converte il bean nel model
         Appointment model = new Appointment(
                 bean.getId(),
                 bean.getStudenteEmail(),
@@ -65,10 +61,10 @@ public class ManageAppointmentCtrlApplicativo {
                 bean.getStato()
         );
 
-        // 🔹 Crea il contesto (pattern State)
+        // Crea il contesto (pattern State)
         AppointmentContext context = new AppointmentContext(model);
 
-        // 🔹 Esegue l’azione richiesta
+        // Esegue l’azione richiesta
         switch (action.toLowerCase()) {
             case "conferma" -> context.confirm();
             case "rifiuta" -> context.cancel();

@@ -43,7 +43,7 @@ public class BookAppointmentCtrlApplicativo {
 
 
     public void bookAppointment(TutorBean tutor, LocalDate localDate, int hour) throws DBException {
-        // 🔹 1. Controlli base
+        // 1. Controlli base
         if (tutor == null)
             throw new DBException("Tutor non selezionato.");
 
@@ -51,7 +51,7 @@ public class BookAppointmentCtrlApplicativo {
         if (student == null)
             throw new DBException("Sessione utente non trovata.");
 
-        // 🔹 2. Validazioni su data e ora
+        // 2. Validazioni su data e ora
         if (localDate == null)
             throw new DBException("Data non valida.");
 
@@ -61,11 +61,11 @@ public class BookAppointmentCtrlApplicativo {
         if (hour < 0 || hour > 23)
             throw new DBException("Ora non valida (usa un'ora compresa tra 0 e 23).");
 
-        // 🔹 3. Conversione in formati SQL
+        // 3. Conversione in formati SQL
         Date sqlDate = Date.valueOf(localDate);
         Time sqlTime = Time.valueOf(LocalTime.of(hour, 0)); // es. 14:00
 
-        // 🔹 5. Inserimento nel DB
+        // 5. Inserimento nel DB
         dao.insertAppointment(student.getEmail(), tutor.getEmail(), sqlDate, sqlTime);
     }
 

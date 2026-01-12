@@ -3,23 +3,6 @@ package ldg.progettoispw.engineering.bean;
 import java.sql.Date;
 import java.sql.Time;
 
-/**
- * Bean che rappresenta un appuntamento tra studente e tutor.
- *
- * Contiene i dati principali della tabella "appuntamento":
- *  - id: identificativo univoco
- *  - studenteEmail: email dello studente che ha richiesto l'appuntamento
- *  - tutorEmail: email del tutor che riceve la richiesta
- *  - data: giorno dell'appuntamento
- *  - ora: orario dell'appuntamento
- *  - stato: stato corrente dell'appuntamento
- *
- * Possibili stati:
- *  - "in_attesa" → l'appuntamento è stato richiesto ma non ancora confermato
- *  - "confermato" → il tutor ha accettato l'appuntamento
- *  - "completato" → l'appuntamento si è svolto
- *  - "annullato" → l'appuntamento è stato rifiutato o cancellato
- */
 public class AppointmentBean {
     private int id;
     private String studenteEmail;
@@ -28,7 +11,7 @@ public class AppointmentBean {
     private Time ora;
     private String stato;
 
-    // Costruttore vuoto richiesto da JavaFX / librerie ORM
+    // Costruttore vuoto richiesto da JavaFX
     public AppointmentBean() {}
 
     // Costruttore completo

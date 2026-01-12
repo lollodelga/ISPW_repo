@@ -18,7 +18,6 @@ public class ManageAppointmentCtrlGrafico extends BaseAppointmentCtrlGrafico {
     @Override
     @FXML
     public void initialize() {
-        super.initialize();
         ctrlApplicativo = new ManageAppointmentCtrlApplicativo();
         appointmentPane.setVisible(false);
         loadPendingAppointments();

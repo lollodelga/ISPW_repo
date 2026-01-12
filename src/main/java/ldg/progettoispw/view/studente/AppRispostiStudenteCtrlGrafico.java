@@ -5,7 +5,6 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
@@ -71,25 +70,20 @@ public class AppRispostiStudenteCtrlGrafico extends HomeCtrlGrafico implements I
     private void openDetails(AppointmentBean bean) {
         selectedAppointment = bean;
 
-        // Popolamento Labels (con toString automatico di Date/Time)
         lblTutor.setText("Tutor: " + bean.getTutorEmail());
         lblData.setText("Data: " + bean.getData());
         lblOra.setText("Ora: " + bean.getOra());
         lblStato.setText("Stato: " + bean.getStato().toUpperCase());
 
-        // LOGICA DI VISIBILITÀ (Disaccoppiata dal DB, basata sul Bean)
         String stato = bean.getStato().toLowerCase();
         boolean isCompletato = "completato".equals(stato);
         boolean isPagato = "pagato".equals(stato);
 
-        // 1. Bottone PAGA: visibile solo se la lezione è completata ma non pagata
         btnPaga.setVisible(isCompletato);
 
-        // 2. Form RECENSIONE: visibile solo se la lezione è già pagata
         txtRecensione.setVisible(isPagato);
         btnInviaRecensione.setVisible(isPagato);
 
-        // Reset errori e visibilità pannello
         lblErroreRecensione.setVisible(false);
         appointmentPane.setVisible(true);
         centerPopup();
@@ -104,10 +98,8 @@ public class AppRispostiStudenteCtrlGrafico extends HomeCtrlGrafico implements I
             // 2. Aggiornamento Bean Locale (Riflette il cambio stato nella View)
             selectedAppointment.setStato("pagato");
 
-            // 3. Feedback utente e Aggiornamento Popup
             showSuccess("Pagamento Riuscito", "Transazione di 15.00€ completata.\nOra puoi lasciare una recensione.");
 
-            // Ricarica il popup per nascondere "Paga" e mostrare "Recensione"
             openDetails(selectedAppointment);
 
         } catch (DBException e) {

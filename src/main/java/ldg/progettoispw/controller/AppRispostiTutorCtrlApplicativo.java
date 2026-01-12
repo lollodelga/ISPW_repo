@@ -36,11 +36,11 @@ public class AppRispostiTutorCtrlApplicativo {
             String tutorEmail = LoginSessionManager.loadUserSession().getEmail();
 
             Appointment appointment = new Appointment();
-            appointment.setStudentEmail(studentEmail);
+            appointment.setStudenteEmail(studentEmail);
             appointment.setTutorEmail(tutorEmail);
-            appointment.setDate(date);
-            appointment.setTime(time);
-            appointment.setStatus(stato);
+            appointment.setData(date);
+            appointment.setOra(time);
+            appointment.setStato(stato);
 
             AppointmentContext context = new AppointmentContext(appointment);
 
