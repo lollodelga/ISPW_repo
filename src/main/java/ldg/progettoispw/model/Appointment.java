@@ -5,39 +5,39 @@ import java.sql.Time;
 
 public class Appointment {
     private int id;
-    private String studenteEmail;
+    private String studentEmail;
     private String tutorEmail;
-    private Date data;
-    private Time ora;
-    private String stato;
+    private Date date;
+    private Time time;
+    private String status;
 
     public Appointment() {}
 
-    public Appointment(int id, String studenteEmail, String tutorEmail, Date data, Time ora, String stato) {
+    public Appointment(int id, String studentEmail, String tutorEmail, Date date, Time time, String status) {
         this.id = id;
-        this.studenteEmail = studenteEmail;
+        this.studentEmail = studentEmail;
         this.tutorEmail = tutorEmail;
-        this.data = data;
-        this.ora = ora;
-        this.stato = stato;
+        this.date = date;
+        this.time = time;
+        this.status = status;
     }
 
     // Getters e setters
     public int getId() { return id; }
     public void setId(int id) { this.id = id; }
 
-    public String getStudenteEmail() { return studenteEmail; }
-    public void setStudenteEmail(String studenteEmail) { this.studenteEmail = studenteEmail; }
+    public String getStudentEmail() { return studentEmail; }
+    public void setStudentEmail(String studentEmail) { this.studentEmail = studentEmail; }
 
     public String getTutorEmail() { return tutorEmail; }
     public void setTutorEmail(String tutorEmail) { this.tutorEmail = tutorEmail; }
 
-    public Date getData() { return data; }
-    public void setData(Date data) { this.data = data; }
+    public Date getDate() { return date; }
+    public void setDate(Date date) { this.date = date; }
 
-    public Time getOra() { return ora; }
-    public void setOra(Time ora) { this.ora = ora; }
+    public Time getTime() { return time; }
+    public void setTime(Time time) { this.time = time; }
 
-    public String getStato() { return stato; }
-    public void setStato(String stato) { this.stato = stato; }
+    public String getStatus() { return status; }
+    public void setStatus(String status) { this.status = status; }
 }

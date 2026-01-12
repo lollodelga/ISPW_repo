@@ -14,12 +14,12 @@ public class AppointmentContext {
     private AppointmentState state;
 
     public AppointmentContext(Appointment appointment) {
-        this.studentEmail = appointment.getStudenteEmail();
+        this.studentEmail = appointment.getStudentEmail();
         this.tutorEmail = appointment.getTutorEmail();
-        this.date = appointment.getData();
-        this.time = appointment.getOra();
+        this.date = appointment.getDate();
+        this.time = appointment.getTime();
 
-        String status = appointment.getStato();
+        String status = appointment.getStatus();
         if (status == null) {
             this.state = new InAttesaState();
         } else {

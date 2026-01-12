@@ -57,11 +57,11 @@ public class AppRispostiStudenteCtrlApplicativo {
         Appointment model = new Appointment();
 
         model.setId(bean.getId());
-        model.setStudenteEmail(bean.getStudenteEmail());
+        model.setStudentEmail(bean.getStudenteEmail());
         model.setTutorEmail(bean.getTutorEmail());
-        model.setData(bean.getData());
-        model.setOra(bean.getOra());
-        model.setStato(bean.getStato());
+        model.setDate(bean.getData());
+        model.setTime(bean.getOra());
+        model.setStatus(bean.getStato());
 
         // 2. Creazione Context (Pattern State)
         AppointmentContext context = new AppointmentContext(model);
